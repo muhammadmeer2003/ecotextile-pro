@@ -8,6 +8,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Supabase UMD CDN -->
     <script src="https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+    <!-- SheetJS for Excel/CSV Import & Export -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
         body { background-color: #030712; color: #f3f4f6; font-family: system-ui, -apple-system, sans-serif; margin: 0; min-height: 100vh; display: flex; flex-direction: column; }
         .hidden { display: none !important; }
@@ -21,6 +23,11 @@
         ::-webkit-scrollbar-thumb:hover { background: #374151; }
         @keyframes pulse-slow { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
         .ai-pulse { animation: pulse-slow 3s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+        .hero-banner {
+            background: linear-gradient(rgba(3, 7, 18, 0.75), rgba(3, 7, 18, 0.9)), url('https://images.unsplash.com/photo-1558769132-cb1aea458c5e?auto=format&fit=crop&w=1600&q=80');
+            background-size: cover;
+            background-position: center;
+        }
     </style>
 </head>
 <body>
@@ -92,9 +99,13 @@
                             <svg style="width: 1.125rem; height: 1.125rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
                             Dashboard Overview
                         </button>
+                        <button onclick="switchTab('inventory')" id="btn-inventory" style="display: flex; align-items: center; gap: 0.75rem; width: 100%; padding: 0.75rem 1rem; font-size: 0.875rem; border-radius: 0.5rem; font-weight: 500; background: transparent; color: #9ca3af; border: none; text-align: left; cursor: pointer;">
+                            <svg style="width: 1.125rem; height: 1.125rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
+                            Inventory & Excel Sheets
+                        </button>
                         <button onclick="switchTab('esg')" id="btn-esg" style="display: flex; align-items: center; gap: 0.75rem; width: 100%; padding: 0.75rem 1rem; font-size: 0.875rem; border-radius: 0.5rem; font-weight: 500; background: transparent; color: #9ca3af; border: none; text-align: left; cursor: pointer;">
                             <svg style="width: 1.125rem; height: 1.125rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
-                            ESG Calculator & Cloud Save
+                            ESG Impact Calculator
                         </button>
                         <button onclick="switchTab('ai')" id="btn-ai" style="display: flex; align-items: center; gap: 0.75rem; width: 100%; padding: 0.75rem 1rem; font-size: 0.875rem; border-radius: 0.5rem; font-weight: 500; background: transparent; color: #9ca3af; border: none; text-align: left; cursor: pointer;">
                             <svg style="width: 1.125rem; height: 1.125rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
@@ -102,7 +113,7 @@
                         </button>
                         <button onclick="switchTab('history')" id="btn-history" style="display: flex; align-items: center; gap: 0.75rem; width: 100%; padding: 0.75rem 1rem; font-size: 0.875rem; border-radius: 0.5rem; font-weight: 500; background: transparent; color: #9ca3af; border: none; text-align: left; cursor: pointer;">
                             <svg style="width: 1.125rem; height: 1.125rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"></path></svg>
-                            Cloud Database Records
+                            Supabase Cloud Records
                         </button>
                     </nav>
                 </div>
@@ -131,40 +142,108 @@
                     
                     <!-- TAB OVERVIEW -->
                     <div id="tab-overview" class="tab-content" style="display: flex; flex-direction: column; gap: 1.5rem;">
-                        <div>
-                            <h1 style="font-size: 1.875rem; font-weight: bold; color: #f3f4f6; margin: 0 0 0.5rem 0;">Enterprise Sustainability Command Center</h1>
-                            <p style="font-size: 0.9375rem; color: #9ca3af; margin: 0;">Real-time tracking of textile production metrics, AI footprint recommendations, and cloud persistence.</p>
-                        </div>
-
-                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.25rem;">
-                            <div style="background: #030712; border: 1px solid #1f2937; padding: 1.5rem; border-radius: 0.875rem; display: flex; flex-direction: column; gap: 0.5rem;">
-                                <span style="font-size: 0.8125rem; font-weight: 500; color: #9ca3af;">Cloud Database Status</span>
-                                <span style="font-size: 1.25rem; font-weight: bold; color: #34d399;">Active & Synced</span>
-                                <span style="font-size: 0.75rem; color: #6b7280; margin-top: 0.25rem;">Table: esg_batches (PostgreSQL)</span>
+                        <!-- Hero Banner with Picture -->
+                        <div class="hero-banner" style="border: 1px solid #1f2937; border-radius: 1rem; padding: 2.5rem; display: flex; flex-direction: column; gap: 1rem; position: relative; overflow: hidden;">
+                            <div style="max-width: 600px; z-index: 10;">
+                                <span style="background: rgba(52, 211, 153, 0.2); color: #34d399; font-size: 0.75rem; font-weight: bold; padding: 0.25rem 0.75rem; border-radius: 9999px; border: 1px solid rgba(52, 211, 153, 0.3);">Enterprise Dashboard</span>
+                                <h1 style="font-size: 2.25rem; font-weight: bold; color: #f3f4f6; margin: 0.75rem 0 0.5rem 0;">Sustainable Textile Supply Chain & AI Intelligence</h1>
+                                <p style="font-size: 0.9375rem; color: #9ca3af; margin: 0; line-height: 1.5;">Manage raw fabric inventories, upload Excel batch records, track carbon footprints, and run real-time AI compliance audits seamlessly.</p>
                             </div>
-                            <div style="background: #030712; border: 1px solid #1f2937; padding: 1.5rem; border-radius: 0.875rem; display: flex; flex-direction: column; gap: 0.5rem;">
-                                <span style="font-size: 0.8125rem; font-weight: 500; color: #9ca3af;">AI Recommendation Engine</span>
-                                <span style="font-size: 1.25rem; font-weight: bold; color: #60a5fa;">Ready & Optimized</span>
-                                <span style="font-size: 0.75rem; color: #6b7280; margin-top: 0.25rem;">Machine Learning Audit Model</span>
-                            </div>
-                            <div style="background: #030712; border: 1px solid #1f2937; padding: 1.5rem; border-radius: 0.875rem; display: flex; flex-direction: column; gap: 0.5rem;">
-                                <span style="font-size: 0.8125rem; font-weight: 500; color: #9ca3af;">Compliance Benchmark</span>
-                                <span style="font-size: 1.25rem; font-weight: bold; color: #fbbf24;">ISO 14040 Ready</span>
-                                <span style="font-size: 0.75rem; color: #6b7280; margin-top: 0.25rem;">Life Cycle Assessment Standards</span>
+                            <div style="display: flex; gap: 1rem; z-index: 10; margin-top: 0.5rem;">
+                                <button onclick="switchTab('inventory')" style="background: #059669; color: white; padding: 0.625rem 1.25rem; border-radius: 0.5rem; font-size: 0.875rem; font-weight: 600; border: none; cursor: pointer;">Manage Inventory & Excel</button>
+                                <button onclick="switchTab('esg')" style="background: #1f2937; color: #f3f4f6; padding: 0.625rem 1.25rem; border-radius: 0.5rem; font-size: 0.875rem; font-weight: 600; border: 1px solid #374151; cursor: pointer;">Open ESG Calculator</button>
                             </div>
                         </div>
 
-                        <div style="background: #030712; border: 1px solid #1f2937; padding: 1.75rem; border-radius: 0.875rem; margin-top: 1rem;">
-                            <h3 style="font-size: 1.125rem; font-weight: 600; color: #f3f4f6; margin: 0 0 1rem 0;">Quick Enterprise Actions</h3>
-                            <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
-                                <button onclick="switchTab('esg')" style="background: #059669; color: white; padding: 0.625rem 1.25rem; border-radius: 0.5rem; font-size: 0.875rem; font-weight: 500; border: none; cursor: pointer;">Launch ESG Calculator</button>
-                                <button onclick="switchTab('ai')" style="background: #2563eb; color: white; padding: 0.625rem 1.25rem; border-radius: 0.5rem; font-size: 0.875rem; font-weight: 500; border: none; cursor: pointer;">Run AI Sustainability Audit</button>
-                                <button onclick="switchTab('history')" style="background: #1f2937; color: #f3f4f6; padding: 0.625rem 1.25rem; border-radius: 0.5rem; font-size: 0.875rem; font-weight: 500; border: 1px solid #374151; cursor: pointer;">View Saved Cloud Logs</button>
+                        <!-- Visual Grid Cards with Images/Icons -->
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem;">
+                            <div style="background: #030712; border: 1px solid #1f2937; border-radius: 0.875rem; overflow: hidden; display: flex; flex-direction: column;">
+                                <img src="https://images.unsplash.com/photo-1605518216938-7c31b7b14ad0?auto=format&fit=crop&w=600&q=80" alt="Textile production" style="width: 100%; height: 140px; object-fit: cover; opacity: 0.8;">
+                                <div style="padding: 1.25rem; display: flex; flex-direction: column; gap: 0.35rem;">
+                                    <span style="font-size: 0.75rem; font-weight: 600; color: #34d399; text-transform: uppercase;">Cloud Database</span>
+                                    <h3 style="font-size: 1.125rem; font-weight: bold; color: #f3f4f6; margin: 0;">PostgreSQL Synced</h3>
+                                    <p style="font-size: 0.8125rem; color: #9ca3af; margin: 0;">All batches and inventory metrics are safely stored in Supabase cloud tables.</p>
+                                </div>
+                            </div>
+                            <div style="background: #030712; border: 1px solid #1f2937; border-radius: 0.875rem; overflow: hidden; display: flex; flex-direction: column;">
+                                <img src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=600&q=80" alt="AI Analysis" style="width: 100%; height: 140px; object-fit: cover; opacity: 0.8;">
+                                <div style="padding: 1.25rem; display: flex; flex-direction: column; gap: 0.35rem;">
+                                    <span style="font-size: 0.75rem; font-weight: 600; color: #60a5fa; text-transform: uppercase;">Machine Learning</span>
+                                    <h3 style="font-size: 1.125rem; font-weight: bold; color: #f3f4f6; margin: 0;">AI Audit Engine</h3>
+                                    <p style="font-size: 0.8125rem; color: #9ca3af; margin: 0;">Automated recommendations for water saving and carbon emission cuts.</p>
+                                </div>
+                            </div>
+                            <div style="background: #030712; border: 1px solid #1f2937; border-radius: 0.875rem; overflow: hidden; display: flex; flex-direction: column;">
+                                <img src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=600&q=80" alt="Excel Sheets" style="width: 100%; height: 140px; object-fit: cover; opacity: 0.8;">
+                                <div style="padding: 1.25rem; display: flex; flex-direction: column; gap: 0.35rem;">
+                                    <span style="font-size: 0.75rem; font-weight: 600; color: #fbbf24; text-transform: uppercase;">Excel & CSV</span>
+                                    <h3 style="font-size: 1.125rem; font-weight: bold; color: #f3f4f6; margin: 0;">Sheet Import / Export</h3>
+                                    <p style="font-size: 0.8125rem; color: #9ca3af; margin: 0;">Easily upload spreadsheet batches or export complete inventory lists.</p>
+                                </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- TAB ESG -->
+                    <!-- TAB INVENTORY & EXCEL SHEETS -->
+                    <div id="tab-inventory" class="tab-content hidden" style="display: none; flex-direction: column; gap: 1.5rem;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+                            <div>
+                                <h1 style="font-size: 1.875rem; font-weight: bold; color: #f3f4f6; margin: 0 0 0.5rem 0;">Textile Inventory & Excel Management</h1>
+                                <p style="font-size: 0.9375rem; color: #9ca3af; margin: 0;">Upload Excel/CSV sheets (.xlsx, .csv), manage fabric lots, and export updated records instantly.</p>
+                            </div>
+                            <div style="display: flex; gap: 0.75rem;">
+                                <label style="background: #059669; color: white; padding: 0.625rem 1rem; border-radius: 0.5rem; font-size: 0.8125rem; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 0.5rem;">
+                                    <svg style="width: 1rem; height: 1rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
+                                    Upload Excel Sheet
+                                    <input type="file" id="excel-file-input" accept=".xlsx, .xls, .csv" onchange="handleExcelUpload(event)" style="display: none;">
+                                </label>
+                                <button onclick="exportInventoryToExcel()" style="background: #2563eb; color: white; padding: 0.625rem 1rem; border-radius: 0.5rem; font-size: 0.8125rem; font-weight: 600; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 0.5rem;">
+                                    <svg style="width: 1rem; height: 1rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                                    Export Excel
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Add Manual Batch Card -->
+                        <div style="background: #030712; border: 1px solid #1f2937; padding: 1.5rem; border-radius: 0.875rem; display: flex; gap: 1rem; flex-wrap: wrap; align-items: flex-end;">
+                            <div style="flex: 1; min-width: 200px;">
+                                <label style="display: block; font-size: 0.75rem; color: #9ca3af; font-weight: 500; margin-bottom: 0.35rem;">Fabric Batch Name / Type</label>
+                                <input type="text" id="inv-name" placeholder="e.g., Organic Cotton Lot A" style="width: 100%; background: #111827; border: 1px solid #1f2937; border-radius: 0.5rem; padding: 0.625rem 0.875rem; font-size: 0.875rem; color: #f3f4f6; outline: none; box-sizing: border-box;">
+                            </div>
+                            <div style="width: 160px;">
+                                <label style="display: block; font-size: 0.75rem; color: #9ca3af; font-weight: 500; margin-bottom: 0.35rem;">Weight (KG)</label>
+                                <input type="number" id="inv-weight" value="500" style="width: 100%; background: #111827; border: 1px solid #1f2937; border-radius: 0.5rem; padding: 0.625rem 0.875rem; font-size: 0.875rem; color: #f3f4f6; outline: none; box-sizing: border-box;">
+                            </div>
+                            <div style="width: 160px;">
+                                <label style="display: block; font-size: 0.75rem; color: #9ca3af; font-weight: 500; margin-bottom: 0.35rem;">Supplier</label>
+                                <input type="text" id="inv-supplier" placeholder="Textile Mills Ltd" style="width: 100%; background: #111827; border: 1px solid #1f2937; border-radius: 0.5rem; padding: 0.625rem 0.875rem; font-size: 0.875rem; color: #f3f4f6; outline: none; box-sizing: border-box;">
+                            </div>
+                            <button onclick="addInventoryItem()" style="background: #059669; color: white; padding: 0.625rem 1.25rem; border-radius: 0.5rem; font-size: 0.875rem; font-weight: 600; border: none; cursor: pointer; height: 38px;">
+                                Add Batch
+                            </button>
+                        </div>
+
+                        <!-- Inventory Table -->
+                        <div style="background: #030712; border: 1px solid #1f2937; border-radius: 0.875rem; overflow-x: auto;">
+                            <table style="width: 100%; text-align: left; font-size: 0.875rem; border-collapse: collapse; min-width: 650px;">
+                                <thead style="background: #111827; color: #9ca3af; border-bottom: 1px solid #1f2937; font-size: 0.75rem; text-transform: uppercase;">
+                                    <tr>
+                                        <th style="padding: 1rem;">Batch ID</th>
+                                        <th style="padding: 1rem;">Fabric Type / Name</th>
+                                        <th style="padding: 1rem;">Weight (KG)</th>
+                                        <th style="padding: 1rem;">Supplier</th>
+                                        <th style="padding: 1rem;">Est. Carbon (CO2)</th>
+                                        <th style="padding: 1rem; text-align: right;">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="inventory-table-body">
+                                    <!-- Populated via JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- TAB ESG CALCULATOR -->
                     <div id="tab-esg" class="tab-content hidden" style="display: none; flex-direction: column; gap: 1.5rem;">
                         <div>
                             <h1 style="font-size: 1.875rem; font-weight: bold; color: #f3f4f6; margin: 0 0 0.5rem 0;">ESG Fabric Calculator & Cloud Storage</h1>
@@ -212,7 +291,7 @@
                             </div>
                             
                             <div id="ai-output-box" style="background: #111827; border: 1px solid #1f2937; padding: 1.25rem; border-radius: 0.625rem; font-size: 0.875rem; color: #9ca3af; line-height: 1.6;">
-                                Click <strong style="color: #60a5fa;">"Generate AI Audit Report"</strong> to analyze current batch metrics, water footprint reduction potentials, and supply chain efficiency improvements.
+                                Click <strong style="color: #60a5fa;">"Generate AI Audit Report"</strong> to analyze inventory stock, water footprint reduction potentials, and supply chain efficiency improvements.
                             </div>
                         </div>
                     </div>
@@ -221,10 +300,10 @@
                     <div id="tab-history" class="tab-content hidden" style="display: none; flex-direction: column; gap: 1.5rem;">
                         <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
                             <div>
-                                <h1 style="font-size: 1.875rem; font-weight: bold; color: #f3f4f6; margin: 0 0 0.5rem 0;">Cloud Database Records</h1>
+                                <h1 style="font-size: 1.875rem; font-weight: bold; color: #f3f4f6; margin: 0 0 0.5rem 0;">Supabase Cloud Records</h1>
                                 <p style="font-size: 0.9375rem; color: #9ca3af; margin: 0;">Live records fetched directly from your Supabase PostgreSQL database.</p>
                             </div>
-                            <button onclick="loadCloudHistory()" style="background: #1f2937; color: white; font-size: 0.8125rem; padding: 0.625rem 1rem; border-radius: 0.5rem; border: 1px solid #374151; cursor: pointer; font-weight: 500; display: inline-flex; align-items: center; gap: 0.5rem;">
+                            <button onclick="loadCloudHistory()" style="background: #1f2937; color: white; font-size: 0.8125rem; padding: 0.625rem 1rem; border-radius: 0.5rem; border: 1px solid #374151; cursor: pointer; font-weight: 500;">
                                 Refresh Records
                             </button>
                         </div>
@@ -263,11 +342,19 @@
         const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         let authMode = 'login';
 
+        // Local Inventory Data State
+        let inventoryList = [
+            { id: 101, name: 'Organic Cotton Twill', weight: 1200, supplier: 'Al-Karam Fibers', carbon: '3,000.0 kg' },
+            { id: 102, name: 'Recycled Polyester Blend', weight: 850, supplier: 'Global Synthetics', carbon: '2,125.0 kg' },
+            { id: 103, name: 'Raw Denim Indigo', weight: 1500, supplier: 'Indigo Craft PK', carbon: '3,750.0 kg' }
+        ];
+
         window.addEventListener('DOMContentLoaded', async () => {
             const { data: { session } } = await supabaseClient.auth.getSession();
             if (session) {
                 applyUserSession(session.user);
             }
+            renderInventoryTable();
         });
 
         function switchAuthMode(mode) {
@@ -376,7 +463,7 @@
             targetTab.classList.remove('hidden');
             targetTab.style.display = 'flex';
 
-            ['overview', 'esg', 'ai', 'history'].forEach(id => {
+            ['overview', 'inventory', 'esg', 'ai', 'history'].forEach(id => {
                 const btn = document.getElementById('btn-' + id);
                 if (id === tabId) {
                     btn.style.background = 'rgba(52, 211, 153, 0.1)';
@@ -394,6 +481,114 @@
             }
         }
 
+        // ==========================================
+        // INVENTORY & EXCEL SHEET LOGIC
+        // ==========================================
+        function renderInventoryTable() {
+            const tbody = document.getElementById('inventory-table-body');
+            if (!inventoryList.length) {
+                tbody.innerHTML = `<tr><td colspan="6" style="padding: 2rem; text-align: center; color: #6b7280;">No inventory records available. Add manually or upload Excel.</td></tr>`;
+                return;
+            }
+            tbody.innerHTML = '';
+            inventoryList.forEach((item, index) => {
+                tbody.innerHTML += `
+                    <tr style="border-bottom: 1px solid #1f2937;">
+                        <td style="padding: 1rem; font-family: monospace; color: #34d399; font-weight: 600;">#${item.id || (100 + index)}</td>
+                        <td style="padding: 1rem; font-weight: 600; color: #f3f4f6;">${item.name}</td>
+                        <td style="padding: 1rem; color: #60a5fa;">${item.weight} KG</td>
+                        <td style="padding: 1rem; color: #9ca3af;">${item.supplier || 'Internal Mill'}</td>
+                        <td style="padding: 1rem; color: #34d399;">${item.carbon || (item.weight * 2.5).toFixed(1) + ' kg'}</td>
+                        <td style="padding: 1rem; text-align: right;">
+                            <button onclick="deleteInventoryItem(${index})" style="background: rgba(239, 68, 68, 0.1); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.2); padding: 0.35rem 0.75rem; border-radius: 0.375rem; font-size: 0.75rem; cursor: pointer;">Delete</button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        function addInventoryItem() {
+            const name = document.getElementById('inv-name').value.trim();
+            const weight = parseFloat(document.getElementById('inv-weight').value) || 0;
+            const supplier = document.getElementById('inv-supplier').value.trim() || 'Direct Mill';
+
+            if (!name) {
+                alert('Please enter a fabric batch name.');
+                return;
+            }
+
+            inventoryList.unshift({
+                id: Math.floor(100 + Math.random() * 900),
+                name,
+                weight,
+                supplier,
+                carbon: (weight * 2.5).toFixed(1) + ' kg'
+            });
+
+            document.getElementById('inv-name').value = '';
+            document.getElementById('inv-supplier').value = '';
+            renderInventoryTable();
+            alert('Inventory batch added successfully!');
+        }
+
+        function deleteInventoryItem(index) {
+            inventoryList.splice(index, 1);
+            renderInventoryTable();
+        }
+
+        // Excel File Upload using SheetJS
+        function handleExcelUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = new Uint8Array(e.target.result);
+                    const workbook = XLSX.read(data, { type: 'array' });
+                    const firstSheetName = workbook.SheetNames[0];
+                    const worksheet = workbook.Sheets[firstSheetName];
+                    const jsonRows = XLSX.utils.sheet_to_json(worksheet);
+
+                    if (jsonRows && jsonRows.length > 0) {
+                        jsonRows.forEach(row => {
+                            const name = row['Name'] || row['Batch Name'] || row['Fabric'] || 'Imported Fabric Lot';
+                            const weight = parseFloat(row['Weight'] || row['Weight (KG)'] || row['KG'] || 500);
+                            const supplier = row['Supplier'] || row['Vendor'] || 'Excel Import';
+                            
+                            inventoryList.unshift({
+                                id: Math.floor(100 + Math.random() * 900),
+                                name,
+                                weight,
+                                supplier,
+                                carbon: (weight * 2.5).toFixed(1) + ' kg'
+                            });
+                        });
+                        renderInventoryTable();
+                        alert(`Successfully imported ${jsonRows.length} records from Excel sheet!`);
+                    } else {
+                        alert('The uploaded Excel file appears to be empty or formatted incorrectly.');
+                    }
+                } catch (err) {
+                    alert('Error parsing Excel file: ' + err.message);
+                }
+                event.target.value = '';
+            };
+            reader.readAsArrayBuffer(file);
+        }
+
+        // Export Inventory to Excel
+        function exportInventoryToExcel() {
+            if (!inventoryList.length) {
+                alert('No inventory data available to export.');
+                return;
+            }
+            const worksheet = XLSX.utils.json_to_sheet(inventoryList);
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, "EcoTextile_Inventory");
+            XLSX.writeFile(workbook, "EcoTextile_Inventory_Export.xlsx");
+        }
+
         function calculateESG() {
             const weight = parseFloat(document.getElementById('calc-weight').value) || 0;
             document.getElementById('res-carbon').innerText = (weight * 2.5).toFixed(1) + ' kg';
@@ -404,18 +599,17 @@
         function runAIAudit() {
             const weight = parseFloat(document.getElementById('calc-weight').value) || 1000;
             const outputBox = document.getElementById('ai-output-box');
-            outputBox.innerHTML = `<span style="color: #60a5fa;" class="ai-pulse">Analyzing batch parameters with EcoAI model... Please wait...</span>`;
+            outputBox.innerHTML = `<span style="color: #60a5fa;" class="ai-pulse">Analyzing inventory and batch parameters with EcoAI model... Please wait...</span>`;
             
             setTimeout(() => {
                 const carbon = (weight * 2.5).toFixed(1);
-                const water = Math.round(weight * 45).toLocaleString();
                 outputBox.innerHTML = `
                     <p style="color: #34d399; font-weight: 600; margin-bottom: 0.5rem;">✓ AI Sustainability Audit Completed Successfully</p>
-                    <p style="color: #f3f4f6; margin-bottom: 0.5rem;">Based on your current batch size of <strong>${weight} KG</strong>:</p>
+                    <p style="color: #f3f4f6; margin-bottom: 0.5rem;">Based on your current active inventory items and batch size:</p>
                     <ul style="padding-left: 1.25rem; margin: 0.5rem 0; display: flex; flex-direction: column; gap: 0.35rem;">
-                        <li><strong>Carbon Optimization:</strong> Implementing closed-loop dyeing can reduce carbon emissions by up to <strong>18.4%</strong> (${(carbon * 0.18).toFixed(1)} kg savings).</li>
+                        <li><strong>Carbon Optimization:</strong> Switching to closed-loop dyeing saves up to <strong>18.4%</strong> carbon emissions (${(carbon * 0.18).toFixed(1)} kg saved).</li>
                         <li><strong>Water Recycling:</strong> Integrating greywater filtration systems will save approx. <strong>${Math.round(weight * 12).toLocaleString()} Liters</strong> per production cycle.</li>
-                        <li><strong>Energy Efficiency:</strong> Shifting processing hours to off-peak solar windows will lower grid energy dependency by <strong>22.5%</strong>.</li>
+                        <li><strong>Energy Efficiency:</strong> Shifting processing hours to off-peak solar windows lowers grid energy dependency by <strong>22.5%</strong>.</li>
                     </ul>
                 `;
             }, 1000);
