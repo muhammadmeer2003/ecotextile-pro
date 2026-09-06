@@ -56,27 +56,45 @@
 
     <!-- AUTHENTICATION OVERLAY -->
     <div id="auth-container" style="position: fixed; inset: 0; background: var(--bg-main); display: flex; align-items: center; justify-content: center; z-index: 50; padding: 1rem; overflow-y: auto;">
-        <div class="glass-card auth-card-animate" style="border-radius: 1.25rem; width: 100%; max-width: 440px; padding: 2.75rem; box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.8);">
-            <div style="text-align: center; margin-bottom: 2rem;">
+        <div class="glass-card auth-card-animate" style="border-radius: 1.25rem; width: 100%; max-width: 440px; padding: 2.5rem; box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.8);">
+            <div style="text-align: center; margin-bottom: 1.75rem;">
                 <div style="display: inline-flex; padding: 0.875rem; background: var(--accent-glow); border-radius: 1rem; border: 1px solid rgba(16, 185, 129, 0.3); margin-bottom: 1rem;">
                     <svg style="width: 2.25rem; height: 2.25rem; color: var(--accent-green);" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
                 </div>
-                <h2 style="font-size: 1.875rem; font-weight: 800; color: #ffffff; margin: 0 0 0.35rem 0;">EcoTextile EU Suite</h2>
+                <h2 id="auth-title" style="font-size: 1.75rem; font-weight: 800; color: #ffffff; margin: 0 0 0.35rem 0;">EcoTextile EU Suite</h2>
                 <p id="auth-subtitle" style="font-size: 0.8125rem; color: #9ca3af; margin: 0;">Director Portal & AI Textile Intelligence</p>
             </div>
 
-            <form id="auth-form" onsubmit="handleAuthSubmit(event)" style="display: flex; flex-direction: column; gap: 1.25rem;">
-                <div style="display: flex; flex-direction: column; gap: 0.35rem;">
+            <form id="auth-form" onsubmit="handleAuthSubmit(event)" style="display: flex; flex-direction: column; gap: 1.1rem;">
+                <div style="display: flex; flex-direction: column; gap: 0.3rem;">
                     <label style="font-size: 0.8125rem; color: #9ca3af; font-weight: 500;">Work Email Address</label>
-                    <input type="email" id="auth-email" required value="michaelsmith@example.com" style="width: 100%; background: var(--bg-main); border: 1px solid var(--border-color); border-radius: 0.625rem; padding: 0.75rem 0.875rem; font-size: 0.875rem; color: #f3f4f6; outline: none; box-sizing: border-box;">
+                    <input type="email" id="auth-email" required value="michaelsmith@example.com" style="width: 100%; background: var(--bg-main); border: 1px solid var(--border-color); border-radius: 0.625rem; padding: 0.7rem 0.875rem; font-size: 0.875rem; color: #f3f4f6; outline: none; box-sizing: border-box;">
                 </div>
 
-                <div style="display: flex; flex-direction: column; gap: 0.35rem;">
+                <div style="display: flex; flex-direction: column; gap: 0.3rem;">
                     <label style="font-size: 0.8125rem; color: #9ca3af; font-weight: 500;">Password</label>
-                    <input type="password" id="auth-password" required value="password123" style="width: 100%; background: var(--bg-main); border: 1px solid var(--border-color); border-radius: 0.625rem; padding: 0.75rem 0.875rem; font-size: 0.875rem; color: #f3f4f6; outline: none; box-sizing: border-box;">
+                    <input type="password" id="auth-password" required value="password123" style="width: 100%; background: var(--bg-main); border: 1px solid var(--border-color); border-radius: 0.625rem; padding: 0.7rem 0.875rem; font-size: 0.875rem; color: #f3f4f6; outline: none; box-sizing: border-box;">
                 </div>
 
-                <button type="submit" id="auth-submit-btn" style="width: 100%; background: #059669; color: white; padding: 0.75rem; border-radius: 0.625rem; font-size: 0.9375rem; font-weight: 600; border: none; cursor: pointer; margin-top: 0.5rem; box-shadow: 0 4px 12px rgba(5, 150, 105, 0.3);">
+                <!-- Forgot Password & Create Account Links -->
+                <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem;">
+                    <a href="#" onclick="handleForgotPassword(event)" style="color: #60a5fa; text-decoration: none;">Forgot password?</a>
+                    <a href="#" onclick="toggleAuthMode(event)" id="auth-toggle-link" style="color: var(--accent-green); text-decoration: none; font-weight: 500;">Create new account</a>
+                </div>
+
+                <!-- I'm not a robot reCAPTCHA Simulation -->
+                <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid var(--border-color); border-radius: 0.625rem; padding: 0.75rem 1rem; display: flex; align-items: center; justify-content: space-between;">
+                    <label style="display: flex; align-items: center; gap: 0.75rem; cursor: pointer; font-size: 0.825rem; color: #d1d5db;">
+                        <input type="checkbox" id="robot-check" required style="width: 1.1rem; height: 1.1rem; accent-color: #10b981; cursor: pointer;">
+                        I'm not a robot
+                    </label>
+                    <div style="display: flex; flex-direction: column; align-items: center; opacity: 0.8;">
+                        <svg style="width: 1.25rem; height: 1.25rem; color: #10b981;" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z"/></svg>
+                        <span style="font-size: 0.55rem; color: #9ca3af; margin-top: 1px;">reCAPTCHA</span>
+                    </div>
+                </div>
+
+                <button type="submit" id="auth-submit-btn" style="width: 100%; background: #059669; color: white; padding: 0.75rem; border-radius: 0.625rem; font-size: 0.9375rem; font-weight: 600; border: none; cursor: pointer; margin-top: 0.25rem; box-shadow: 0 4px 12px rgba(5, 150, 105, 0.3);">
                     Sign In
                 </button>
             </form>
@@ -290,7 +308,7 @@
                         </div>
                     </div>
 
-                    <!-- 7. PRODUCTION WIP STAGES (NEW) -->
+                    <!-- 7. PRODUCTION WIP STAGES -->
                     <div id="tab-wip" class="tab-content hidden" style="display: none; flex-direction: column; gap: 1.5rem;">
                         <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
                             <h1 style="font-size: 1.875rem; font-weight: bold; color: #f3f4f6; margin: 0;">Production & WIP Stages</h1>
@@ -330,7 +348,7 @@
                         </div>
                     </div>
 
-                    <!-- 8. QUALITY CONTROL & INSPECTION (NEW) -->
+                    <!-- 8. QUALITY CONTROL & INSPECTION -->
                     <div id="tab-qc" class="tab-content hidden" style="display: none; flex-direction: column; gap: 1.5rem;">
                         <h1 style="font-size: 1.875rem; font-weight: bold; color: #f3f4f6; margin: 0;">Quality Control & Inspection (QC)</h1>
                         <div class="glass-card" style="padding: 1.5rem; border-radius: 0.875rem; display: flex; flex-direction: column; gap: 1rem;">
@@ -368,7 +386,7 @@
                         </div>
                     </div>
 
-                    <!-- 9. BILL OF MATERIALS & COSTING SHEET (NEW) -->
+                    <!-- 9. BILL OF MATERIALS & COSTING SHEET -->
                     <div id="tab-bom" class="tab-content hidden" style="display: none; flex-direction: column; gap: 1.5rem;">
                         <h1 style="font-size: 1.875rem; font-weight: bold; color: #f3f4f6; margin: 0;">Bill of Materials (BOM) & Costing Sheet</h1>
                         <div class="glass-card" style="padding: 2rem; border-radius: 0.875rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.5rem;">
@@ -393,7 +411,7 @@
                         </div>
                     </div>
 
-                    <!-- 10. WAREHOUSE LOCATION MANAGEMENT (NEW) -->
+                    <!-- 10. WAREHOUSE LOCATION MANAGEMENT -->
                     <div id="tab-warehouse" class="tab-content hidden" style="display: none; flex-direction: column; gap: 1.5rem;">
                         <h1 style="font-size: 1.875rem; font-weight: bold; color: #f3f4f6; margin: 0;">Warehouse & Bin Location Management</h1>
                         <div class="glass-card" style="border-radius: 0.875rem; overflow-x: auto;">
@@ -424,7 +442,7 @@
                         </div>
                     </div>
 
-                    <!-- 11. BUYERS ORDER & DISPATCH (NEW) -->
+                    <!-- 11. BUYERS ORDER & DISPATCH -->
                     <div id="tab-orders" class="tab-content hidden" style="display: none; flex-direction: column; gap: 1.5rem;">
                         <h1 style="font-size: 1.875rem; font-weight: bold; color: #f3f4f6; margin: 0;">Buyer Orders & Shipping Dispatch</h1>
                         <div class="glass-card" style="border-radius: 0.875rem; overflow-x: auto;">
@@ -441,7 +459,7 @@
                                 <tbody>
                                     <tr style="border-bottom: 1px solid var(--border-color);">
                                         <td style="padding: 1rem; color: white; font-weight: 600;">EU-PO-8821</td>
-        <td style="padding: 1rem; color: #60a5fa;">Berliner Textiles GmbH (Germany)</td>
+                                        <td style="padding: 1rem; color: #60a5fa;">Berliner Textiles GmbH (Germany)</td>
                                         <td style="padding: 1rem; color: #9ca3af;">Berlin Hub</td>
                                         <td style="padding: 1rem; color: #34d399;">2026-03-15</td>
                                         <td style="padding: 1rem;"><span style="background: rgba(16,185,129,0.2); color: #34d399; padding: 0.2rem 0.6rem; border-radius: 9999px; font-size: 0.75rem;">Shipped</span></td>
@@ -479,6 +497,7 @@
         const SUPABASE_ANON_KEY = 'sb_publishable_vVBcYHSUcdNGeuMxyhEnrQ_W7bBnGbh';
         const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         let overviewChartInstance = null;
+        let isSignUpMode = false;
 
         let inventoryList = [
             { id: 101, name: 'Organic Cotton Twill', weight: 1200, supplier: 'Izmir Farms (Turkey)', carbon: '1,500.0 kg' },
@@ -502,19 +521,64 @@
             setTimeout(() => toast.remove(), 3000);
         }
 
+        function toggleAuthMode(event) {
+            event.preventDefault();
+            isSignUpMode = !isSignUpMode;
+            const title = document.getElementById('auth-title');
+            const subtitle = document.getElementById('auth-subtitle');
+            const submitBtn = document.getElementById('auth-submit-btn');
+            const toggleLink = document.getElementById('auth-toggle-link');
+
+            if (isSignUpMode) {
+                title.innerText = 'Create Account';
+                subtitle.innerText = 'Join EcoTextile Enterprise Suite';
+                submitBtn.innerText = 'Sign Up';
+                toggleLink.innerText = 'Already have an account? Sign In';
+                showToast('Switched to Account Registration mode.');
+            } else {
+                title.innerText = 'EcoTextile EU Suite';
+                subtitle.innerText = 'Director Portal & AI Textile Intelligence';
+                submitBtn.innerText = 'Sign In';
+                toggleLink.innerText = 'Create new account';
+                showToast('Switched to Sign In mode.');
+            }
+        }
+
+        function handleForgotPassword(event) {
+            event.preventDefault();
+            const email = document.getElementById('auth-email').value;
+            if (!email) {
+                showToast('Please enter your work email first.', 'error');
+                return;
+            }
+            showToast(`Password reset link sent successfully to ${email}!`);
+        }
+
         function handleAuthSubmit(event) {
             event.preventDefault();
+            const robotChecked = document.getElementById('robot-check').checked;
+            if (!robotChecked) {
+                showToast('Please verify that you are not a robot.', 'error');
+                return;
+            }
+
             document.getElementById('auth-container').style.display = 'none';
             const mainApp = document.getElementById('main-app-container');
             mainApp.classList.remove('hidden');
             mainApp.style.display = 'block';
-            showToast('Signed in successfully as Director Muhammad Meer!');
+
+            if (isSignUpMode) {
+                showToast('New account created and signed in as Director Muhammad Meer!');
+            } else {
+                showToast('Signed in successfully as Director Muhammad Meer!');
+            }
             setTimeout(initOverviewChart, 150);
         }
 
         function handleLogout() {
             document.getElementById('main-app-container').style.display = 'none';
             document.getElementById('auth-container').style.display = 'flex';
+            document.getElementById('robot-check').checked = false;
             showToast('Signed out.', 'error');
         }
 
