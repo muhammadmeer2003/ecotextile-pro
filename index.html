@@ -4,15 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EcoTextile EU - Director Portal</title>
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Supabase JS SDK CDN -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body class="bg-gray-950 text-white font-sans antialiased m-0 p-0 overflow-x-hidden">
 
+    <!-- Mobile Backdrop Overlay -->
     <div id="backdrop" onclick="toggleMobileMenu()" class="fixed inset-0 bg-black/70 z-40 hidden md:hidden transition-opacity"></div>
 
     <div class="min-h-screen flex flex-col md:flex-row relative">
       
+      <!-- Mobile Top Header Bar -->
       <div class="md:hidden bg-gray-900 border-b border-gray-800 p-4 flex items-center justify-between sticky top-0 z-30 shadow-md">
         <div>
           <h1 class="text-base font-bold text-emerald-400">EcoTextile EU</h1>
@@ -27,6 +31,7 @@
         </button>
       </div>
 
+      <!-- Sidebar Navigation -->
       <aside id="sidebar" class="fixed top-0 bottom-0 left-0 z-50 w-72 bg-gray-900 border-r border-gray-800 p-4 flex flex-col transition-transform duration-300 ease-in-out -translate-x-full md:translate-x-0 md:static md:inset-auto shadow-2xl md:shadow-none">
         
         <div class="hidden md:block mb-6">
@@ -43,13 +48,15 @@
         </div>
 
         <nav class="space-y-1.5 flex-1 overflow-y-auto pr-1" id="nav-list">
-          </nav>
+          <!-- Populated by JS -->
+        </nav>
 
         <div class="pt-4 mt-2 border-t border-gray-800 text-[11px] text-gray-500 text-center">
           EU Green Deal & ESPR Compliant
         </div>
       </aside>
 
+      <!-- Main Content Area -->
       <main class="flex-1 p-4 md:p-8 overflow-y-auto bg-gray-950 w-full">
         <div class="max-w-6xl mx-auto">
           
@@ -74,7 +81,8 @@
             <p id="module-desc" class="text-gray-400 text-sm mb-6">Overview of KPIs, cloud database records, and live inputs.</p>
 
             <div id="module-content">
-              </div>
+              <!-- Dynamic Content -->
+            </div>
           </div>
 
         </div>
@@ -82,12 +90,20 @@
 
     </div>
 
+    <!-- JavaScript Application Logic -->
     <script>
-      // SUPABASE CONFIGURATION (Using Publishable Key safely)
-      const SUPABASE_URL = 'YOUR_SUPABASE_PROJECT_URL'; // Yahan apni project ki URL dalein (jaise https://xyz.supabase.co)
+      // SUPABASE CONFIGURATION (Configured with Director Muhammad Meer's project)
+      const SUPABASE_URL = 'https://muwsgfyanqctkvkogyay.supabase.co';
       const SUPABASE_KEY = 'sb_publishable_vVBcYHSUcdNGeuMxyhEnrQ_W7bBnGbh';
       
-      const _supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+      let _supabase = null;
+      try {
+        if (SUPABASE_URL) {
+          _supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        }
+      } catch (e) {
+        console.log('Supabase init note:', e);
+      }
 
       let appState = {
         inventory: [],
@@ -113,7 +129,13 @@
       let activeTab = 0;
       let mobileMenuOpen = false;
 
+      // Render Navigation immediately on startup
+      renderNav();
+      switchTab(0);
+
+      // Fetch Cloud Data asynchronously in background
       async function fetchCloudData() {
+        if (!_supabase) return;
         try {
           const { data: invData } = await _supabase.from('inventory').select('*');
           if (invData) appState.inventory = invData;
@@ -123,11 +145,11 @@
 
           const { data: tktData } = await _supabase.from('support_tickets').select('*');
           if (tktData) appState.supportTickets = tktData;
+          
+          switchTab(activeTab);
         } catch (err) {
           console.log('Cloud sync waiting for table setup:', err);
         }
-        renderNav();
-        switchTab(activeTab);
       }
 
       function renderNav() {
@@ -148,7 +170,7 @@
 
       function switchTab(id) {
         activeTab = id;
-        if (window.innerWidth < 768) toggleMobileMenu();
+        if (window.innerWidth < 768 && mobileMenuOpen) toggleMobileMenu();
 
         const mod = modules[id];
         document.getElementById('module-title').innerText = mod.title;
@@ -174,7 +196,7 @@
             </div>
             <div class="p-5 bg-gray-950/60 rounded-lg border border-gray-800">
               <h4 class="text-sm font-semibold text-emerald-300 mb-2">Supabase Cloud Sync Status</h4>
-              <p class="text-xs text-gray-400">Connected successfully. All entries are automatically stored in the cloud database under Director Muhammad Meer.</p>
+              <p class="text-xs text-gray-400">Connected successfully under Director Muhammad Meer.</p>
             </div>`;
         } 
         else if (id === 1) {
@@ -285,6 +307,110 @@
         else if (id === 11) {
           let ticketsHtml = appState.supportTickets.length > 0 ? appState.supportTickets.map(t => `
             <div class="p-3 bg-gray-950 rounded border border-gray-800 mb-2">
-              <span class="text-[10px] text-emerald-400 font-mono">${t.ticket_id \vert{}\vert{} t.id} • User: ${t.user_name || t.user}</span>
+              <span class="text-[10px] text-emerald-400 font-mono">${t.ticket_id || t.id} • User: ${t.user_name || t.user}</span>
               <p class="text-xs text-white mt-1">"${t.query}"</p>
-              <span class="text-[10px] text-emerald
+              <span class="text-[10px] text-emerald-500 mt-1 block">Status: ${t.status}</span>
+            </div>
+          `).join('') : `<p class="text-xs text-gray-500 text-center py-4">No cloud support tickets found.</p>`;
+
+          contentDiv.innerHTML = `
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div class="p-4 bg-gray-950 rounded-lg border border-gray-800">
+                <h4 class="text-sm font-semibold text-emerald-300 mb-3">💬 Customer Support & Query Desk</h4>
+                <div class="space-y-3 mb-3">
+                  <input type="text" id="supp-user" placeholder="Your Name / Consumer ID" class="w-full bg-gray-900 border border-gray-800 p-2 rounded text-xs text-white focus:outline-none focus:border-emerald-500">
+                  <textarea id="supp-query" placeholder="Type your query or support request here..." rows="3" class="w-full bg-gray-900 border border-gray-800 p-2 rounded text-xs text-white focus:outline-none focus:border-emerald-500"></textarea>
+                </div>
+                <button onclick="submitSupportTicket()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold rounded transition-colors">
+                  Submit to Cloud
+                </button>
+              </div>
+              <div class="p-4 bg-gray-950 rounded-lg border border-gray-800">
+                <h4 class="text-sm font-semibold text-emerald-300 mb-3">Active Cloud Tickets</h4>
+                <div id="support-tickets-list" class="max-h-60 overflow-y-auto">${ticketsHtml}</div>
+              </div>
+            </div>`;
+        }
+        else {
+          contentDiv.innerHTML = `
+            <div class="p-8 text-center border border-dashed border-gray-800 rounded-lg bg-gray-950/30">
+              <p class="text-gray-400 text-sm">
+                Active cloud workspace for <span class="text-emerald-300 font-medium">${mod.title}</span> under Director <span class="text-white font-semibold">Muhammad Meer</span>.
+              </p>
+            </div>`;
+        }
+        renderNav();
+      }
+
+      async function addInventoryItem() {
+        if (!_supabase) { alert('Supabase client error!'); return; }
+        const id = document.getElementById('inv-id').value;
+        const name = document.getElementById('inv-name').value;
+        const qty = document.getElementById('inv-qty').value;
+        if (!id || !name || !qty) { alert('Please fill all fields'); return; }
+
+        const { error } = await _supabase.from('inventory').insert([{ material_id: id, name: name, quantity: qty, status: "Cloud Verified" }]);
+        if (error) { alert('Error saving to cloud: ' + error.message); } else { fetchCloudData(); alert('Saved successfully!'); }
+      }
+
+      async function addDppRecord() {
+        if (!_supabase) { alert('Supabase client error!'); return; }
+        const hash = document.getElementById('dpp-hash').value;
+        const batchName = document.getElementById('dpp-name').value;
+        if (!hash || !batchName) { alert('Please fill all fields'); return; }
+
+        const { error } = await _supabase.from('dpp_records').insert([{ hash: hash, batch_name: batchName, status: "Active & Traceable" }]);
+        if (error) { alert('Error saving DPP: ' + error.message); } else { fetchCloudData(); alert('Passport saved successfully!'); }
+      }
+
+      async function submitSupportTicket() {
+        if (!_supabase) { alert('Supabase client error!'); return; }
+        const user = document.getElementById('supp-user').value;
+        const query = document.getElementById('supp-query').value;
+        if (!user || !query) { alert('Please fill all support fields'); return; }
+        const ticketId = 'TKT-' + Math.floor(100 + Math.random() * 900);
+
+        const { error } = await _supabase.from('support_tickets').insert([{ ticket_id: ticketId, user_name: user, query: query, status: "Pending Response" }]);
+        if (error) { alert('Error submitting ticket: ' + error.message); } else { fetchCloudData(); alert('Ticket submitted successfully!'); }
+      }
+
+      function calculateCarbon() {
+        const energy = parseFloat(document.getElementById('calc-energy').value) || 0;
+        const weight = parseFloat(document.getElementById('calc-weight').value) || 0;
+        const totalEmission = (energy * 0.233) + (weight * 1.5);
+        const resDiv = document.getElementById('calc-result');
+        resDiv.classList.remove('hidden');
+        resDiv.innerHTML = `<strong>Calculation Result:</strong> Total Estimated Carbon Footprint is <span class="text-white font-bold">${totalEmission.toFixed(2)} kg CO2e</span>.`;
+      }
+
+      function calculateBOMCost() {
+        const cost = parseFloat(document.getElementById('cost-fabric').value) || 0;
+        const qty = parseFloat(document.getElementById('cost-qty').value) || 0;
+        const overhead = parseFloat(document.getElementById('cost-overhead').value) || 0;
+        const total = (cost * qty) + overhead;
+        const resDiv = document.getElementById('bom-result');
+        resDiv.classList.remove('hidden');
+        resDiv.innerHTML = `<strong>Financial Calculation:</strong> Total BOM Cost = €<span class="text-white font-bold">${total.toLocaleString()}</span>`;
+      }
+
+      function toggleMobileMenu() {
+        mobileMenuOpen = !mobileMenuOpen;
+        const sidebar = document.getElementById('sidebar');
+        const backdrop = document.getElementById('backdrop');
+        const menuBtn = document.getElementById('menu-btn');
+        if (mobileMenuOpen) {
+          sidebar.classList.remove('-translate-x-full');
+          backdrop.classList.remove('hidden');
+          menuBtn.innerText = '✕ Close';
+        } else {
+          sidebar.classList.add('-translate-x-full');
+          backdrop.classList.add('hidden');
+          menuBtn.innerText = '☰ Menu';
+        }
+      }
+
+      // Trigger cloud data fetch in background
+      fetchCloudData();
+    </script>
+</body>
+</html>
