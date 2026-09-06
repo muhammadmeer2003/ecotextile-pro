@@ -3,192 +3,350 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EcoTextile ESG Portal</title>
+    <title>EcoTextile Pro - Cloud Portal</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Supabase JS SDK v2 -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        body { background-color: #030712; color: #f3f4f6; font-family: system-ui, -apple-system, sans-serif; margin: 0; display: flex; height: 100vh; overflow: hidden; }
+        .hidden { display: none !important; }
+    </style>
 </head>
-<body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col items-center justify-center p-4">
+<body>
 
-    <!-- Main Container -->
-    <div class="w-full max-w-md bg-slate-800 rounded-xl shadow-2xl border border-slate-700 p-8">
-        
-        <!-- Header / Logo -->
-        <div class="text-center mb-6">
-            <h1 class="text-3xl font-extrabold text-emerald-400 tracking-tight">EcoTextile ESG</h1>
-            <p class="text-sm text-slate-400 mt-1">Enterprise Portal for Textile Reporting</p>
-        </div>
-
-        <!-- AUTH SECTION (Login & Register) -->
-        <div id="auth-container">
-            
-            <!-- Login Form -->
-            <div id="login-view">
-                <form id="loginForm" class="space-y-4">
-                    <div>
-                        <label class="block text-xs font-semibold uppercase text-slate-300 mb-1">Email Address</label>
-                        <input type="email" id="login-email" class="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 focus:outline-none focus:border-emerald-500 text-white text-sm" placeholder="name@company.com" required>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold uppercase text-slate-300 mb-1">Password</label>
-                        <input type="password" id="login-password" class="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 focus:outline-none focus:border-emerald-500 text-white text-sm" placeholder="••••••••" required>
-                    </div>
-                    <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-lg transition duration-200 shadow-lg">Sign In</button>
-                </form>
-                <p class="mt-6 text-center text-sm text-slate-400">
-                    Don't have an account? <button onclick="switchView('register')" class="text-emerald-400 font-semibold hover:underline">Create account</button>
-                </p>
+    <!-- AUTHENTICATION OVERLAY -->
+    <div id="auth-container" style="position: fixed; inset: 0; background: #030712; display: flex; align-items: center; justify-content: center; z-index: 50; padding: 1rem;">
+        <div style="background: #111827; border: 1px solid #1f2937; border-radius: 1rem; width: 100%; max-width: 400px; padding: 2rem; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);">
+            <div style="text-align: center; margin-bottom: 1.5rem;">
+                <h2 style="font-size: 1.5rem; font-weight: bold; color: #34d399; margin: 0 0 0.5rem 0;">EcoTextile Pro</h2>
+                <p id="auth-subtitle" style="font-size: 0.75rem; color: #9ca3af; margin: 0;">Enterprise Cloud Gateway &bull; Supabase Secured</p>
             </div>
 
-            <!-- Register Form (Hidden by default) -->
-            <div id="register-view" class="hidden">
-                <form id="registerForm" class="space-y-4">
-                    <div>
-                        <label class="block text-xs font-semibold uppercase text-slate-300 mb-1">Email Address</label>
-                        <input type="email" id="register-email" class="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 focus:outline-none focus:border-emerald-500 text-white text-sm" placeholder="name@company.com" required>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold uppercase text-slate-300 mb-1">Password</label>
-                        <input type="password" id="register-password" class="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 focus:outline-none focus:border-emerald-500 text-white text-sm" placeholder="••••••••" required>
-                    </div>
-                    <button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-lg transition duration-200 shadow-lg">Create Account</button>
-                </form>
-                <p class="mt-6 text-center text-sm text-slate-400">
-                    Already have an account? <button onclick="switchView('login')" class="text-blue-400 font-semibold hover:underline">Sign In</button>
-                </p>
+            <div id="auth-tabs" style="display: flex; background: #030712; padding: 0.25rem; border-radius: 0.75rem; border: 1px solid #1f2937; margin-bottom: 1.5rem;">
+                <button type="button" onclick="switchAuthMode('login')" id="auth-tab-login" style="flex: 1; padding: 0.5rem; font-size: 0.75rem; font-weight: 600; border-radius: 0.5rem; background: rgba(52, 211, 153, 0.1); color: #34d399; border: 1px solid rgba(52, 211, 153, 0.2); cursor: pointer;">Login</button>
+                <button type="button" onclick="switchAuthMode('register')" id="auth-tab-register" style="flex: 1; padding: 0.5rem; font-size: 0.75rem; font-weight: 600; border-radius: 0.5rem; background: transparent; color: #9ca3af; border: none; cursor: pointer;">Create Account</button>
             </div>
 
-        </div>
+            <form id="auth-form" onsubmit="handleAuthSubmit(event)" style="display: flex; flex-direction: column; gap: 1rem;">
+                <div id="name-field-wrapper" class="hidden" style="flex-direction: column; gap: 0.25rem;">
+                    <label style="font-size: 0.75rem; color: #9ca3af;">Full Name</label>
+                    <input type="text" id="reg-name" placeholder="Muhammad Meer" style="width: 100%; background: #030712; border: 1px solid #1f2937; border-radius: 0.5rem; padding: 0.5rem 0.75rem; font-size: 0.875rem; color: #f3f4f6; outline: none;">
+                </div>
 
-        <!-- DASHBOARD SECTION (Hidden until logged in) -->
-        <div id="dashboard-container" class="hidden">
-            <div class="flex justify-between items-center mb-6 pb-4 border-b border-slate-700">
-                <div>
-                    <h2 class="text-lg font-bold text-emerald-400">ESG Batch Portal</h2>
-                    <p id="user-email-display" class="text-xs text-slate-400 truncate max-w-[200px]"></p>
+                <div style="display: flex; flex-direction: column; gap: 0.25rem;">
+                    <label style="font-size: 0.75rem; color: #9ca3af;">Email Address</label>
+                    <input type="email" id="auth-email" required placeholder="name@company.com" style="width: 100%; background: #030712; border: 1px solid #1f2937; border-radius: 0.5rem; padding: 0.5rem 0.75rem; font-size: 0.875rem; color: #f3f4f6; outline: none;">
                 </div>
-                <button id="logoutBtn" class="bg-rose-600 hover:bg-rose-500 text-white px-3 py-1.5 rounded-lg text-xs font-bold transition">Logout</button>
-            </div>
 
-            <!-- ESG Form Data Entry -->
-            <form id="esgForm" class="space-y-4">
-                <div>
-                    <label class="block text-xs font-semibold uppercase text-slate-300 mb-1">Weight (numeric)</label>
-                    <input type="number" step="any" id="batch-weight" class="w-full px-4 py-2.5 rounded-lg bg-slate-900 border border-slate-700 focus:outline-none focus:border-emerald-500 text-white text-sm" placeholder="e.g. 1500" required>
+                <div style="display: flex; flex-direction: column; gap: 0.25rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <label style="font-size: 0.75rem; color: #9ca3af;">Password</label>
+                        <button type="button" id="forgot-link" onclick="switchAuthMode('forgot')" style="font-size: 0.6875rem; color: #34d399; background: none; border: none; cursor: pointer;">Forgot Password?</button>
+                    </div>
+                    <input type="password" id="auth-password" required placeholder="••••••••" style="width: 100%; background: #030712; border: 1px solid #1f2937; border-radius: 0.5rem; padding: 0.5rem 0.75rem; font-size: 0.875rem; color: #f3f4f6; outline: none;">
                 </div>
-                <div>
-                    <label class="block text-xs font-semibold uppercase text-slate-300 mb-1">Carbon Emissions</label>
-                    <input type="text" id="batch-carbon" class="w-full px-4 py-2.5 rounded-lg bg-slate-900 border border-slate-700 focus:outline-none focus:border-emerald-500 text-white text-sm" placeholder="e.g. 120 kg" required>
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold uppercase text-slate-300 mb-1">Water Usage</label>
-                    <input type="text" id="batch-water" class="w-full px-4 py-2.5 rounded-lg bg-slate-900 border border-slate-700 focus:outline-none focus:border-emerald-500 text-white text-sm" placeholder="e.g. 500 L" required>
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold uppercase text-slate-300 mb-1">Energy Consumption</label>
-                    <input type="text" id="batch-energy" class="w-full px-4 py-2.5 rounded-lg bg-slate-900 border border-slate-700 focus:outline-none focus:border-emerald-500 text-white text-sm" placeholder="e.g. 300 kWh" required>
-                </div>
-                <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-lg transition duration-200 shadow-lg mt-2">Save ESG Batch</button>
+
+                <div id="auth-error" class="hidden" style="font-size: 0.75rem; color: #fb7185; background: rgba(159, 18, 57, 0.2); padding: 0.5rem; border-radius: 0.5rem; border: 1px solid rgba(225, 29, 72, 0.3);"></div>
+                <div id="auth-success" class="hidden" style="font-size: 0.75rem; color: #34d399; background: rgba(6, 95, 70, 0.2); padding: 0.5rem; border-radius: 0.5rem; border: 1px solid rgba(5, 150, 105, 0.3);"></div>
+
+                <button type="submit" id="auth-submit-btn" style="width: 100%; background: #059669; color: white; padding: 0.625rem; border-radius: 0.5rem; font-size: 0.875rem; font-weight: 500; border: none; cursor: pointer; margin-top: 0.5rem;">
+                    Sign In to Cloud Portal
+                </button>
             </form>
         </div>
-
     </div>
 
-    <!-- JavaScript Application Logic -->
+    <!-- MAIN APP CONTAINER -->
+    <div id="main-app-container" class="hidden" style="width: 100%; height: 100%;">
+        <div style="display: flex; width: 100%; height: 100%;">
+            <!-- SIDEBAR -->
+            <aside style="width: 260px; background: #030712; border-right: 1px solid #1f2937; display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                    <div style="padding: 1.5rem; border-bottom: 1px solid #1f2937;">
+                        <span style="font-size: 1.125rem; font-weight: bold; color: #34d399; display: block;">EcoTextile Pro</span>
+                        <span style="font-size: 0.75rem; color: #6b7280; margin-top: 0.25rem; display: block;">Cloud Enterprise Portal</span>
+                    </div>
+                    <nav style="padding: 1rem; display: flex; flex-direction: column; gap: 0.35rem;">
+                        <button onclick="switchTab('overview')" id="btn-overview" style="display: flex; align-items: center; gap: 0.75rem; width: 100%; padding: 0.625rem 1rem; font-size: 0.875rem; border-radius: 0.5rem; font-weight: 500; background: rgba(52, 211, 153, 0.1); color: #34d399; border: 1px solid rgba(52, 211, 153, 0.2); text-align: left; cursor: pointer;">
+                            Overview
+                        </button>
+                        <button onclick="switchTab('esg')" id="btn-esg" style="display: flex; align-items: center; gap: 0.75rem; width: 100%; padding: 0.625rem 1rem; font-size: 0.875rem; border-radius: 0.5rem; font-weight: 500; background: transparent; color: #9ca3af; border: none; text-align: left; cursor: pointer;">
+                            ESG Calculator & Save
+                        </button>
+                        <button onclick="switchTab('history')" id="btn-history" style="display: flex; align-items: center; gap: 0.75rem; width: 100%; padding: 0.625rem 1rem; font-size: 0.875rem; border-radius: 0.5rem; font-weight: 500; background: transparent; color: #9ca3af; border: none; text-align: left; cursor: pointer;">
+                            Cloud Database Records
+                        </button>
+                    </nav>
+                </div>
+                <div style="padding: 1rem; border-top: 1px solid #1f2937;">
+                    <button onclick="handleLogout()" style="display: flex; align-items: center; gap: 0.75rem; width: 100%; padding: 0.5rem 1rem; font-size: 0.875rem; color: #f87171; background: transparent; border: none; border-radius: 0.5rem; cursor: pointer;">
+                        Logout
+                    </button>
+                </div>
+            </aside>
+
+            <!-- MAIN CONTENT AREA -->
+            <main style="flex: 1; display: flex; flex-direction: column; overflow: hidden; background: #111827;">
+                <header style="height: 4rem; background: #030712; border-bottom: 1px solid #1f2937; display: flex; align-items: center; justify-content: space-between; padding: 0 1.5rem;">
+                    <span style="font-size: 0.875rem; font-weight: 600; color: #34d399;">Supabase Cloud Connected</span>
+                    <div style="display: flex; align-items: center; gap: 0.75rem;">
+                        <div id="user-avatar-initial" style="width: 2rem; height: 2rem; border-radius: 9999px; background: #059669; display: flex; align-items: center; font-weight: bold; font-size: 0.875rem; justify-content: center; color: white;">M</div>
+                        <span id="user-display-name" style="font-size: 0.75rem; font-weight: 500;">User</span>
+                    </div>
+                </header>
+
+                <div style="flex: 1; overflow-y: auto; padding: 2rem; display: flex; flex-direction: column; gap: 1.5rem;">
+                    
+                    <!-- TAB OVERVIEW -->
+                    <div id="tab-overview" class="tab-content" style="display: flex; flex-direction: column; gap: 1rem;">
+                        <h1 style="font-size: 1.5rem; font-weight: bold; margin: 0;">Cloud Command Center</h1>
+                        <p style="font-size: 0.875rem; color: #9ca3af; margin: 0;">Welcome! Your application is fully synced with Supabase cloud database.</p>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin-top: 1rem;">
+                            <div style="background: #030712; border: 1px solid #1f2937; padding: 1.25rem; border-radius: 0.75rem;">
+                                <h3 style="font-size: 0.875rem; color: #9ca3af; margin: 0 0 0.5rem 0;">Database Status</h3>
+                                <p style="font-size: 1.125rem; font-weight: bold; color: #34d399; margin: 0;">Online & Synced</p>
+                            </div>
+                            <div style="background: #030712; border: 1px solid #1f2937; padding: 1.25rem; border-radius: 0.75rem;">
+                                <h3 style="font-size: 0.875rem; color: #9ca3af; margin: 0 0 0.5rem 0;">Active Session</h3>
+                                <p id="session-status-text" style="font-size: 1.125rem; font-weight: bold; color: #60a5fa; margin: 0;">Authenticated</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TAB ESG -->
+                    <div id="tab-esg" class="tab-content hidden" style="display: none; flex-direction: column; gap: 1rem;">
+                        <h1 style="font-size: 1.5rem; font-weight: bold; margin: 0;">ESG Calculator & Cloud Storage</h1>
+                        <div style="background: #030712; border: 1px solid #1f2937; padding: 1.5rem; border-radius: 0.75rem; display: flex; flex-direction: column; gap: 1rem; max-width: 500px;">
+                            <div>
+                                <label style="display: block; font-size: 0.75rem; color: #9ca3af; margin-bottom: 0.25rem;">Fabric Weight (KG)</label>
+                                <input type="number" id="calc-weight" value="1000" style="width: 100%; background: #111827; border: 1px solid #1f2937; border-radius: 0.5rem; padding: 0.5rem 0.75rem; font-size: 0.875rem; color: #f3f4f6; outline: none;" oninput="calculateESG()">
+                            </div>
+                            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; font-size: 0.75rem;">
+                                <div style="background: #111827; padding: 0.75rem; border-radius: 0.5rem; border: 1px solid #1f2937;">Carbon: <span id="res-carbon" style="font-weight: bold; color: #34d399;">--</span></div>
+                                <div style="background: #111827; padding: 0.75rem; border-radius: 0.5rem; border: 1px solid #1f2937;">Water: <span id="res-water" style="font-weight: bold; color: #60a5fa;">--</span></div>
+                                <div style="background: #111827; padding: 0.75rem; border-radius: 0.5rem; border: 1px solid #1f2937;">Energy: <span id="res-energy" style="font-weight: bold; color: #fbbf24;">--</span></div>
+                            </div>
+                            <button onclick="saveCloudBatchRecord()" style="width: 100%; background: #059669; color: white; padding: 0.625rem; border-radius: 0.5rem; font-size: 0.875rem; font-weight: 500; border: none; cursor: pointer;">
+                                Save Data to Supabase Cloud
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- TAB HISTORY -->
+                    <div id="tab-history" class="tab-content hidden" style="display: none; flex-direction: column; gap: 1rem;">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <h1 style="font-size: 1.5rem; font-weight: bold; margin: 0;">Fetched Records from Supabase Database</h1>
+                            <button onclick="loadCloudHistory()" style="background: #1f2937; color: white; font-size: 0.75rem; padding: 0.5rem 0.75rem; border-radius: 0.375rem; border: 1px solid #374151; cursor: pointer;">Refresh Data</button>
+                        </div>
+                        <div style="background: #030712; border: 1px solid #1f2937; border-radius: 0.75rem; overflow: hidden;">
+                            <table style="width: 100%; text-align: left; font-size: 0.75rem; border-collapse: collapse;">
+                                <thead style="background: #111827; color: #9ca3af; border-bottom: 1px solid #1f2937;">
+                                    <tr>
+                                        <th style="padding: 0.75rem;">ID</th>
+                                        <th style="padding: 0.75rem;">Weight (KG)</th>
+                                        <th style="padding: 0.75rem;">Carbon</th>
+                                        <th style="padding: 0.75rem;">Water</th>
+                                        <th style="padding: 0.75rem;">Energy</th>
+                                        <th style="padding: 0.75rem;">Timestamp</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="cloud-records-body">
+                                    <tr><td colspan="6" style="padding: 1rem; text-align: center; color: #6b7280;">Click Refresh Data to load items from cloud...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+            </main>
+        </div>
+    </div>
+
     <script>
-        // Supabase Configuration (Yahan apni project ki URL aur Anon Key ensure kar lein)
-        const SUPABASE_URL = 'YOUR_SUPABASE_URL'; 
-        const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        // ==========================================
+        // SUPABASE CONFIGURATION
+        // ==========================================
+        const SUPABASE_URL = 'https://muwsgfyanqctkvkogyay.supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_vVBcYHSUcdNGeuMxyhEnrQ_W7bBnGbh';
+        
+        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        let authMode = 'login';
 
-        const authContainer = document.getElementById('auth-container');
-        const dashboardContainer = document.getElementById('dashboard-container');
-        const loginView = document.getElementById('login-view');
-        const registerView = document.getElementById('register-view');
-
-        // Check active session on load
-        async function checkUserSession() {
-            const { data: { session } } = await supabase.auth.getSession();
+        window.addEventListener('DOMContentLoaded', async () => {
+            const { data: { session } } = await supabaseClient.auth.getSession();
             if (session) {
-                authContainer.classList.add('hidden');
-                dashboardContainer.classList.remove('hidden');
-                document.getElementById('user-email-display').textContent = session.user.email;
-            } else {
-                authContainer.classList.remove('hidden');
-                dashboardContainer.classList.add('hidden');
+                applyUserSession(session.user);
+            }
+        });
+
+        function switchAuthMode(mode) {
+            authMode = mode;
+            const loginTab = document.getElementById('auth-tab-login');
+            const regTab = document.getElementById('auth-tab-register');
+            const tabsContainer = document.getElementById('auth-tabs');
+            const nameWrapper = document.getElementById('name-field-wrapper');
+            const subtitle = document.getElementById('auth-subtitle');
+            const submitBtn = document.getElementById('auth-submit-btn');
+            document.getElementById('auth-error').classList.add('hidden');
+            document.getElementById('auth-success').classList.add('hidden');
+
+            if (mode === 'login') {
+                tabsContainer.style.display = 'flex';
+                loginTab.style.background = 'rgba(52, 211, 153, 0.1)';
+                loginTab.style.color = '#34d399';
+                loginTab.style.border = '1px solid rgba(52, 211, 153, 0.2)';
+                regTab.style.background = 'transparent';
+                regTab.style.color = '#9ca3af';
+                regTab.style.border = 'none';
+                nameWrapper.style.display = 'none';
+                subtitle.innerText = "Enterprise Cloud Gateway \u2022 Supabase Secured";
+                submitBtn.innerText = "Sign In to Cloud Portal";
+            } else if (mode === 'register') {
+                tabsContainer.style.display = 'flex';
+                regTab.style.background = 'rgba(52, 211, 153, 0.1)';
+                regTab.style.color = '#34d399';
+                regTab.style.border = '1px solid rgba(52, 211, 153, 0.2)';
+                loginTab.style.background = 'transparent';
+                loginTab.style.color = '#9ca3af';
+                loginTab.style.border = 'none';
+                nameWrapper.style.display = 'flex';
+                subtitle.innerText = "Create new enterprise profile";
+                submitBtn.innerText = "Register & Enter Cloud Portal";
+            } else if (mode === 'forgot') {
+                tabsContainer.style.display = 'none';
+                nameWrapper.style.display = 'none';
+                subtitle.innerText = "Cloud Password Recovery";
+                submitBtn.innerText = "Send Recovery Email";
             }
         }
-        checkUserSession();
 
-        // Switch between Login and Register views
-        function switchView(view) {
-            if (view === 'register') {
-                loginView.classList.add('hidden');
-                registerView.classList.remove('hidden');
+        async function handleAuthSubmit(event) {
+            event.preventDefault();
+            const email = document.getElementById('auth-email').value.trim();
+            const errorBox = document.getElementById('auth-error');
+            const successBox = document.getElementById('auth-success');
+            errorBox.classList.add('hidden');
+            successBox.classList.add('hidden');
+
+            if (authMode === 'forgot') {
+                const { error } = await supabaseClient.auth.resetPasswordForEmail(email);
+                if (error) { errorBox.innerText = error.message; errorBox.classList.remove('hidden'); }
+                else { successBox.innerText = `Recovery instructions sent to ${email}.`; successBox.classList.remove('hidden'); }
+                return;
+            }
+
+            const password = document.getElementById('auth-password').value.trim();
+
+            if (authMode === 'register') {
+                const name = document.getElementById('reg-name').value.trim() || "User";
+                const { data, error } = await supabaseClient.auth.signUp({ email, password, options: { data: { full_name: name } } });
+                if (error) { errorBox.innerText = error.message; errorBox.classList.remove('hidden'); }
+                else {
+                    successBox.innerText = "Registration successful! Logging in...";
+                    successBox.classList.remove('hidden');
+                    setTimeout(() => applyUserSession(data.user || { email, user_metadata: { full_name: name } }), 1000);
+                }
             } else {
-                registerView.classList.add('hidden');
-                loginView.classList.remove('hidden');
+                const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+                if (error) { errorBox.innerText = error.message; errorBox.classList.remove('hidden'); }
+                else { applyUserSession(data.user); }
             }
         }
 
-        // Login Handler (with preventDefault)
-        document.getElementById('loginForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const email = document.getElementById('login-email').value;
-            const password = document.getElementById('login-password').value;
+        function applyUserSession(user) {
+            const fullName = user.user_metadata?.full_name || user.email.split('@')[0] || "User";
+            document.getElementById('user-display-name').innerText = fullName;
+            document.getElementById('user-avatar-initial').innerText = fullName.charAt(0).toUpperCase();
+            document.getElementById('auth-container').style.display = 'none';
+            document.getElementById('main-app-container').style.display = 'block';
+            calculateESG();
+        }
 
-            const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+        async function handleLogout() {
+            await supabaseClient.auth.signOut();
+            document.getElementById('main-app-container').style.display = 'none';
+            document.getElementById('auth-container').style.display = 'flex';
+            document.getElementById('auth-password').value = '';
+            switchAuthMode('login');
+        }
 
-            if (error) {
-                alert("Login Error: " + error.message);
-            } else {
-                alert("Login Successful!");
-                checkUserSession();
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.style.display = 'none');
+            document.getElementById('tab-' + tabId).style.display = 'flex';
+
+            ['overview', 'esg', 'history'].forEach(id => {
+                const btn = document.getElementById('btn-' + id);
+                if (id === tabId) {
+                    btn.style.background = 'rgba(52, 211, 153, 0.1)';
+                    btn.style.color = '#34d399';
+                    btn.style.border = '1px solid rgba(52, 211, 153, 0.2)';
+                } else {
+                    btn.style.background = 'transparent';
+                    btn.style.color = '#9ca3af';
+                    btn.style.border = 'none';
+                }
+            });
+
+            if (tabId === 'history') {
+                loadCloudHistory();
             }
-        });
+        }
 
-        // Register Handler (with preventDefault)
-        document.getElementById('registerForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const email = document.getElementById('register-email').value;
-            const password = document.getElementById('register-password').value;
+        function calculateESG() {
+            const weight = parseFloat(document.getElementById('calc-weight').value) || 0;
+            document.getElementById('res-carbon').innerText = (weight * 2.5).toFixed(1) + ' kg';
+            document.getElementById('res-water').innerText = Math.round(weight * 45).toLocaleString() + ' L';
+            document.getElementById('res-energy').innerText = (weight * 3.2).toFixed(1) + ' kWh';
+        }
 
-            const { data, error } = await supabase.auth.signUp({ email, password });
+        async function saveCloudBatchRecord() {
+            const weight = document.getElementById('calc-weight').value;
+            const carbon = document.getElementById('res-carbon').innerText;
+            const water = document.getElementById('res-water').innerText;
+            const energy = document.getElementById('res-energy').innerText;
 
-            if (error) {
-                alert("Registration Error: " + error.message);
-            } else {
-                alert("Account created successfully! Now you can sign in.");
-                switchView('login');
-            }
-        });
-
-        // Logout Handler
-        document.getElementById('logoutBtn').addEventListener('click', async () => {
-            await supabase.auth.signOut();
-            checkUserSession();
-        });
-
-        // ESG Form Submission Handler (esg_batches table)
-        document.getElementById('esgForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const weight = parseFloat(document.getElementById('batch-weight').value);
-            const carbon = document.getElementById('batch-carbon').value;
-            const water = document.getElementById('batch-water').value;
-            const energy = document.getElementById('batch-energy').value;
-
-            const { data, error } = await supabase.from('esg_batches').insert([
-                { weight: weight, carbon: carbon, water: water, energy: energy }
+            const { error } = await supabaseClient.from('esg_batches').insert([
+                { weight: parseFloat(weight), carbon, water, energy }
             ]);
 
             if (error) {
-                alert("Database Error: " + error.message);
+                alert(`Error saving to cloud: ${error.message}`);
             } else {
-                alert("ESG Batch successfully saved to database!");
-                document.getElementById('esgForm').reset();
+                alert("Data successfully saved and synced to Supabase database!");
             }
-        });
+        }
+
+        async function loadCloudHistory() {
+            const tbody = document.getElementById('cloud-records-body');
+            tbody.innerHTML = `<tr><td colspan="6" style="padding: 1rem; text-align: center; color: #9ca3af;">Fetching records from cloud...</td></tr>`;
+
+            const { data, error } = await supabaseClient.from('esg_batches').select('*').order('id', { ascending: false });
+
+            if (error) {
+                tbody.innerHTML = `<tr><td colspan="6" style="padding: 1rem; text-align: center; color: #fb7185;">Error: ${error.message}</td></tr>`;
+                return;
+            }
+
+            if (!data || data.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" style="padding: 1rem; text-align: center; color: #6b7280;">No records found in cloud database.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = '';
+            data.forEach(row => {
+                tbody.innerHTML += `
+                    <tr style="border-bottom: 1px solid #1f2937;">
+                        <td style="padding: 0.75rem; font-family: monospace; color: #9ca3af;">#${row.id}</td>
+                        <td style="padding: 0.75rem; font-weight: 600;">${row.weight} KG</td>
+                        <td style="padding: 0.75rem; color: #34d399;">${row.carbon}</td>
+                        <td style="padding: 0.75rem; color: #60a5fa;">${row.water}</td>
+                        <td style="padding: 0.75rem; color: #fbbf24;">${row.energy}</td>
+                        <td style="padding: 0.75rem; color: #6b7280;">${new Date(row.created_at).toLocaleString()}</td>
+                    </tr>
+                `;
+            });
+        }
     </script>
 </body>
 </html>
