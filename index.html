@@ -1,585 +1,188 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="google-site-verification" content="8TeUu2DsLbF2--wB8dBywWVRCDQZLTW_YUPKBOk0ISY" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EcoTextile Pro - Commercial B2B ESG & CBAM SaaS</title>
-    <!-- Supabase JS Client -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <!-- Chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- html2pdf.js for Direct PDF Downloads -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-    
-    <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-        body { background-color: #0b1329; color: #f8fafc; padding: 12px; padding-bottom: 80px; }
-        
-        /* AUTH & SUBSCRIPTION MODALS */
-        .modal-overlay { position: fixed; inset: 0; background-color: rgba(2, 6, 23, 0.95); z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 16px; }
-        .modal-card { background-color: #1e293b; border: 1px solid #334155; width: 100%; max-width: 420px; padding: 24px; border-radius: 16px; text-align: center; }
-        .brand-badge { font-size: 10px; background-color: #0284c7; color: white; padding: 3px 8px; border-radius: 12px; display: inline-block; margin-bottom: 8px; font-weight: bold; text-transform: uppercase; }
-        
-        /* Pricing Cards */
-        .plan-grid { display: grid; grid-template-columns: 1fr; gap: 12px; margin: 14px 0; text-align: left; }
-        .plan-card { background-color: #0f172a; border: 1px solid #334155; padding: 14px; border-radius: 10px; cursor: pointer; transition: 0.2s; }
-        .plan-card.selected { border-color: #10b981; background-color: #064e3b; }
-        .plan-title { font-weight: bold; color: #ffffff; font-size: 14px; }
-        .plan-price { font-size: 18px; color: #10b981; font-weight: bold; margin: 4px 0; }
-        .plan-features { font-size: 10px; color: #94a3b8; line-height: 1.4; }
-
-        /* UI Navigation */
-        .header { background-color: #020617; padding: 12px 14px; border-radius: 12px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #1e293b; }
-        .logo-title { font-size: 15px; font-weight: bold; color: #ffffff; }
-        .account-badge { background-color: #1e293b; padding: 6px 12px; border-radius: 8px; font-size: 10px; border: 1px solid #334155; text-align: right; }
-        .plan-tag { background-color: #10b981; color: #020617; font-weight: bold; padding: 1px 5px; border-radius: 4px; margin-left: 4px; }
-
-        .nav-tabs { display: flex; background-color: #1e293b; padding: 4px; border-radius: 10px; margin-bottom: 14px; gap: 4px; border: 1px solid #334155; overflow-x: auto; }
-        .tab-btn { flex: 1; min-width: 75px; padding: 8px 4px; background: none; border: none; color: #94a3b8; font-size: 10px; font-weight: 600; border-radius: 7px; cursor: pointer; white-space: nowrap; }
-        .tab-btn.active { background-color: #10b981; color: #020617; font-weight: bold; }
-
-        .tab-content { display: none; }
-        .tab-content.active { display: block; }
-
-        /* Cards & KPIs */
-        .kpi-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
-        .card { background-color: #1e293b; padding: 12px; border-radius: 12px; border: 1px solid #334155; }
-        .card-label { font-size: 11px; color: #94a3b8; }
-        .card-val { font-size: 18px; font-weight: bold; color: #ffffff; margin: 4px 0; }
-        .card-val span { font-size: 11px; color: #94a3b8; font-weight: normal; }
-
-        /* Forms & AI Boxes */
-        .form-box { background-color: #1e293b; padding: 14px; border-radius: 12px; border: 1px solid #334155; margin-bottom: 12px; }
-        .form-title { font-size: 13px; font-weight: bold; color: #ffffff; margin-bottom: 10px; border-bottom: 1px solid #334155; padding-bottom: 6px; }
-        .input-group { margin-bottom: 10px; text-align: left; }
-        .input-group label { display: block; font-size: 11px; color: #cbd5e1; margin-bottom: 4px; }
-        .input-group input, .input-group select { width: 100%; background-color: #0b1329; border: 1px solid #334155; color: #ffffff; padding: 8px; border-radius: 6px; font-size: 12px; outline: none; }
-
-        /* AI Recommendation Card Style */
-        .ai-tip-card { background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%); border: 1px solid #3b82f6; padding: 12px; border-radius: 10px; margin-bottom: 10px; }
-        .ai-tip-title { font-size: 12px; font-weight: bold; color: #60a5fa; margin-bottom: 4px; display: flex; align-items: center; gap: 6px; }
-        .ai-tip-desc { font-size: 11px; color: #cbd5e1; line-height: 1.4; }
-
-        /* Buttons */
-        .btn-green { width: 100%; background-color: #10b981; color: #020617; font-weight: bold; padding: 10px; border: none; border-radius: 6px; font-size: 12px; cursor: pointer; margin-top: 4px; }
-        .btn-slate { width: 100%; background-color: #334155; color: #ffffff; font-weight: 600; padding: 10px; border: none; border-radius: 6px; font-size: 12px; cursor: pointer; margin-top: 6px; }
-        .btn-upgrade { background-color: #f59e0b; color: #020617; font-weight: bold; border: none; padding: 4px 8px; border-radius: 4px; font-size: 10px; cursor: pointer; }
-
-        /* Table */
-        .table-container { background-color: #1e293b; border-radius: 12px; border: 1px solid #334155; overflow-x: auto; }
-        table { width: 100%; border-collapse: collapse; text-align: left; font-size: 11px; }
-        th { background-color: #020617; color: #94a3b8; padding: 10px; border-bottom: 1px solid #334155; }
-        td { padding: 10px; border-bottom: 1px solid #334155; color: #f8fafc; }
-
-        /* Printable Certificate */
-        #cert-modal { display: none; position: fixed; inset: 0; background-color: rgba(2, 6, 23, 0.95); z-index: 2000; padding: 16px; overflow-y: auto; }
-        .cert-paper { background-color: #ffffff; color: #020617; width: 100%; max-width: 580px; margin: 0 auto; padding: 24px; border-radius: 8px; border: 6px double #065f46; }
-    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoTextile Pro - Enterprise B2B Portal</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
 </head>
-<body>
+<body class="bg-gray-900 text-gray-100 font-sans h-screen flex overflow-hidden">
 
-    <!-- AUTHENTICATION / LOGIN MODAL -->
-    <div id="auth-modal" class="modal-overlay">
-        <div class="modal-card">
-            <span class="brand-badge">SaaS Enterprise Edition</span>
-            <div style="font-size: 24px; margin: 4px 0;">🌿</div>
-            <h2 style="font-size: 18px; margin-bottom: 4px;">EcoTextile Pro SaaS</h2>
-            <p style="font-size: 11px; color: #94a3b8; margin-bottom: 16px;">EU CBAM & ESG Compliance Portal with AI Advisor</p>
-
-            <div class="input-group">
-                <label>Admin / Director Name</label>
-                <input type="text" id="auth-name" placeholder="Your Name" value="Muhammad Meer">
+    <!-- Sidebar -->
+    <aside class="w-64 bg-gray-950 border-r border-gray-800 flex flex-col justify-between hidden md:flex">
+        <div>
+            <div class="p-6 border-b border-gray-800">
+                <span class="text-xl font-bold tracking-wider text-emerald-400">EcoTextile Pro</span>
+                <span class="block text-xs text-gray-500 mt-1">Enterprise B2B Portal</span>
             </div>
-
-            <div class="input-group">
-                <label>Company / Factory Name</label>
-                <input type="text" id="auth-company" placeholder="e.g. Gul Ahmed / Interloop" value="Gul Ahmed Textile Mills">
-            </div>
-
-            <div class="input-group">
-                <label>Corporate Email Address</label>
-                <input type="email" id="auth-email" placeholder="manager@textile.com" value="muhammad.meer@textile.com">
-            </div>
-
-            <button type="button" onclick="handleAuth('login')" class="btn-green">Login to Portal</button>
-            <button type="button" onclick="handleAuth('signup')" class="btn-slate">Create New SaaS Account</button>
+            <nav class="p-4 space-y-1">
+                <button onclick="switchTab('overview')" id="btn-overview" class="tab-btn flex items-center gap-3 w-full px-4 py-2.5 text-sm rounded-lg font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 transition-all">
+                    <i data-lucide="layout-dashboard" class="w-4 h-4"></i> Overview
+                </button>
+                <button onclick="switchTab('esg')" id="btn-esg" class="tab-btn flex items-center gap-3 w-full px-4 py-2.5 text-sm rounded-lg font-medium text-gray-400 hover:bg-gray-900 hover:text-gray-200 transition-all">
+                    <i data-lucide="leaf" class="w-4 h-4"></i> ESG & Carbon Track
+                </button>
+                <button onclick="switchTab('traceability')" id="btn-traceability" class="tab-btn flex items-center gap-3 w-full px-4 py-2.5 text-sm rounded-lg font-medium text-gray-400 hover:bg-gray-900 hover:text-gray-200 transition-all">
+                    <i data-lucide="qr-code" class="w-4 h-4"></i> Traceability & Batches
+                </button>
+                <button onclick="switchTab('compliance')" id="btn-compliance" class="tab-btn flex items-center gap-3 w-full px-4 py-2.5 text-sm rounded-lg font-medium text-gray-400 hover:bg-gray-900 hover:text-gray-200 transition-all">
+                    <i data-lucide="shield-check" class="w-4 h-4"></i> Compliance & Certs
+                </button>
+                <button onclick="switchTab('inventory')" id="btn-inventory" class="tab-btn flex items-center gap-3 w-full px-4 py-2.5 text-sm rounded-lg font-medium text-gray-400 hover:bg-gray-900 hover:text-gray-200 transition-all">
+                    <i data-lucide="boxes" class="w-4 h-4"></i> Inventory & Dye-Lots
+                </button>
+            </nav>
         </div>
-    </div>
-
-    <!-- SUBSCRIPTION PAYWALL MODAL -->
-    <div id="paywall-modal" class="modal-overlay" style="display:none;">
-        <div class="modal-card">
-            <span class="brand-badge" style="background-color: #f59e0b; color:#000;">Select SaaS Plan</span>
-            <h2 style="font-size: 18px; margin-top: 4px;">Choose Subscription Tier</h2>
-            <p style="font-size: 11px; color: #94a3b8;">Unlock unlimited EU CBAM audit downloads & AI optimization</p>
-
-            <div class="plan-grid">
-                <div class="plan-card" onclick="selectPlan('free')" id="plan-free">
-                    <div class="plan-title">Starter (Free Trial)</div>
-                    <div class="plan-price">$0 / month</div>
-                    <div class="plan-features">✓ 1 Monthly Entry<br>✓ Basic Dashboard</div>
-                </div>
-
-                <div class="plan-card selected" onclick="selectPlan('pro')" id="plan-pro">
-                    <div class="plan-title">Pro Factory Plan ⭐</div>
-                    <div class="plan-price">$199 / month</div>
-                    <div class="plan-features">✓ Unlimited Audit Entries<br>✓ AI Carbon Reduction Advisor<br>✓ Direct PDF Certificate Download</div>
-                </div>
-
-                <div class="plan-card" onclick="selectPlan('enterprise')" id="plan-enterprise">
-                    <div class="plan-title">Enterprise Multi-Unit</div>
-                    <div class="plan-price">$499 / month</div>
-                    <div class="plan-features">✓ Up to 10 Factory Units<br>✓ Priority AI Audit Support<br>✓ API Access</div>
-                </div>
-            </div>
-
-            <button type="button" onclick="confirmSubscription()" class="btn-green">Complete Account Registration</button>
-            <button type="button" onclick="closePaywall()" class="btn-slate">Back</button>
+        <div class="p-4 border-t border-gray-800">
+            <button class="flex items-center gap-3 w-full px-4 py-2 text-sm text-red-400 hover:bg-red-950/30 rounded-lg transition-colors">
+                <i data-lucide="log-out" class="w-4 h-4"></i> Logout
+            </button>
         </div>
-    </div>
+    </aside>
 
-    <!-- MAIN SAAS DASHBOARD -->
-    <div id="app-container" style="display:none;">
-        
-        <!-- Header -->
-        <div class="header">
-            <div>
-                <div class="logo-title">🌿 EcoTextile Pro</div>
-                <div style="font-size:10px; color:#10b981;">Commercial B2B SaaS</div>
-            </div>
-            <div class="account-badge">
-                <div id="user-company-display" style="font-weight:bold;">Factory Unit</div>
-                <div style="font-size: 9px; color: #94a3b8;">Dir: <span id="user-name-display" style="color: #f8fafc; font-weight: bold;">Muhammad Meer</span></div>
-                <div>Plan: <span id="user-plan-tag" class="plan-tag">PRO</span> <button onclick="openPaywall()" class="btn-upgrade">Change</button></div>
-            </div>
-        </div>
-
-        <!-- Navigation Tabs -->
-        <div class="nav-tabs">
-            <button class="tab-btn active" onclick="switchTab('dashboard')">📊 Dashboard</button>
-            <button class="tab-btn" onclick="switchTab('entry')">📝 Add Entry</button>
-            <button class="tab-btn" onclick="switchTab('ai')">🤖 AI Advisor</button>
-            <button class="tab-btn" onclick="switchTab('history')">📜 Audit Logs</button>
-        </div>
-
-        <!-- TAB 1: DASHBOARD -->
-        <div id="tab-dashboard" class="tab-content active">
-            <div class="kpi-grid">
-                <div class="card">
-                    <div class="card-label">Total CO₂ Footprint</div>
-                    <div id="kpi-co2" class="card-val">0.00 <span>tCO₂e</span></div>
-                    <div style="font-size:9px; color:#10b981;">✓ IPCC Factor Applied</div>
-                </div>
-
-                <div class="card">
-                    <div class="card-label">Carbon Intensity</div>
-                    <div id="kpi-intensity" class="card-val">0.00 <span>kg/m</span></div>
-                    <div style="font-size:9px; color:#fbbf24;">EU Limit: 2.50 kg/m</div>
-                </div>
-
-                <div class="card">
-                    <div class="card-label">Est. EU Carbon Fine (€)</div>
-                    <div id="kpi-fine" class="card-val" style="color:#f43f5e;">€0.00</div>
-                    <div style="font-size:9px; color:#f43f5e;">@ €80/ton Excess Penalty</div>
-                </div>
-
-                <div class="card">
-                    <div class="card-label">CBAM Export Status</div>
-                    <div id="kpi-status" class="card-val" style="color:#10b981;">PASSED</div>
-                    <div style="font-size:9px; color:#38bdf8;">ISO Verified</div>
+    <!-- Main Content Area -->
+    <main class="flex-1 flex flex-col overflow-hidden">
+        <!-- Top Navbar -->
+        <header class="h-16 bg-gray-950 border-b border-gray-800 flex items-center justify-between px-6">
+            <div class="flex items-center gap-4 w-96">
+                <div class="relative w-full">
+                    <i data-lucide="search" class="absolute left-3 top-2.5 text-gray-500 w-4 h-4"></i>
+                    <input type="text" placeholder="Search batches, certs, dye-lots..." class="w-full bg-gray-900 border border-gray-800 rounded-lg pl-9 pr-4 py-2 text-sm text-gray-200 focus:outline-none focus:border-emerald-500">
                 </div>
             </div>
-
-            <div class="form-box">
-                <div class="form-title">📊 Monthly Emissions Breakdown (tCO₂e)</div>
-                <div style="height: 180px;">
-                    <canvas id="saasChart"></canvas>
-                </div>
-            </div>
-        </div>
-
-        <!-- TAB 2: DATA ENTRY -->
-        <div id="tab-entry" class="tab-content">
-            <div class="form-box">
-                <div class="form-title">⚙️ Submit New Production Log</div>
-                
-                <div class="input-group">
-                    <label>Audit Month & Year</label>
-                    <input type="month" id="entry-month" value="2026-09">
-                </div>
-
-                <div class="input-group">
-                    <label>Total Fabric Produced (Meters)</label>
-                    <input type="number" id="entry-fabric" value="65000">
-                </div>
-
-                <div class="input-group">
-                    <label>Grid Electricity Consumed (kWh)</label>
-                    <input type="number" id="entry-grid" value="45000">
-                </div>
-
-                <div class="input-group">
-                    <label>Diesel Generator Fuel (Liters)</label>
-                    <input type="number" id="entry-diesel" value="3500">
-                </div>
-
-                <div class="input-group">
-                    <label>Natural Gas / Boiler (m³)</label>
-                    <input type="number" id="entry-gas" value="16000">
-                </div>
-
-                <button type="button" onclick="submitEntry()" class="btn-green">💾 Save Month Entry & Run AI Analysis</button>
-            </div>
-        </div>
-
-        <!-- TAB 3: AI ADVISOR RECOMMENDATIONS -->
-        <div id="tab-ai" class="tab-content">
-            <div class="form-box" style="margin-bottom:8px;">
-                <div class="form-title">🤖 AI Carbon Reduction & Cost-Saving Advisor</div>
-                <p style="font-size: 10px; color: #94a3b8; margin-bottom: 12px;">Real-time automated recommendations generated from your latest monthly factory log.</p>
-                
-                <div id="ai-recommendations-container">
-                    <!-- AI Cards will load dynamically -->
-                </div>
-            </div>
-        </div>
-
-        <!-- TAB 4: AUDIT HISTORY LOGS -->
-        <div id="tab-history" class="tab-content">
-            <div class="form-box" style="margin-bottom:8px;">
-                <div class="form-title">📜 Verified ESG Audit Certificates</div>
-            </div>
-
-            <div class="table-container">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Month</th>
-                            <th>Meters</th>
-                            <th>CO₂ (Tons)</th>
-                            <th>Status</th>
-                            <th>Certificate</th>
-                        </tr>
-                    </thead>
-                    <tbody id="history-rows">
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-    </div>
-
-    <!-- CERTIFICATE MODAL FOR DIRECT PDF DOWNLOAD -->
-    <div id="cert-modal">
-        <div class="cert-paper" id="cert-printable-area">
-            <div style="text-align: center; border-bottom: 2px solid #065f46; padding-bottom: 10px; margin-bottom: 14px;">
-                <div style="font-size: 24px;">🌿</div>
-                <h2 style="color:#065f46; font-size: 18px; text-transform: uppercase;">EU CBAM Compliance Certificate</h2>
-                <p style="font-size: 9px; color: #475569;">Carbon Border Adjustment Mechanism & ISO 14064 Verified</p>
-            </div>
-
-            <p style="font-size: 11px; line-height: 1.4; color: #334155; margin-bottom: 12px;">
-                This document certifies that the manufacturing facility listed below has logged, calculated, and verified its greenhouse gas (GHG) emissions in accordance with EU Carbon Import Compliance Standards under the supervision of executive management.
-            </p>
-
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; background: #f8fafc; padding: 10px; border-radius: 6px; border: 1px solid #e2e8f0; font-size: 11px;">
-                <div><b style="color:#64748b; font-size:8px; display:block;">COMPANY NAME</b> <span id="c-company" style="font-weight:bold;">-</span></div>
-                <div><b style="color:#64748b; font-size:8px; display:block;">EXECUTIVE DIRECTOR</b> <span id="c-name" style="font-weight:bold;">Muhammad Meer</span></div>
-                <div><b style="color:#64748b; font-size:8px; display:block;">AUDIT PERIOD</b> <span id="c-month" style="font-weight:bold;">-</span></div>
-                <div><b style="color:#64748b; font-size:8px; display:block;">FABRIC PRODUCTION</b> <span id="c-fabric" style="font-weight:bold;">-</span></div>
-                <div><b style="color:#64748b; font-size:8px; display:block;">TOTAL EMISSIONS</b> <span id="c-co2" style="font-weight:bold;">-</span></div>
-                <div><b style="color:#64748b; font-size:8px; display:block;">CARBON INTENSITY</b> <span id="c-intensity" style="font-weight:bold;">-</span></div>
-            </div>
-
-            <div style="margin-top: 16px; border-top: 1px dashed #cbd5e1; padding-top: 10px; display: flex; justify-content: space-between; align-items: flex-end;">
-                <div>
-                    <p style="font-size: 9px; color: #64748b;">Verification ID: <b id="c-id" style="color:#0f172a;">PK-CBAM-9842</b></p>
-                    <p style="font-size: 8px; color: #94a3b8;">Issued Engine: EcoTextile SaaS AI Protocol</p>
-                </div>
-                <div style="text-align: right;">
-                    <div style="font-family: cursive; font-size: 13px; font-weight: bold; color: #065f46;">Muhammad Meer</div>
-                    <p style="font-size: 8px; color: #94a3b8;">Verified Audit Director Stamp</p>
-                </div>
-            </div>
-        </div>
-
-        <div style="max-width:580px; margin:12px auto 0; display:flex; gap:8px;">
-            <button onclick="downloadDirectPDF()" class="btn-green" style="background-color:#065f46; color:white;">📥 Direct Download PDF File</button>
-            <button onclick="closeCertModal()" class="btn-slate">Close</button>
-        </div>
-    </div>
-
-    <!-- JavaScript Application Engine -->
-    <script>
-        const SUPABASE_URL = 'https://muwsgfyanqctkvkogyay.supabase.co';
-        const SUPABASE_ANON_KEY = 'YAHAN_APNI_PUBLISHABLE_KEY_PASTE_KARDEREIN';
-        let supabaseClient = null;
-        if (window.supabase && window.supabase.createClient) {
-            supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        }
-
-        let currentUser = { name: "Muhammad Meer", company: "Gul Ahmed Textile Mills", email: "muhammad.meer@textile.com", plan: "pro" };
-        let currentLogs = [
-            { month: "2026-08", fabric: 65000, grid: 45000, diesel: 3500, gas: 16000, co2: 62.98, intensity: 0.96, fine: 0, status: "PASSED" }
-        ];
-        let saasChart = null;
-        let selectedPlanTier = "pro";
-
-        function handleAuth(type) {
-            const name = document.getElementById('auth-name').value.trim();
-            const comp = document.getElementById('auth-company').value.trim();
-            const email = document.getElementById('auth-email').value.trim();
-
-            if (!name || !comp || !email) {
-                alert("Please fill in Name, Company, and Email.");
-                return;
-            }
-
-            currentUser.name = name;
-            currentUser.company = comp;
-            currentUser.email = email;
-
-            if (type === 'signup') {
-                document.getElementById('auth-modal').style.display = 'none';
-                document.getElementById('paywall-modal').style.display = 'flex';
-            } else {
-                document.getElementById('auth-modal').style.display = 'none';
-                document.getElementById('app-container').style.display = 'block';
-                document.getElementById('user-company-display').innerText = currentUser.company;
-                document.getElementById('user-name-display').innerText = currentUser.name;
-                document.getElementById('user-plan-tag').innerText = currentUser.plan.toUpperCase();
-                renderDashboard();
-                generateAIRecommendations();
-            }
-        }
-
-        function switchTab(tab) {
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
-            document.getElementById('tab-' + tab).classList.add('active');
-            if(event && event.currentTarget) event.currentTarget.classList.add('active');
-
-            if (tab === 'dashboard') renderDashboard();
-            else if (tab === 'ai') generateAIRecommendations();
-            else if (tab === 'history') renderHistory();
-        }
-
-        function renderDashboard() {
-            const latest = currentLogs[currentLogs.length - 1];
-            if (!latest) return;
-
-            const gridTons = (latest.grid * 0.48) / 1000;
-            const dieselTons = (latest.diesel * 2.68) / 1000;
-            const gasTons = (latest.gas * 2.00) / 1000;
-            const totalCO2 = gridTons + dieselTons + gasTons;
-            const intensity = (totalCO2 * 1000) / latest.fabric;
-
-            let fineEuro = 0;
-            if (intensity > 2.5) {
-                const excessTons = totalCO2 - ((latest.fabric * 2.5) / 1000);
-                fineEuro = excessTons * 80;
-            }
-
-            document.getElementById('kpi-co2').innerHTML = totalCO2.toFixed(2) + " <span>tCO₂e</span>";
-            document.getElementById('kpi-intensity').innerHTML = intensity.toFixed(2) + " <span>kg/m</span>";
-            document.getElementById('kpi-fine').innerHTML = "€" + fineEuro.toFixed(2);
-            document.getElementById('kpi-status').innerText = intensity <= 2.5 ? "PASSED" : "NON-COMPLIANT";
-            document.getElementById('kpi-status').style.color = intensity <= 2.5 ? "#10b981" : "#f43f5e";
-
-            updateChart(gridTons, dieselTons, gasTons);
-        }
-
-        function generateAIRecommendations() {
-            const latest = currentLogs[currentLogs.length - 1];
-            const container = document.getElementById('ai-recommendations-container');
-            container.innerHTML = "";
-
-            if (!latest) {
-                container.innerHTML = "<p style='font-size:11px; color:#94a3b8;'>No audit logs found. Please add an entry first.</p>";
-                return;
-            }
-
-            const gridTons = (latest.grid * 0.48) / 1000;
-            const dieselTons = (latest.diesel * 2.68) / 1000;
-            const gasTons = (latest.gas * 2.00) / 1000;
-
-            let tips = [];
-
-            if (latest.grid > 30000) {
-                tips.push({
-                    title: "☀️ Rooftop Solar PV Integration",
-                    desc: `Your grid consumption is high (${latest.grid.toLocaleString()} kWh). Installing a 500kW rooftop solar system can offset up to 35% of grid power, reducing ~${(gridTons * 0.35).toFixed(1)} tons of CO₂ and saving significant utility expenses.`
-                });
-            } else {
-                tips.push({
-                    title: "💡 LED Lighting & Inverter Upgrades",
-                    desc: `Grid power load is moderate. Upgrading floor ambient lighting to industrial LEDs and installing VFD inverters on spinning motors can reduce electrical load by 8%–12%.`
-                });
-            }
-
-            if (latest.diesel > 2000) {
-                tips.push({
-                    title: "⚡ Diesel Generator Load Balancing",
-                    desc: `High diesel usage detected (${latest.diesel.toLocaleString()} Liters) for backup power. Optimizing generator runtime or shifting base-load to peak grid hours can cut diesel emissions by ${(dieselTons * 0.25).toFixed(1)} tCO₂e.`
-                });
-            } else {
-                tips.push({
-                    title: "🔧 Generator Maintenance Protocol",
-                    desc: `Backup diesel consumption is within healthy limits. Regular fuel-filter cleaning and turbocharger tuning will maintain optimal combustion efficiency.`
-                });
-            }
-
-            if (latest.gas > 10000) {
-                tips.push({
-                    title: "🔥 Waste Heat Recovery Unit (WHRU)",
-                    desc: `Boiler gas consumption (${latest.gas.toLocaleString()} m³) accounts for massive thermal output. Installing a WHRU on boiler exhaust gas can pre-heat incoming feed water, reducing gas consumption by up to 15%.`
-                });
-            } else {
-                tips.push({
-                    title: "🌡️ Steam Pipe Insulation Audit",
-                    desc: `Boiler gas output is controlled. Conduct an infrared thermal audit on steam lines to patch uninsulated valves and prevent heat loss.`
-                });
-            }
-
-            tips.forEach(tip => {
-                container.innerHTML += `
-                    <div class="ai-tip-card">
-                        <div class="ai-tip-title">${tip.title}</div>
-                        <div class="ai-tip-desc">${tip.desc}</div>
+            <div class="flex items-center gap-4">
+                <button class="relative p-2 text-gray-400 hover:text-gray-200 bg-gray-900 rounded-lg border border-gray-800">
+                    <i data-lucide="bell" class="w-4 h-4"></i>
+                    <span class="absolute top-1 right-1 w-2 h-2 bg-emerald-500 rounded-full"></span>
+                </button>
+                <div class="flex items-center gap-3 border-l border-gray-800 pl-4">
+                    <div class="w-8 h-8 rounded-full bg-emerald-600 flex items-center font-bold text-sm justify-center">TM</div>
+                    <div class="hidden sm:block text-left">
+                        <p class="text-xs font-medium">Textile Mill Corp</p>
+                        <p class="text-[10px] text-emerald-400">Verified Pro Tier</p>
                     </div>
-                `;
+                </div>
+            </div>
+        </header>
+
+        <!-- Dynamic Content Sections -->
+        <div class="flex-1 overflow-y-auto p-8 space-y-6">
+            
+            <!-- Overview Tab -->
+            <div id="tab-overview" class="tab-content space-y-6">
+                <div>
+                    <h1 class="text-2xl font-bold tracking-tight">Production & ESG Command Center</h1>
+                    <p class="text-sm text-gray-400">Real-time oversight of mill sustainability metrics and output.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                    <div class="bg-gray-950 border border-gray-800 p-5 rounded-xl flex flex-col justify-between">
+                        <div class="flex items-center justify-between"><span class="text-xs text-gray-400 font-medium">Carbon Saved</span><i data-lucide="leaf" class="text-emerald-400 w-5 h-5"></i></div>
+                        <div class="mt-4"><h4 class="text-2xl font-bold">14.2 Tons</h4><span class="text-[11px] text-emerald-400 mt-1 block">+12% this month</span></div>
+                    </div>
+                    <div class="bg-gray-950 border border-gray-800 p-5 rounded-xl flex flex-col justify-between">
+                        <div class="flex items-center justify-between"><span class="text-xs text-gray-400 font-medium">Water Consumed</span><i data-lucide="droplet" class="text-blue-400 w-5 h-5"></i></div>
+                        <div class="mt-4"><h4 class="text-2xl font-bold">45,200 L</h4><span class="text-[11px] text-blue-400 mt-1 block">-8% efficiency</span></div>
+                    </div>
+                    <div class="bg-gray-950 border border-gray-800 p-5 rounded-xl flex flex-col justify-between">
+                        <div class="flex items-center justify-between"><span class="text-xs text-gray-400 font-medium">Energy Output</span><i data-lucide="zap" class="text-amber-400 w-5 h-5"></i></div>
+                        <div class="mt-4"><h4 class="text-2xl font-bold">128 MWh</h4><span class="text-[11px] text-amber-400 mt-1 block">Optimal load</span></div>
+                    </div>
+                    <div class="bg-gray-950 border border-gray-800 p-5 rounded-xl flex flex-col justify-between">
+                        <div class="flex items-center justify-between"><span class="text-xs text-gray-400 font-medium">Active Audits</span><i data-lucide="alert-circle" class="text-rose-400 w-5 h-5"></i></div>
+                        <div class="mt-4"><h4 class="text-2xl font-bold">3 Pending</h4><span class="text-[11px] text-rose-400 mt-1 block">GOTS renewal due</span></div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div class="bg-gray-950 border border-gray-800 rounded-xl p-6">
+                        <h3 class="font-semibold text-base mb-4">Recent Batch Traceability Logs</h3>
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between p-3 bg-gray-900 rounded-lg border border-gray-800/60 text-sm">
+                                <div><span class="font-medium text-emerald-400">BATCH-99201</span><p class="text-xs text-gray-400">Organic Cotton Twill</p></div>
+                                <div class="text-right"><span class="px-2 py-0.5 text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-full font-medium">Verified</span><span class="block text-[10px] text-gray-500 mt-1">2026-09-06</span></div>
+                            </div>
+                            <div class="flex items-center justify-between p-3 bg-gray-900 rounded-lg border border-gray-800/60 text-sm">
+                                <div><span class="font-medium text-emerald-400">BATCH-99200</span><p class="text-xs text-gray-400">Recycled Polyester Blend</p></div>
+                                <div class="text-right"><span class="px-2 py-0.5 text-[10px] bg-amber-500/10 text-amber-400 border border-amber-500/20 rounded-full font-medium">Processing</span><span class="block text-[10px] text-gray-500 mt-1">2026-09-05</span></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-gray-950 border border-gray-800 rounded-xl p-6">
+                        <h3 class="font-semibold text-base mb-4">Compliance Status Summary</h3>
+                        <div class="space-y-4">
+                            <div>
+                                <div class="flex justify-between text-xs mb-1"><span class="font-medium">GOTS Organic Certified</span><span class="text-gray-400">Valid till Dec 2026</span></div>
+                                <div class="w-full bg-gray-900 h-2 rounded-full overflow-hidden border border-gray-800"><div class="bg-emerald-500 h-full rounded-full" style="width: 95%"></div></div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between text-xs mb-1"><span class="font-medium">OEKO-TEX Standard 100</span><span class="text-gray-400">Active</span></div>
+                                <div class="w-full bg-gray-900 h-2 rounded-full overflow-hidden border border-gray-800"><div class="bg-emerald-500 h-full rounded-full" style="width: 100%"></div></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ESG Tab -->
+            <div id="tab-esg" class="tab-content space-y-6 hidden">
+                <h1 class="text-2xl font-bold">ESG & Carbon Footprint Tracking</h1>
+                <p class="text-sm text-gray-400">Monitor environmental impact per kilogram of textile processed.</p>
+                <div class="bg-gray-950 border border-gray-800 p-6 rounded-xl">
+                    <p class="text-gray-400">Carbon offset charts, water recycling metrics, and scope 1/2/3 emission reports active.</p>
+                </div>
+            </div>
+
+            <!-- Traceability Tab -->
+            <div id="tab-traceability" class="tab-content space-y-6 hidden">
+                <h1 class="text-2xl font-bold">Supply Chain QR Traceability</h1>
+                <p class="text-sm text-gray-400">Generate unique verifiable QR codes for buyer shipments.</p>
+                <div class="bg-gray-950 border border-gray-800 p-6 rounded-xl flex items-center justify-between">
+                    <div><h3 class="font-semibold">Create New Batch QR Code</h3><p class="text-xs text-gray-400 mt-1">Link origin cotton farm data to finished fabric roll.</p></div>
+                    <button class="bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">Generate Batch QR</button>
+                </div>
+            </div>
+
+            <!-- Compliance Tab -->
+            <div id="tab-compliance" class="tab-content space-y-6 hidden">
+                <h1 class="text-2xl font-bold">Compliance & Certification Hub</h1>
+                <p class="text-sm text-gray-400">Manage audit reports, test certificates, and expiry alerts.</p>
+                <div class="bg-gray-950 border border-gray-800 p-6 rounded-xl">
+                    <p class="text-gray-400">All ISO, GOTS, and OEKO-TEX document repositories are stored securely here.</p>
+                </div>
+            </div>
+
+            <!-- Inventory Tab -->
+            <div id="tab-inventory" class="tab-content space-y-6 hidden">
+                <h1 class="text-2xl font-bold">Fabric Inventory & Dye-Lot Management</h1>
+                <p class="text-sm text-gray-400">Track roll widths, GSM, shades, and warehouse allocations.</p>
+                <div class="bg-gray-950 border border-gray-800 p-6 rounded-xl">
+                    <p class="text-gray-400">Warehouse stock table with filter by shade / dye-lot number.</p>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Tab Switching Script -->
+    <script>
+        lucide.createIcons();
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(el => {
+                el.classList.remove('bg-emerald-500/10', 'text-emerald-400', 'border', 'border-emerald-500/20');
+                el.classList.add('text-gray-400');
             });
-        }
-
-        function submitEntry() {
-            if (currentUser.plan === 'free' && currentLogs.length >= 1) {
-                alert("Free Plan Limit Reached! Please upgrade to PRO to unlock AI Advisor & unlimited entries.");
-                openPaywall();
-                return;
-            }
-
-            const month = document.getElementById('entry-month').value;
-            const fabric = parseFloat(document.getElementById('entry-fabric').value) || 1;
-            const grid = parseFloat(document.getElementById('entry-grid').value) || 0;
-            const diesel = parseFloat(document.getElementById('entry-diesel').value) || 0;
-            const gas = parseFloat(document.getElementById('entry-gas').value) || 0;
-
-            const co2 = ((grid * 0.48) + (diesel * 2.68) + (gas * 2.00)) / 1000;
-            const intensity = (co2 * 1000) / fabric;
-            const status = intensity <= 2.5 ? "PASSED" : "HIGH CARBON";
-
-            currentLogs.push({ month, fabric, grid, diesel, gas, co2, intensity, fine: 0, status });
-
-            alert("Entry Saved Successfully! AI Advisor has updated recommendations.");
-            switchTab('ai');
-        }
-
-        function renderHistory() {
-            const tbody = document.getElementById('history-rows');
-            tbody.innerHTML = "";
-
-            currentLogs.slice().reverse().forEach((log, index) => {
-                const realIdx = currentLogs.length - 1 - index;
-                tbody.innerHTML += `
-                    <tr>
-                        <td style="font-weight:bold;">${log.month}</td>
-                        <td>${log.fabric.toLocaleString()} m</td>
-                        <td>${log.co2.toFixed(1)} t</td>
-                        <td style="color:${log.status === 'PASSED' ? '#10b981' : '#f43f5e'}">${log.status}</td>
-                        <td><button onclick="openCert(${realIdx})" style="background:#0284c7; border:none; color:white; padding:4px 8px; border-radius:4px; font-size:10px; cursor:pointer;">📄 Certificate</button></td>
-                    </tr>
-                `;
-            });
-        }
-
-        function openCert(idx) {
-            if (currentUser.plan === 'free') {
-                alert("PDF Download is locked for Free Plan. Please upgrade to Pro.");
-                openPaywall();
-                return;
-            }
-
-            const log = currentLogs[idx];
-            document.getElementById('c-company').innerText = currentUser.company;
-            document.getElementById('c-name').innerText = currentUser.name;
-            document.getElementById('c-month').innerText = log.month;
-            document.getElementById('c-fabric').innerText = log.fabric.toLocaleString() + " Meters";
-            document.getElementById('c-co2').innerText = log.co2.toFixed(2) + " tCO₂e";
-            document.getElementById('c-intensity').innerText = log.intensity.toFixed(2) + " kg CO₂/m";
-            document.getElementById('c-id').innerText = "PK-CBAM-" + Math.floor(1000 + Math.random() * 9000);
-
-            document.getElementById('cert-modal').style.display = 'block';
-        }
-
-        function closeCertModal() {
-            document.getElementById('cert-modal').style.display = 'none';
-        }
-
-        function downloadDirectPDF() {
-            const element = document.getElementById('cert-printable-area');
-            const opt = {
-                margin:       10,
-                filename:     'CBAM-Certificate-' + currentUser.company.replace(/\s+/g, '_') + '.pdf',
-                image:        { type: 'jpeg', quality: 0.98 },
-                html2canvas:  { scale: 2 },
-                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
-            };
-            html2pdf().set(opt).from(element).save();
-        }
-
-        function openPaywall() { document.getElementById('paywall-modal').style.display = 'flex'; }
-        
-        function closePaywall() { 
-            document.getElementById('paywall-modal').style.display = 'none';
-            if (document.getElementById('app-container').style.display === 'none') {
-                document.getElementById('auth-modal').style.display = 'flex';
-            }
-        }
-        
-        function selectPlan(plan) {
-            selectedPlanTier = plan;
-            document.querySelectorAll('.plan-card').forEach(c => c.classList.remove('selected'));
-            document.getElementById('plan-' + plan).classList.add('selected');
-        }
-
-        function confirmSubscription() {
-            currentUser.plan = selectedPlanTier;
-            document.getElementById('paywall-modal').style.display = 'none';
-            document.getElementById('app-container').style.display = 'block';
-            document.getElementById('user-company-display').innerText = currentUser.company;
-            document.getElementById('user-name-display').innerText = currentUser.name;
-            document.getElementById('user-plan-tag').innerText = currentUser.plan.toUpperCase();
-            renderDashboard();
-            generateAIRecommendations();
-            alert("Account registered successfully on " + selectedPlanTier.toUpperCase() + " Plan!");
-        }
-
-        function updateChart(grid, diesel, gas) {
-            const ctx = document.getElementById('saasChart').getContext('2d');
-            if (saasChart) saasChart.destroy();
-
-            saasChart = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: ['Grid Power', 'Diesel', 'Natural Gas'],
-                    datasets: [{
-                        data: [grid, diesel, gas],
-                        backgroundColor: ['#10b981', '#f43f5e', '#3b82f6'],
-                        borderRadius: 6
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
-                    scales: {
-                        y: { grid: { color: 'rgba(255, 255, 255, 0.05)' }, ticks: { color: '#94a3b8', font: { size: 10 } } },
-                        x: { grid: { display: false }, ticks: { color: '#94a3b8', font: { size: 10 } } }
-                    }
-                }
-            });
+            document.getElementById('tab-' + tabId).classList.remove('hidden');
+            const activeBtn = document.getElementById('btn-' + tabId);
+            activeBtn.classList.add('bg-emerald-500/10', 'text-emerald-400', 'border', 'border-emerald-500/20');
+            activeBtn.classList.remove('text-gray-400');
         }
     </script>
 </body>
 </html>
+
