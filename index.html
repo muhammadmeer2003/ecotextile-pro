@@ -93,12 +93,16 @@
 
     </div>
 
-    <!-- JavaScript Application Logic with Calculators & Support Desk -->
+    <!-- JavaScript Application Logic with Expanded Inventory, Calculators & Support Desk -->
     <script>
-      // Global Live Data State
+      // Global Live Data State with Multiple Inventory Items
       let appState = {
         inventory: [
-          { id: "MAT-001", name: "Organic Cotton Bales", qty: "3200", status: "Verified EU" }
+          { id: "MAT-001", name: "Organic Cotton Bales", qty: "3200", status: "Verified EU" },
+          { id: "MAT-002", name: "Recycled Polyester Yarn", qty: "1500", status: "Certified GRS" },
+          { id: "MAT-003", name: "European Flax Linen", qty: "950", status: "Verified EU" },
+          { id: "MAT-004", name: "Eco-Tencel Fibers", qty: "2100", status: "FSC Certified" },
+          { id: "MAT-005", name: "Recycled Wool Blend", qty: "800", status: "Verified EU" }
         ],
         dppRecords: [
           { hash: "#EU-8812-TX", batchName: "Autumn Sustainable Line", status: "Active & Traceable" }
@@ -191,7 +195,7 @@
             <div class="mb-6 p-4 bg-gray-950 rounded-lg border border-gray-800">
               <h4 class="text-sm font-semibold text-emerald-300 mb-3">Add New Inventory Item</h4>
               <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-3">
-                <input type="text" id="inv-id" placeholder="Material ID (e.g. MAT-002)" class="bg-gray-900 border border-gray-800 p-2 rounded text-xs text-white focus:outline-none focus:border-emerald-500">
+                <input type="text" id="inv-id" placeholder="Material ID (e.g. MAT-006)" class="bg-gray-900 border border-gray-800 p-2 rounded text-xs text-white focus:outline-none focus:border-emerald-500">
                 <input type="text" id="inv-name" placeholder="Material Name" class="bg-gray-900 border border-gray-800 p-2 rounded text-xs text-white focus:outline-none focus:border-emerald-500">
                 <input type="text" id="inv-qty" placeholder="Quantity (Kg)" class="bg-gray-900 border border-gray-800 p-2 rounded text-xs text-white focus:outline-none focus:border-emerald-500">
               </div>
