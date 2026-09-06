@@ -263,13 +263,19 @@
             document.getElementById('user-display-name').innerText = fullName;
             document.getElementById('user-avatar-initial').innerText = fullName.charAt(0).toUpperCase();
             document.getElementById('auth-container').style.display = 'none';
-            document.getElementById('main-app-container').style.display = 'block';
+            
+            // Fixed: Removed hidden class so !important doesn't block display
+            const mainApp = document.getElementById('main-app-container');
+            mainApp.classList.remove('hidden');
+            mainApp.style.display = 'block';
+            
             calculateESG();
         }
 
         async function handleLogout() {
             await supabaseClient.auth.signOut();
             document.getElementById('main-app-container').style.display = 'none';
+            document.getElementById('main-app-container').classList.add('hidden');
             document.getElementById('auth-container').style.display = 'flex';
             document.getElementById('auth-password').value = '';
             switchAuthMode('login');
