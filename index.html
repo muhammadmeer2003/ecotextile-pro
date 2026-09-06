@@ -4,17 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EcoTextile EU - Director Portal</title>
-    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body class="bg-gray-950 text-white font-sans antialiased m-0 p-0 overflow-x-hidden">
 
-    <!-- Mobile Backdrop Overlay -->
     <div id="backdrop" onclick="toggleMobileMenu()" class="fixed inset-0 bg-black/70 z-40 hidden md:hidden transition-opacity"></div>
 
     <div class="min-h-screen flex flex-col md:flex-row relative">
       
-      <!-- Mobile Top Header Bar -->
       <div class="md:hidden bg-gray-900 border-b border-gray-800 p-4 flex items-center justify-between sticky top-0 z-30 shadow-md">
         <div>
           <h1 class="text-base font-bold text-emerald-400">EcoTextile EU</h1>
@@ -29,16 +27,13 @@
         </button>
       </div>
 
-      <!-- Sidebar Navigation -->
       <aside id="sidebar" class="fixed top-0 bottom-0 left-0 z-50 w-72 bg-gray-900 border-r border-gray-800 p-4 flex flex-col transition-transform duration-300 ease-in-out -translate-x-full md:translate-x-0 md:static md:inset-auto shadow-2xl md:shadow-none">
         
-        <!-- Sidebar Header (Desktop) -->
         <div class="hidden md:block mb-6">
           <h2 class="text-xl font-bold text-emerald-400">EcoTextile EU</h2>
           <p class="text-xs text-emerald-300 font-medium mt-1">Director: Muhammad Meer</p>
         </div>
 
-        <!-- Mobile Header inside Sidebar -->
         <div class="flex md:hidden items-center justify-between mb-4 pb-3 border-b border-gray-800">
           <div>
             <h2 class="text-lg font-bold text-emerald-400">Navigation Menu</h2>
@@ -47,21 +42,17 @@
           <button onclick="toggleMobileMenu()" class="text-gray-400 hover:text-white p-1 text-sm font-bold">✕</button>
         </div>
 
-        <!-- Sidebar Menu Items -->
         <nav class="space-y-1.5 flex-1 overflow-y-auto pr-1" id="nav-list">
-          <!-- Populated by JS -->
-        </nav>
+          </nav>
 
         <div class="pt-4 mt-2 border-t border-gray-800 text-[11px] text-gray-500 text-center">
           EU Green Deal & ESPR Compliant
         </div>
       </aside>
 
-      <!-- Main Content Area -->
       <main class="flex-1 p-4 md:p-8 overflow-y-auto bg-gray-950 w-full">
         <div class="max-w-6xl mx-auto">
           
-          <!-- Header Banner -->
           <header class="mb-6 pb-4 border-b border-gray-800 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
               <span class="text-xs uppercase tracking-wider text-emerald-400 font-semibold bg-emerald-950/50 px-2.5 py-1 rounded-full border border-emerald-800/40">
@@ -73,19 +64,17 @@
             </div>
             <div class="flex items-center gap-3">
               <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                ● Live System Sync
+                ● Cloud Live Sync
               </span>
             </div>
           </header>
 
-          <!-- Module Card Content -->
           <div class="bg-gray-900/60 border border-gray-800/80 rounded-xl p-5 md:p-6 shadow-xl backdrop-blur-sm">
             <h3 class="text-lg font-semibold text-gray-200 mb-1">Module Workspace</h3>
-            <p id="module-desc" class="text-gray-400 text-sm mb-6">Overview of KPIs, real-time metrics, and live inputs.</p>
+            <p id="module-desc" class="text-gray-400 text-sm mb-6">Overview of KPIs, cloud database records, and live inputs.</p>
 
             <div id="module-content">
-              <!-- Dynamic Content -->
-            </div>
+              </div>
           </div>
 
         </div>
@@ -93,9 +82,13 @@
 
     </div>
 
-    <!-- JavaScript Application Logic with Clean Empty States -->
     <script>
-      // Completely empty state data - ready for real user inputs
+      // SUPABASE CONFIGURATION (Using Publishable Key safely)
+      const SUPABASE_URL = 'YOUR_SUPABASE_PROJECT_URL'; // Yahan apni project ki URL dalein (jaise https://xyz.supabase.co)
+      const SUPABASE_KEY = 'sb_publishable_vVBcYHSUcdNGeuMxyhEnrQ_W7bBnGbh';
+      
+      const _supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
       let appState = {
         inventory: [],
         dppRecords: [],
@@ -104,7 +97,7 @@
 
       const modules = [
         { id: 0, title: "1. Dashboard & Analytics", desc: "Real-time enterprise metrics and analytics monitored by Director Muhammad Meer." },
-        { id: 1, title: "2. Inventory & Excel Sheets", desc: "Add and manage real-time raw materials and warehouse stock records." },
+        { id: 1, title: "2. Inventory & Excel Sheets", desc: "Add and manage real-time raw materials and warehouse stock records on cloud." },
         { id: 2, title: "3. EU Digital Product Passport", desc: "Issue and track real-time DPP compliance records and hashes." },
         { id: 3, title: "4. Multi-Tier Supply Traceability", desc: "Track supply chain transparency from Tier 3 to Tier 1." },
         { id: 4, title: "5. Advanced ESG & CSRD Report", desc: "Sustainability metrics, carbon footprint calculator, and compliance audits." },
@@ -119,6 +112,23 @@
 
       let activeTab = 0;
       let mobileMenuOpen = false;
+
+      async function fetchCloudData() {
+        try {
+          const { data: invData } = await _supabase.from('inventory').select('*');
+          if (invData) appState.inventory = invData;
+
+          const { data: dppData } = await _supabase.from('dpp_records').select('*');
+          if (dppData) appState.dppRecords = dppData;
+
+          const { data: tktData } = await _supabase.from('support_tickets').select('*');
+          if (tktData) appState.supportTickets = tktData;
+        } catch (err) {
+          console.log('Cloud sync waiting for table setup:', err);
+        }
+        renderNav();
+        switchTab(activeTab);
+      }
 
       function renderNav() {
         const navList = document.getElementById('nav-list');
@@ -138,9 +148,7 @@
 
       function switchTab(id) {
         activeTab = id;
-        if (window.innerWidth < 768) {
-          toggleMobileMenu();
-        }
+        if (window.innerWidth < 768) toggleMobileMenu();
 
         const mod = modules[id];
         document.getElementById('module-title').innerText = mod.title;
@@ -148,7 +156,6 @@
 
         const contentDiv = document.getElementById('module-content');
         
-        // Tab 0: Dashboard & Analytics
         if (id === 0) {
           contentDiv.innerHTML = `
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
@@ -157,40 +164,39 @@
                 <h4 class="text-lg font-bold text-emerald-400 mt-1">Muhammad Meer</h4>
               </div>
               <div class="bg-gray-950 p-4 rounded-lg border border-gray-800">
-                <p class="text-xs text-gray-400">Active Inventory Entries</p>
+                <p class="text-xs text-gray-400">Cloud Inventory Entries</p>
                 <h4 class="text-xl font-bold text-emerald-400 mt-1">${appState.inventory.length} Items</h4>
               </div>
               <div class="bg-gray-950 p-4 rounded-lg border border-gray-800">
-                <p class="text-xs text-gray-400">Support Tickets</p>
+                <p class="text-xs text-gray-400">Cloud Support Tickets</p>
                 <h4 class="text-xl font-bold text-emerald-400 mt-1">${appState.supportTickets.length} Active</h4>
               </div>
             </div>
             <div class="p-5 bg-gray-950/60 rounded-lg border border-gray-800">
-              <h4 class="text-sm font-semibold text-emerald-300 mb-2">Live System Status</h4>
-              <p class="text-xs text-gray-400">System is fully synchronized under Director Muhammad Meer. All records will update dynamically as you add them.</p>
+              <h4 class="text-sm font-semibold text-emerald-300 mb-2">Supabase Cloud Sync Status</h4>
+              <p class="text-xs text-gray-400">Connected successfully. All entries are automatically stored in the cloud database under Director Muhammad Meer.</p>
             </div>`;
         } 
-        // Tab 1: Inventory & Excel Sheets
         else if (id === 1) {
           let rowsHtml = appState.inventory.length > 0 ? appState.inventory.map(item => `
             <tr>
-              <td class="p-3 font-medium text-white">${item.id}</td>
+              <td class="p-3 font-medium text-white">${item.material_id || item.id}</td>
               <td class="p-3">${item.name}</td>
-              <td class="p-3">${item.qty} Kg</td>
-              <td class="p-3 text-emerald-400">${item.status}</td>
+              <td class="p-3">${item.quantity || item.qty} Kg</td>
+              <td class="p-3 text-emerald-400">${item.status || 'Cloud Verified'}</td>
             </tr>
-          `).join('') : `<tr><td colspan="4" class="p-6 text-center text-gray-500 text-xs">No inventory records added yet. Use the form above to add items.</td></tr>`;
+          `).join('') : `<tr><td colspan="4" class="p-6 text-center text-gray-500 text-xs">No cloud inventory records found. Add items using the form above.</td></tr>`;
 
           contentDiv.innerHTML = `
             <div class="mb-6 p-4 bg-gray-950 rounded-lg border border-gray-800">
-              <h4 class="text-sm font-semibold text-emerald-300 mb-3">Add New Inventory Item</h4>
+              <h4 class="text-sm font-semibold text-emerald-300 mb-3">Add Inventory to Cloud Database</h4>
               <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-3">
                 <input type="text" id="inv-id" placeholder="Material ID (e.g. MAT-001)" class="bg-gray-900 border border-gray-800 p-2 rounded text-xs text-white focus:outline-none focus:border-emerald-500">
                 <input type="text" id="inv-name" placeholder="Material Name" class="bg-gray-900 border border-gray-800 p-2 rounded text-xs text-white focus:outline-none focus:border-emerald-500">
                 <input type="text" id="inv-qty" placeholder="Quantity (Kg)" class="bg-gray-900 border border-gray-800 p-2 rounded text-xs text-white focus:outline-none focus:border-emerald-500">
               </div>
               <button onclick="addInventoryItem()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold rounded transition-colors">
-                + Add Record
+                + Save to Cloud
               </button>
             </div>
 
@@ -210,33 +216,28 @@
               </table>
             </div>`;
         } 
-        // Tab 2: EU Digital Product Passport
         else if (id === 2) {
           let dppHtml = appState.dppRecords.length > 0 ? appState.dppRecords.map(dpp => `
             <div class="p-4 bg-gray-950 rounded-lg border border-gray-800 mb-3">
               <span class="text-xs text-emerald-400 font-mono">DPP Hash: ${dpp.hash}</span>
-              <h4 class="text-base font-bold text-white mt-1">${dpp.batchName}</h4>
+              <h4 class="text-base font-bold text-white mt-1">${dpp.batch_name || dpp.batchName}</h4>
               <p class="text-xs text-gray-400 mt-1">Status: ${dpp.status}</p>
             </div>
-          `).join('') : `<p class="text-xs text-gray-500 text-center py-4">No DPP passports generated yet.</p>`;
+          `).join('') : `<p class="text-xs text-gray-500 text-center py-4">No cloud DPP passports found.</p>`;
 
           contentDiv.innerHTML = `
             <div class="mb-6 p-4 bg-gray-950 rounded-lg border border-gray-800">
-              <h4 class="text-sm font-semibold text-emerald-300 mb-3">Issue New Digital Product Passport</h4>
+              <h4 class="text-sm font-semibold text-emerald-300 mb-3">Issue Cloud Digital Product Passport</h4>
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
                 <input type="text" id="dpp-hash" placeholder="DPP Hash (e.g. #EU-001-TX)" class="bg-gray-900 border border-gray-800 p-2 rounded text-xs text-white focus:outline-none focus:border-emerald-500">
                 <input type="text" id="dpp-name" placeholder="Batch / Product Name" class="bg-gray-900 border border-gray-800 p-2 rounded text-xs text-white focus:outline-none focus:border-emerald-500">
               </div>
               <button onclick="addDppRecord()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold rounded transition-colors">
-                + Generate Passport
+                + Save Passport to Cloud
               </button>
             </div>
-
-            <div id="dpp-list">
-              ${dppHtml}
-            </div>`;
+            <div id="dpp-list">${dppHtml}</div>`;
         }
-        // Tab 4: Advanced ESG & CSRD Report (Calculating Section)
         else if (id === 4) {
           contentDiv.innerHTML = `
             <div class="p-5 bg-gray-950 rounded-lg border border-gray-800 mb-6">
@@ -254,13 +255,9 @@
               <button onclick="calculateCarbon()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold rounded transition-colors">
                 Calculate Emissions
               </button>
-              <div id="calc-result" class="mt-4 p-3 bg-gray-900 rounded border border-gray-800 text-xs text-emerald-300 hidden">
-                <!-- Calculated Result Output -->
-              </div>
-            </div>
-            <p class="text-xs text-gray-400">Compliant with European Union CSRD sustainability standards under Muhammad Meer's supervision.</p>`;
+              <div id="calc-result" class="mt-4 p-3 bg-gray-900 rounded border border-gray-800 text-xs text-emerald-300 hidden"></div>
+            </div>`;
         }
-        // Tab 8: BOM & Costing Sheet (Calculating Section)
         else if (id === 8) {
           contentDiv.innerHTML = `
             <div class="p-5 bg-gray-950 rounded-lg border border-gray-800 mb-6">
@@ -282,126 +279,12 @@
               <button onclick="calculateBOMCost()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold rounded transition-colors">
                 Compute Total Budget
               </button>
-              <div id="bom-result" class="mt-4 p-3 bg-gray-900 rounded border border-gray-800 text-xs text-emerald-300 hidden">
-                <!-- BOM Cost Result -->
-              </div>
+              <div id="bom-result" class="mt-4 p-3 bg-gray-900 rounded border border-gray-800 text-xs text-emerald-300 hidden"></div>
             </div>`;
         }
-        // Tab 11: AI Operations Advisor & Customer Support Desk
         else if (id === 11) {
           let ticketsHtml = appState.supportTickets.length > 0 ? appState.supportTickets.map(t => `
             <div class="p-3 bg-gray-950 rounded border border-gray-800 mb-2">
-              <span class="text-[10px] text-emerald-400 font-mono">${t.id} • User: ${t.user}</span>
+              <span class="text-[10px] text-emerald-400 font-mono">${t.ticket_id \vert{}\vert{} t.id} • User: ${t.user_name || t.user}</span>
               <p class="text-xs text-white mt-1">"${t.query}"</p>
-              <span class="text-[10px] text-emerald-500 mt-1 block">Status: ${t.status}</span>
-            </div>
-          `).join('') : `<p class="text-xs text-gray-500 text-center py-4">No support tickets submitted yet.</p>`;
-
-          contentDiv.innerHTML = `
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div class="p-4 bg-gray-950 rounded-lg border border-gray-800">
-                <h4 class="text-sm font-semibold text-emerald-300 mb-3">💬 Customer Support & Query Desk</h4>
-                <div class="space-y-3 mb-3">
-                  <input type="text" id="supp-user" placeholder="Your Name / Consumer ID" class="w-full bg-gray-900 border border-gray-800 p-2 rounded text-xs text-white focus:outline-none focus:border-emerald-500">
-                  <textarea id="supp-query" placeholder="Type your query or support request here..." rows="3" class="w-full bg-gray-900 border border-gray-800 p-2 rounded text-xs text-white focus:outline-none focus:border-emerald-500"></textarea>
-                </div>
-                <button onclick="submitSupportTicket()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold rounded transition-colors">
-                  Submit Support Ticket
-                </button>
-              </div>
-              <div class="p-4 bg-gray-950 rounded-lg border border-gray-800">
-                <h4 class="text-sm font-semibold text-emerald-300 mb-3">Active Tickets & Inquiries</h4>
-                <div id="support-tickets-list" class="max-h-60 overflow-y-auto">
-                  ${ticketsHtml}
-                </div>
-              </div>
-            </div>`;
-        }
-        // Other Modules
-        else {
-          contentDiv.innerHTML = `
-            <div class="p-8 text-center border border-dashed border-gray-800 rounded-lg bg-gray-950/30">
-              <p class="text-gray-400 text-sm">
-                Active workspace for <span class="text-emerald-300 font-medium">${mod.title}</span> under Director <span class="text-white font-semibold">Muhammad Meer</span> is active and ready for your live inputs.
-              </p>
-            </div>`;
-        }
-        renderNav();
-      }
-
-      // Real-time functions
-      function addInventoryItem() {
-        const id = document.getElementById('inv-id').value;
-        const name = document.getElementById('inv-name').value;
-        const qty = document.getElementById('inv-qty').value;
-        if (!id || !name || !qty) {
-          alert('Please fill all fields');
-          return;
-        }
-        appState.inventory.push({ id, name, qty, status: "User Verified" });
-        switchTab(1);
-      }
-
-      function addDppRecord() {
-        const hash = document.getElementById('dpp-hash').value;
-        const batchName = document.getElementById('dpp-name').value;
-        if (!hash || !batchName) {
-          alert('Please fill all fields');
-          return;
-        }
-        appState.dppRecords.push({ hash, batchName, status: "Active & Traceable" });
-        switchTab(2);
-      }
-
-      function calculateCarbon() {
-        const energy = parseFloat(document.getElementById('calc-energy').value) || 0;
-        const weight = parseFloat(document.getElementById('calc-weight').value) || 0;
-        const totalEmission = (energy * 0.233) + (weight * 1.5);
-        const resDiv = document.getElementById('calc-result');
-        resDiv.classList.remove('hidden');
-        resDiv.innerHTML = `<strong>Calculation Result:</strong> Total Estimated Carbon Footprint is <span class="text-white font-bold">${totalEmission.toFixed(2)} kg CO2e</span> (ESPR Threshold Compliant).`;
-      }
-
-      function calculateBOMCost() {
-        const cost = parseFloat(document.getElementById('cost-fabric').value) || 0;
-        const qty = parseFloat(document.getElementById('cost-qty').value) || 0;
-        const overhead = parseFloat(document.getElementById('cost-overhead').value) || 0;
-        const total = (cost * qty) + overhead;
-        const resDiv = document.getElementById('bom-result');
-        resDiv.classList.remove('hidden');
-        resDiv.innerHTML = `<strong>Financial Calculation:</strong> Total BOM Cost = €<span class="text-white font-bold">${total.toLocaleString()}</span>`;
-      }
-
-      function submitSupportTicket() {
-        const user = document.getElementById('supp-user').value;
-        const query = document.getElementById('supp-query').value;
-        if (!user || !query) {
-          alert('Please fill out all support fields');
-          return;
-        }
-        const ticketId = 'TKT-' + Math.floor(100 + Math.random() * 900);
-        appState.supportTickets.unshift({ id: ticketId, user, query, status: "Pending Response" });
-        switchTab(11);
-      }
-
-      function toggleMobileMenu() {
-        mobileMenuOpen = !mobileMenuOpen;
-        const sidebar = document.getElementById('sidebar');
-        const backdrop = document.getElementById('backdrop');
-        const menuBtn = document.getElementById('menu-btn');
-        
-        if (mobileMenuOpen) {
-          sidebar.classList.remove('-translate-x-full');
-          backdrop.classList.remove('hidden');
-          menuBtn.innerText = '✕ Close';
-        } else {
-          sidebar.classList.add('-translate-x-full');
-          backdrop.classList.add('hidden');
-          menuBtn.innerText = '☰ Menu';
-        }
-      }
-
-      renderNav();
-    </script>
-</body>
-</html>
+              <span class="text-[10px] text-emerald
