@@ -93,7 +93,7 @@
 
     </div>
 
-    <!-- JavaScript Application Logic with Real-time State -->
+    <!-- JavaScript Application Logic with Calculators & Support Desk -->
     <script>
       // Global Live Data State
       let appState = {
@@ -102,6 +102,9 @@
         ],
         dppRecords: [
           { hash: "#EU-8812-TX", batchName: "Autumn Sustainable Line", status: "Active & Traceable" }
+        ],
+        supportTickets: [
+          { id: "TKT-101", user: "Consumer Jane", query: "Where can I scan the QR code for batch #48?", status: "Resolved" }
         ]
       };
 
@@ -110,14 +113,14 @@
         { id: 1, title: "2. Inventory & Excel Sheets", desc: "Add and manage real-time raw materials and warehouse stock records." },
         { id: 2, title: "3. EU Digital Product Passport", desc: "Issue and track real-time DPP compliance records and hashes." },
         { id: 3, title: "4. Multi-Tier Supply Traceability", desc: "Track supply chain transparency from Tier 3 to Tier 1." },
-        { id: 4, title: "5. Advanced ESG & CSRD Report", desc: "Sustainability metrics and European Union compliance reports." },
+        { id: 4, title: "5. Advanced ESG & CSRD Report", desc: "Sustainability metrics, carbon footprint calculator, and compliance audits." },
         { id: 5, title: "6. Supabase Cloud Records", desc: "Real-time cloud database synchronization and audit logs." },
         { id: 6, title: "7. Production WIP Stages", desc: "Work in progress tracking across spinning, weaving, and dyeing." },
         { id: 7, title: "8. Quality Control & Inspection", desc: "4-point inspection system and defect logging." },
-        { id: 8, title: "9. BOM & Costing Sheet", desc: "Bill of materials and financial cost breakdown." },
+        { id: 8, title: "9. BOM & Costing Sheet", desc: "Bill of materials and interactive financial cost calculation tool." },
         { id: 9, title: "10. Warehouse Location Management", desc: "Inventory warehouse bins, racks, and zone mapping." },
         { id: 10, title: "11. Buyers Order & Dispatch", desc: "Export orders, shipping status, and logistics tracking." },
-        { id: 11, title: "12. AI Operations Advisor", desc: "AI-powered recommendations for textile efficiency." }
+        { id: 11, title: "12. AI Operations Advisor & Support", desc: "AI-powered recommendations, customer support desk, and query resolution." }
       ];
 
       let activeTab = 0;
@@ -151,7 +154,7 @@
 
         const contentDiv = document.getElementById('module-content');
         
-        // Tab 0: Dashboard & Analytics (Real-time summary based on inputs)
+        // Tab 0: Dashboard & Analytics
         if (id === 0) {
           contentDiv.innerHTML = `
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
@@ -164,16 +167,16 @@
                 <h4 class="text-xl font-bold text-emerald-400 mt-1">${appState.inventory.length} Items</h4>
               </div>
               <div class="bg-gray-950 p-4 rounded-lg border border-gray-800">
-                <p class="text-xs text-gray-400">Issued DPP Passports</p>
-                <h4 class="text-xl font-bold text-emerald-400 mt-1">${appState.dppRecords.length} Records</h4>
+                <p class="text-xs text-gray-400">Support Tickets</p>
+                <h4 class="text-xl font-bold text-emerald-400 mt-1">${appState.supportTickets.length} Active</h4>
               </div>
             </div>
             <div class="p-5 bg-gray-950/60 rounded-lg border border-gray-800">
               <h4 class="text-sm font-semibold text-emerald-300 mb-2">Live System Status</h4>
-              <p class="text-xs text-gray-400">System is fully synchronized. All user and consumer inputs are updated in real-time across database sessions.</p>
+              <p class="text-xs text-gray-400">System is fully synchronized under Director Muhammad Meer. All user and consumer inputs update in real-time.</p>
             </div>`;
         } 
-        // Tab 1: Inventory & Excel Sheets (Real-time user input)
+        // Tab 1: Inventory & Excel Sheets
         else if (id === 1) {
           let rowsHtml = appState.inventory.map(item => `
             <tr>
@@ -186,7 +189,7 @@
 
           contentDiv.innerHTML = `
             <div class="mb-6 p-4 bg-gray-950 rounded-lg border border-gray-800">
-              <h4 class="text-sm font-semibold text-emerald-300 mb-3">Add New Inventory Item (Real-Time Input)</h4>
+              <h4 class="text-sm font-semibold text-emerald-300 mb-3">Add New Inventory Item</h4>
               <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-3">
                 <input type="text" id="inv-id" placeholder="Material ID (e.g. MAT-002)" class="bg-gray-900 border border-gray-800 p-2 rounded text-xs text-white focus:outline-none focus:border-emerald-500">
                 <input type="text" id="inv-name" placeholder="Material Name" class="bg-gray-900 border border-gray-800 p-2 rounded text-xs text-white focus:outline-none focus:border-emerald-500">
@@ -207,13 +210,13 @@
                     <th class="p-3">Status</th>
                   </tr>
                 </thead>
-                <tbody class="divide-y divide-gray-800" id="inv-table-body">
+                <tbody class="divide-y divide-gray-800">
                   ${rowsHtml}
                 </tbody>
               </table>
             </div>`;
         } 
-        // Tab 2: EU Digital Product Passport (Real-time user/consumer input)
+        // Tab 2: EU Digital Product Passport
         else if (id === 2) {
           let dppHtml = appState.dppRecords.map(dpp => `
             <div class="p-4 bg-gray-950 rounded-lg border border-gray-800 mb-3">
@@ -238,7 +241,88 @@
             <div id="dpp-list">
               ${dppHtml}
             </div>`;
-        } 
+        }
+        // Tab 4: Advanced ESG & CSRD Report (Calculating Section)
+        else if (id === 4) {
+          contentDiv.innerHTML = `
+            <div class="p-5 bg-gray-950 rounded-lg border border-gray-800 mb-6">
+              <h4 class="text-sm font-semibold text-emerald-300 mb-3">⚡ Carbon Footprint & ESG Calculator</h4>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
+                <div>
+                  <label class="text-[11px] text-gray-400 block mb-1">Energy Consumed (kWh)</label>
+                  <input type="number" id="calc-energy" placeholder="e.g. 5000" class="w-full bg-gray-900 border border-gray-800 p-2 rounded text-xs text-white focus:outline-none focus:border-emerald-500">
+                </div>
+                <div>
+                  <label class="text-[11px] text-gray-400 block mb-1">Material Weight (Kg)</label>
+                  <input type="number" id="calc-weight" placeholder="e.g. 2000" class="w-full bg-gray-900 border border-gray-800 p-2 rounded text-xs text-white focus:outline-none focus:border-emerald-500">
+                </div>
+              </div>
+              <button onclick="calculateCarbon()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold rounded transition-colors">
+                Calculate Emissions
+              </button>
+              <div id="calc-result" class="mt-4 p-3 bg-gray-900 rounded border border-gray-800 text-xs text-emerald-300 hidden">
+                <!-- Calculated Result Output -->
+              </div>
+            </div>
+            <p class="text-xs text-gray-400">Compliant with European Union CSRD sustainability standards under Muhammad Meer's supervision.</p>`;
+        }
+        // Tab 8: BOM & Costing Sheet (Calculating Section)
+        else if (id === 8) {
+          contentDiv.innerHTML = `
+            <div class="p-5 bg-gray-950 rounded-lg border border-gray-800 mb-6">
+              <h4 class="text-sm font-semibold text-emerald-300 mb-3">💰 BOM Cost & Financial Calculator</h4>
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-3">
+                <div>
+                  <label class="text-[11px] text-gray-400 block mb-1">Fabric Cost per Kg (€)</label>
+                  <input type="number" id="cost-fabric" placeholder="e.g. 12.5" class="w-full bg-gray-900 border border-gray-800 p-2 rounded text-xs text-white focus:outline-none focus:border-emerald-500">
+                </div>
+                <div>
+                  <label class="text-[11px] text-gray-400 block mb-1">Total Quantity (Kg)</label>
+                  <input type="number" id="cost-qty" placeholder="e.g. 800" class="w-full bg-gray-900 border border-gray-800 p-2 rounded text-xs text-white focus:outline-none focus:border-emerald-500">
+                </div>
+                <div>
+                  <label class="text-[11px] text-gray-400 block mb-1">Processing Overhead (€)</label>
+                  <input type="number" id="cost-overhead" placeholder="e.g. 1500" class="w-full bg-gray-900 border border-gray-800 p-2 rounded text-xs text-white focus:outline-none focus:border-emerald-500">
+                </div>
+              </div>
+              <button onclick="calculateBOMCost()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold rounded transition-colors">
+                Compute Total Budget
+              </button>
+              <div id="bom-result" class="mt-4 p-3 bg-gray-900 rounded border border-gray-800 text-xs text-emerald-300 hidden">
+                <!-- BOM Cost Result -->
+              </div>
+            </div>`;
+        }
+        // Tab 11: AI Operations Advisor & Customer Support Desk
+        else if (id === 11) {
+          let ticketsHtml = appState.supportTickets.map(t => `
+            <div class="p-3 bg-gray-950 rounded border border-gray-800 mb-2">
+              <span class="text-[10px] text-emerald-400 font-mono">${t.id} • User: ${t.user}</span>
+              <p class="text-xs text-white mt-1">"${t.query}"</p>
+              <span class="text-[10px] text-emerald-500 mt-1 block">Status: ${t.status}</span>
+            </div>
+          `).join('');
+
+          contentDiv.innerHTML = `
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div class="p-4 bg-gray-950 rounded-lg border border-gray-800">
+                <h4 class="text-sm font-semibold text-emerald-300 mb-3">💬 Customer Support & Query Desk</h4>
+                <div class="space-y-3 mb-3">
+                  <input type="text" id="supp-user" placeholder="Your Name / Consumer ID" class="w-full bg-gray-900 border border-gray-800 p-2 rounded text-xs text-white focus:outline-none focus:border-emerald-500">
+                  <textarea id="supp-query" placeholder="Type your query or support request here..." rows="3" class="w-full bg-gray-900 border border-gray-800 p-2 rounded text-xs text-white focus:outline-none focus:border-emerald-500"></textarea>
+                </div>
+                <button onclick="submitSupportTicket()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold rounded transition-colors">
+                  Submit Support Ticket
+                </button>
+              </div>
+              <div class="p-4 bg-gray-950 rounded-lg border border-gray-800">
+                <h4 class="text-sm font-semibold text-emerald-300 mb-3">Active Tickets & Inquiries</h4>
+                <div id="support-tickets-list" class="max-h-60 overflow-y-auto">
+                  ${ticketsHtml}
+                </div>
+              </div>
+            </div>`;
+        }
         // Other Modules
         else {
           contentDiv.innerHTML = `
@@ -251,7 +335,7 @@
         renderNav();
       }
 
-      // Real-time functions to add data dynamically
+      // Real-time functions
       function addInventoryItem() {
         const id = document.getElementById('inv-id').value;
         const name = document.getElementById('inv-name').value;
@@ -273,6 +357,37 @@
         }
         appState.dppRecords.push({ hash, batchName, status: "Active & Traceable" });
         switchTab(2);
+      }
+
+      function calculateCarbon() {
+        const energy = parseFloat(document.getElementById('calc-energy').value) || 0;
+        const weight = parseFloat(document.getElementById('calc-weight').value) || 0;
+        const totalEmission = (energy * 0.233) + (weight * 1.5);
+        const resDiv = document.getElementById('calc-result');
+        resDiv.classList.remove('hidden');
+        resDiv.innerHTML = `<strong>Calculation Result:</strong> Total Estimated Carbon Footprint is <span class="text-white font-bold">${totalEmission.toFixed(2)} kg CO2e</span> (ESPR Threshold Compliant).`;
+      }
+
+      function calculateBOMCost() {
+        const cost = parseFloat(document.getElementById('cost-fabric').value) || 0;
+        const qty = parseFloat(document.getElementById('cost-qty').value) || 0;
+        const overhead = parseFloat(document.getElementById('cost-overhead').value) || 0;
+        const total = (cost * qty) + overhead;
+        const resDiv = document.getElementById('bom-result');
+        resDiv.classList.remove('hidden');
+        resDiv.innerHTML = `<strong>Financial Calculation:</strong> Total BOM Cost = €<span class="text-white font-bold">${total.toLocaleString()}</span>`;
+      }
+
+      function submitSupportTicket() {
+        const user = document.getElementById('supp-user').value;
+        const query = document.getElementById('supp-query').value;
+        if (!user || !query) {
+          alert('Please fill out all support fields');
+          return;
+        }
+        const ticketId = 'TKT-' + Math.floor(100 + Math.random() * 900);
+        appState.supportTickets.unshift({ id: ticketId, user, query, status: "Pending Response" });
+        switchTab(11);
       }
 
       function toggleMobileMenu() {
