@@ -6,11 +6,15 @@
     <title>EcoTextile Pro - Cloud Portal</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Supabase UMD CDN (Fixed for mobile/browser) -->
+    <!-- Supabase UMD CDN -->
     <script src="https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
     <style>
         body { background-color: #030712; color: #f3f4f6; font-family: system-ui, -apple-system, sans-serif; margin: 0; min-height: 100vh; display: flex; flex-direction: column; }
         .hidden { display: none !important; }
+        @media (min-width: 768px) {
+            .app-layout { flex-direction: row !important; }
+            .sidebar-width { width: 260px !important; }
+        }
     </style>
 </head>
 <body>
@@ -59,9 +63,9 @@
 
     <!-- MAIN APP CONTAINER -->
     <div id="main-app-container" class="hidden" style="width: 100%; min-height: 100vh;">
-        <div style="display: flex; flex-direction: column; md:flex-row; width: 100%; min-height: 100vh;">
+        <div class="app-layout" style="display: flex; flex-direction: column; width: 100%; min-height: 100vh;">
             <!-- SIDEBAR -->
-            <aside style="width: 100%; md:width: 260px; background: #030712; border-right: 1px solid #1f2937; display: flex; flex-direction: column; justify-content: space-between;">
+            <aside class="sidebar-width" style="width: 100%; background: #030712; border-right: 1px solid #1f2937; display: flex; flex-direction: column; justify-content: space-between;">
                 <div>
                     <div style="padding: 1.5rem; border-bottom: 1px solid #1f2937;">
                         <span style="font-size: 1.125rem; font-weight: bold; color: #34d399; display: block;">EcoTextile Pro</span>
