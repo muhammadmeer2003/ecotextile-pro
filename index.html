@@ -20,12 +20,13 @@
             --border-color: #1f2937;
             --accent-green: #10b981;
             --accent-glow: rgba(16, 185, 129, 0.15);
+            --accent-blue: #3b82f6;
         }
         body { background-color: var(--bg-main); color: #f3f4f6; font-family: system-ui, -apple-system, sans-serif; margin: 0; min-height: 100vh; display: flex; flex-direction: column; }
         .hidden { display: none !important; }
-        @media (min-width: 768px) {
+        @media (min-width: 1024px) {
             .app-layout { flex-direction: row !important; }
-            .sidebar-width { width: 300px !important; }
+            .sidebar-width { width: 320px !important; }
         }
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: var(--bg-main); }
@@ -36,9 +37,9 @@
         .toast-animate { animation: slideIn 0.3s ease-out forwards; }
         @keyframes modalPop { 0% { transform: scale(0.92); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
         .auth-card-animate { animation: modalPop 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-        .glass-card { background: linear-gradient(135deg, rgba(17, 24, 39, 0.75), rgba(3, 7, 18, 0.92)); backdrop-filter: blur(12px); border: 1px solid var(--border-color); }
+        .glass-card { background: linear-gradient(135deg, rgba(17, 24, 39, 0.85), rgba(3, 7, 18, 0.95)); backdrop-filter: blur(16px); border: 1px solid var(--border-color); box-shadow: 0 10px 30px -10px rgba(0,0,0,0.5); }
         .hero-banner {
-            background: linear-gradient(to right, rgba(3, 7, 18, 0.92), rgba(3, 7, 18, 0.75)), url('https://images.unsplash.com/photo-1558769132-cb1aea458c5e?auto=format&fit=crop&w=1600&q=80');
+            background: linear-gradient(to right, rgba(3, 7, 18, 0.95), rgba(3, 7, 18, 0.75)), url('https://images.unsplash.com/photo-1558769132-cb1aea458c5e?auto=format&fit=crop&w=1600&q=80');
             background-size: cover; background-position: center;
         }
         @media print {
@@ -61,7 +62,7 @@
                     <svg style="width: 2.25rem; height: 2.25rem; color: var(--accent-green);" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
                 </div>
                 <h2 style="font-size: 1.875rem; font-weight: 800; color: #ffffff; margin: 0 0 0.35rem 0;">EcoTextile EU Suite</h2>
-                <p id="auth-subtitle" style="font-size: 0.8125rem; color: #9ca3af; margin: 0;">Director Portal & EU ESPR Compliance</p>
+                <p id="auth-subtitle" style="font-size: 0.8125rem; color: #9ca3af; margin: 0;">Director Portal & AI Textile Intelligence</p>
             </div>
 
             <form id="auth-form" onsubmit="handleAuthSubmit(event)" style="display: flex; flex-direction: column; gap: 1.25rem;">
@@ -75,8 +76,6 @@
                     <input type="password" id="auth-password" required value="password123" style="width: 100%; background: var(--bg-main); border: 1px solid var(--border-color); border-radius: 0.625rem; padding: 0.75rem 0.875rem; font-size: 0.875rem; color: #f3f4f6; outline: none; box-sizing: border-box;">
                 </div>
 
-                <div id="auth-error" class="hidden" style="font-size: 0.8125rem; color: #fb7185; background: rgba(159, 18, 57, 0.2); padding: 0.75rem; border-radius: 0.5rem; border: 1px solid rgba(225, 29, 72, 0.3);"></div>
-
                 <button type="submit" id="auth-submit-btn" style="width: 100%; background: #059669; color: white; padding: 0.75rem; border-radius: 0.625rem; font-size: 0.9375rem; font-weight: 600; border: none; cursor: pointer; margin-top: 0.5rem; box-shadow: 0 4px 12px rgba(5, 150, 105, 0.3);">
                     Sign In
                 </button>
@@ -88,10 +87,10 @@
     <div id="main-app-container" class="hidden" style="width: 100%; min-height: 100vh;">
         <div class="app-layout" style="display: flex; flex-direction: column; width: 100%; min-height: 100vh;">
             
-            <!-- SIDEBAR -->
-            <aside class="sidebar-width" style="width: 100%; background: var(--bg-main); border-right: 1px solid var(--border-color); display: flex; flex-direction: column; justify-content: space-between;">
+            <!-- SIDEBAR (11+ SECTIONS) -->
+            <aside class="sidebar-width" style="width: 100%; background: var(--bg-main); border-right: 1px solid var(--border-color); display: flex; flex-direction: column; justify-content: space-between; height: 100vh; position: sticky; top: 0; overflow-y: auto;">
                 <div>
-                    <div style="padding: 1.5rem; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; gap: 0.875rem;">
+                    <div style="padding: 1.5rem; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; gap: 0.875rem; background: rgba(3, 7, 18, 0.8);">
                         <div style="padding: 0.625rem; background: var(--accent-glow); border-radius: 0.75rem; border: 1px solid rgba(16, 185, 129, 0.3);">
                             <svg style="width: 1.375rem; height: 1.375rem; color: var(--accent-green);" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
                         </div>
@@ -101,31 +100,46 @@
                         </div>
                     </div>
                     
-                    <nav style="padding: 1.25rem 1rem; display: flex; flex-direction: column; gap: 0.4rem;">
-                        <button onclick="switchTab('overview')" id="btn-overview" style="display: flex; align-items: center; gap: 0.75rem; width: 100%; padding: 0.7rem 1rem; font-size: 0.85rem; border-radius: 0.625rem; font-weight: 500; background: var(--accent-glow); color: var(--accent-green); border: 1px solid rgba(16, 185, 129, 0.3); text-align: left; cursor: pointer;">
-                            📊 Dashboard & Analytics
+                    <nav style="padding: 1rem; display: flex; flex-direction: column; gap: 0.35rem;">
+                        <button onclick="switchTab('overview')" id="btn-overview" style="display: flex; align-items: center; gap: 0.75rem; width: 100%; padding: 0.65rem 0.875rem; font-size: 0.825rem; border-radius: 0.625rem; font-weight: 500; background: var(--accent-glow); color: var(--accent-green); border: 1px solid rgba(16, 185, 129, 0.3); text-align: left; cursor: pointer;">
+                            📊 1. Dashboard & Analytics
                         </button>
-                        <button onclick="switchTab('inventory')" id="btn-inventory" style="display: flex; align-items: center; gap: 0.75rem; width: 100%; padding: 0.7rem 1rem; font-size: 0.85rem; border-radius: 0.625rem; font-weight: 500; background: transparent; color: #9ca3af; border: none; text-align: left; cursor: pointer;">
-                            📦 Inventory & Excel Sheets
+                        <button onclick="switchTab('inventory')" id="btn-inventory" style="display: flex; align-items: center; gap: 0.75rem; width: 100%; padding: 0.65rem 0.875rem; font-size: 0.825rem; border-radius: 0.625rem; font-weight: 500; background: transparent; color: #9ca3af; border: none; text-align: left; cursor: pointer;">
+                            📦 2. Inventory & Excel Sheets
                         </button>
-                        <button onclick="switchTab('dpp')" id="btn-dpp" style="display: flex; align-items: center; gap: 0.75rem; width: 100%; padding: 0.7rem 1rem; font-size: 0.85rem; border-radius: 0.625rem; font-weight: 500; background: transparent; color: #9ca3af; border: none; text-align: left; cursor: pointer;">
-                            🏷️ EU Digital Product Passport (DPP)
+                        <button onclick="switchTab('dpp')" id="btn-dpp" style="display: flex; align-items: center; gap: 0.75rem; width: 100%; padding: 0.65rem 0.875rem; font-size: 0.825rem; border-radius: 0.625rem; font-weight: 500; background: transparent; color: #9ca3af; border: none; text-align: left; cursor: pointer;">
+                            🏷️ 3. EU Digital Product Passport
                         </button>
-                        <button onclick="switchTab('traceability')" id="btn-traceability" style="display: flex; align-items: center; gap: 0.75rem; width: 100%; padding: 0.7rem 1rem; font-size: 0.85rem; border-radius: 0.625rem; font-weight: 500; background: transparent; color: #9ca3af; border: none; text-align: left; cursor: pointer;">
-                            🔗 Multi-Tier Supply Traceability
+                        <button onclick="switchTab('traceability')" id="btn-traceability" style="display: flex; align-items: center; gap: 0.75rem; width: 100%; padding: 0.65rem 0.875rem; font-size: 0.825rem; border-radius: 0.625rem; font-weight: 500; background: transparent; color: #9ca3af; border: none; text-align: left; cursor: pointer;">
+                            🔗 4. Multi-Tier Supply Traceability
                         </button>
-                        <button onclick="switchTab('esg')" id="btn-esg" style="display: flex; align-items: center; gap: 0.75rem; width: 100%; padding: 0.7rem 1rem; font-size: 0.85rem; border-radius: 0.625rem; font-weight: 500; background: transparent; color: #9ca3af; border: none; text-align: left; cursor: pointer;">
-                            📈 Advanced ESG & CSRD Report
+                        <button onclick="switchTab('esg')" id="btn-esg" style="display: flex; align-items: center; gap: 0.75rem; width: 100%; padding: 0.65rem 0.875rem; font-size: 0.825rem; border-radius: 0.625rem; font-weight: 500; background: transparent; color: #9ca3af; border: none; text-align: left; cursor: pointer;">
+                            📈 5. Advanced ESG & CSRD Report
                         </button>
-                        <button onclick="switchTab('ai')" id="btn-ai" style="display: flex; align-items: center; gap: 0.75rem; width: 100%; padding: 0.7rem 1rem; font-size: 0.85rem; border-radius: 0.625rem; font-weight: 500; background: transparent; color: #9ca3af; border: none; text-align: left; cursor: pointer;">
-                            🤖 AI Sustainability Advisor
+                        <button onclick="switchTab('history')" id="btn-history" style="display: flex; align-items: center; gap: 0.75rem; width: 100%; padding: 0.65rem 0.875rem; font-size: 0.825rem; border-radius: 0.625rem; font-weight: 500; background: transparent; color: #9ca3af; border: none; text-align: left; cursor: pointer;">
+                            ☁️ 6. Supabase Cloud Records
                         </button>
-                        <button onclick="switchTab('history')" id="btn-history" style="display: flex; align-items: center; gap: 0.75rem; width: 100%; padding: 0.7rem 1rem; font-size: 0.85rem; border-radius: 0.625rem; font-weight: 500; background: transparent; color: #9ca3af; border: none; text-align: left; cursor: pointer;">
-                            ☁️ Supabase Cloud Records
+                        <button onclick="switchTab('wip')" id="btn-wip" style="display: flex; align-items: center; gap: 0.75rem; width: 100%; padding: 0.65rem 0.875rem; font-size: 0.825rem; border-radius: 0.625rem; font-weight: 500; background: transparent; color: #9ca3af; border: none; text-align: left; cursor: pointer;">
+                            ⚙️ 7. Production WIP Stages
+                        </button>
+                        <button onclick="switchTab('qc')" id="btn-qc" style="display: flex; align-items: center; gap: 0.75rem; width: 100%; padding: 0.65rem 0.875rem; font-size: 0.825rem; border-radius: 0.625rem; font-weight: 500; background: transparent; color: #9ca3af; border: none; text-align: left; cursor: pointer;">
+                            🔍 8. Quality Control & Inspection
+                        </button>
+                        <button onclick="switchTab('bom')" id="btn-bom" style="display: flex; align-items: center; gap: 0.75rem; width: 100%; padding: 0.65rem 0.875rem; font-size: 0.825rem; border-radius: 0.625rem; font-weight: 500; background: transparent; color: #9ca3af; border: none; text-align: left; cursor: pointer;">
+                            📋 9. BOM & Costing Sheet
+                        </button>
+                        <button onclick="switchTab('warehouse')" id="btn-warehouse" style="display: flex; align-items: center; gap: 0.75rem; width: 100%; padding: 0.65rem 0.875rem; font-size: 0.825rem; border-radius: 0.625rem; font-weight: 500; background: transparent; color: #9ca3af; border: none; text-align: left; cursor: pointer;">
+                            🏭 10. Warehouse Location Management
+                        </button>
+                        <button onclick="switchTab('orders')" id="btn-orders" style="display: flex; align-items: center; gap: 0.75rem; width: 100%; padding: 0.65rem 0.875rem; font-size: 0.825rem; border-radius: 0.625rem; font-weight: 500; background: transparent; color: #9ca3af; border: none; text-align: left; cursor: pointer;">
+                            🚢 11. Buyers Order & Dispatch
+                        </button>
+                        <button onclick="switchTab('ai')" id="btn-ai" style="display: flex; align-items: center; gap: 0.75rem; width: 100%; padding: 0.65rem 0.875rem; font-size: 0.825rem; border-radius: 0.625rem; font-weight: 500; background: transparent; color: #9ca3af; border: none; text-align: left; cursor: pointer;">
+                            🤖 12. AI Operations Advisor
                         </button>
                     </nav>
                 </div>
-                <div style="padding: 1.25rem 1rem; border-top: 1px solid var(--border-color);">
+                <div style="padding: 1rem; border-top: 1px solid var(--border-color); background: rgba(3, 7, 18, 0.8);">
                     <button onclick="handleLogout()" style="display: flex; align-items: center; gap: 0.75rem; width: 100%; padding: 0.625rem 1rem; font-size: 0.85rem; color: #f87171; background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.2); border-radius: 0.625rem; cursor: pointer; font-weight: 500;">
                         Sign Out
                     </button>
@@ -151,9 +165,9 @@
                     <div id="tab-overview" class="tab-content" style="display: flex; flex-direction: column; gap: 1.5rem;">
                         <div class="hero-banner glass-card" style="border-radius: 1rem; padding: 3rem 2.5rem; display: flex; flex-direction: column; gap: 1rem;">
                             <div style="max-width: 650px; z-index: 10;">
-                                <span style="background: var(--accent-glow); color: var(--accent-green); font-size: 0.75rem; font-weight: 700; padding: 0.35rem 0.875rem; border-radius: 9999px; border: 1px solid rgba(16, 185, 129, 0.4); text-transform: uppercase;">EU Green Deal Compliance Suite</span>
-                                <h1 style="font-size: 2.25rem; font-weight: 800; color: #ffffff; margin: 1rem 0 0.75rem 0;">Sustainable Textile Supply Chain Intelligence</h1>
-                                <p style="font-size: 0.9375rem; color: #9ca3af; margin: 0;">Supervised by Director Muhammad Meer. Live analytics, ESG tracking, and ESPR Digital Product Passports.</p>
+                                <span style="background: var(--accent-glow); color: var(--accent-green); font-size: 0.75rem; font-weight: 700; padding: 0.35rem 0.875rem; border-radius: 9999px; border: 1px solid rgba(16, 185, 129, 0.4); text-transform: uppercase;">EU Green Deal & Enterprise Intelligence</span>
+                                <h1 style="font-size: 2.25rem; font-weight: 800; color: #ffffff; margin: 1rem 0 0.75rem 0;">Sustainable Textile Value Chain Suite</h1>
+                                <p style="font-size: 0.9375rem; color: #9ca3af; margin: 0;">Supervised by Director Muhammad Meer. Live analytics, WIP production, quality inspection, and ESPR compliance.</p>
                             </div>
                         </div>
                         <div class="glass-card" style="padding: 2rem; border-radius: 1rem;">
@@ -192,7 +206,7 @@
                         </div>
                     </div>
 
-                    <!-- 3. DPP (DIGITAL PRODUCT PASSPORT) TAB - NEW EU FEATURE -->
+                    <!-- 3. DPP TAB -->
                     <div id="tab-dpp" class="tab-content hidden" style="display: none; flex-direction: column; gap: 1.5rem;">
                         <h1 style="font-size: 1.875rem; font-weight: bold; color: #f3f4f6; margin: 0;">EU Digital Product Passport (DPP - ESPR)</h1>
                         <p style="color: #9ca3af; font-size: 0.9rem;">Mandatory EU passport containing circularity index, material composition, and supply transparency.</p>
@@ -212,7 +226,7 @@
                         </div>
                     </div>
 
-                    <!-- 4. TRACEABILITY TAB - NEW EU FEATURE -->
+                    <!-- 4. TRACEABILITY TAB -->
                     <div id="tab-traceability" class="tab-content hidden" style="display: none; flex-direction: column; gap: 1.5rem;">
                         <h1 style="font-size: 1.875rem; font-weight: bold; color: #f3f4f6; margin: 0;">Multi-Tier Supply Chain Traceability</h1>
                         <div class="glass-card" style="padding: 1.5rem; border-radius: 0.875rem; display: flex; flex-direction: column; gap: 1rem;">
@@ -231,7 +245,7 @@
                         </div>
                     </div>
 
-                    <!-- 5. ESG CALCULATOR TAB -->
+                    <!-- 5. ESG TAB -->
                     <div id="tab-esg" class="tab-content hidden" style="display: none; flex-direction: column; gap: 1.5rem;">
                         <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
                             <h1 style="font-size: 1.875rem; font-weight: bold; color: #f3f4f6; margin: 0;">Advanced ESG & CSRD Report</h1>
@@ -256,18 +270,7 @@
                         </div>
                     </div>
 
-                    <!-- 6. AI ADVISOR TAB -->
-                    <div id="tab-ai" class="tab-content hidden" style="display: none; flex-direction: column; gap: 1.5rem;">
-                        <h1 style="font-size: 1.875rem; font-weight: bold; color: #f3f4f6; margin: 0;">AI Sustainability Advisor</h1>
-                        <div class="glass-card" style="padding: 2rem; border-radius: 0.875rem; display: flex; flex-direction: column; gap: 1rem;">
-                            <button onclick="runAIAudit()" style="background: #2563eb; color: white; padding: 0.625rem 1.125rem; border-radius: 0.625rem; border: none; cursor: pointer; font-weight: 600; width: fit-content;">Run AI EU Audit</button>
-                            <div id="ai-output-box" style="background: var(--bg-main); padding: 1.25rem; border-radius: 0.5rem; border: 1px solid var(--border-color); font-size: 0.875rem; color: #9ca3af;">
-                                Click the button above to generate AI insights for EU ZDHC chemical and carbon compliance.
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- 7. HISTORY TAB -->
+                    <!-- 6. HISTORY TAB -->
                     <div id="tab-history" class="tab-content hidden" style="display: none; flex-direction: column; gap: 1.5rem;">
                         <h1 style="font-size: 1.875rem; font-weight: bold; color: #f3f4f6; margin: 0;">Supabase Cloud Records</h1>
                         <div class="glass-card" style="border-radius: 0.875rem; overflow-x: auto;">
@@ -284,6 +287,185 @@
                                     <tr><td colspan="4" style="padding: 2rem; text-align: center; color: #6b7280;">Loading cloud records...</td></tr>
                                 </tbody>
                             </table>
+                        </div>
+                    </div>
+
+                    <!-- 7. PRODUCTION WIP STAGES (NEW) -->
+                    <div id="tab-wip" class="tab-content hidden" style="display: none; flex-direction: column; gap: 1.5rem;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+                            <h1 style="font-size: 1.875rem; font-weight: bold; color: #f3f4f6; margin: 0;">Production & WIP Stages</h1>
+                            <button onclick="runAIAuditWIP()" style="background: #059669; color: white; padding: 0.625rem 1.125rem; border-radius: 0.625rem; font-size: 0.8125rem; font-weight: 600; border: none; cursor: pointer;">🤖 AI Bottleneck Scan</button>
+                        </div>
+                        <div class="glass-card" style="border-radius: 0.875rem; overflow-x: auto;">
+                            <table style="width: 100%; text-align: left; font-size: 0.875rem; border-collapse: collapse;">
+                                <thead style="background: var(--bg-main); color: #9ca3af; font-size: 0.75rem; text-transform: uppercase;">
+                                    <tr>
+                                        <th style="padding: 1rem;">Order #</th>
+                                        <th style="padding: 1rem;">Spinning</th>
+                                        <th style="padding: 1rem;">Weaving / Knitting</th>
+                                        <th style="padding: 1rem;">Dyeing & Wet Proc.</th>
+                                        <th style="padding: 1rem;">Stitching / Finish</th>
+                                        <th style="padding: 1rem;">AI Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr style="border-bottom: 1px solid var(--border-color);">
+                                        <td style="padding: 1rem; color: white; font-weight: 600;">ORD-501</td>
+                                        <td style="padding: 1rem; color: #34d399;">Completed</td>
+                                        <td style="padding: 1rem; color: #34d399;">Completed</td>
+                                        <td style="padding: 1rem; color: #fbbf24;">In Progress (70%)</td>
+                                        <td style="padding: 1rem; color: #9ca3af;">Pending</td>
+                                        <td style="padding: 1rem; color: var(--accent-green);">Optimal Flow</td>
+                                    </tr>
+                                    <tr style="border-bottom: 1px solid var(--border-color);">
+                                        <td style="padding: 1rem; color: white; font-weight: 600;">ORD-502</td>
+                                        <td style="padding: 1rem; color: #34d399;">Completed</td>
+                                        <td style="padding: 1rem; color: #fbbf24;">In Progress (40%)</td>
+                                        <td style="padding: 1rem; color: #9ca3af;">Pending</td>
+                                        <td style="padding: 1rem; color: #9ca3af;">Pending</td>
+                                        <td style="padding: 1rem; color: #f87171;">Minor Delay in Weaving</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- 8. QUALITY CONTROL & INSPECTION (NEW) -->
+                    <div id="tab-qc" class="tab-content hidden" style="display: none; flex-direction: column; gap: 1.5rem;">
+                        <h1 style="font-size: 1.875rem; font-weight: bold; color: #f3f4f6; margin: 0;">Quality Control & Inspection (QC)</h1>
+                        <div class="glass-card" style="padding: 1.5rem; border-radius: 0.875rem; display: flex; flex-direction: column; gap: 1rem;">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <h3 style="color: white; margin: 0;">Inspection Logs & 4-Point System</h3>
+                                <button onclick="runAIAuditQC()" style="background: #2563eb; color: white; padding: 0.5rem 1rem; border-radius: 0.5rem; border: none; font-size: 0.8rem; cursor: pointer; font-weight: 600;">🤖 AI Defect Prediction</button>
+                            </div>
+                            <table style="width: 100%; text-align: left; font-size: 0.875rem; border-collapse: collapse;">
+                                <thead style="background: var(--bg-main); color: #9ca3af; font-size: 0.75rem; text-transform: uppercase;">
+                                    <tr>
+                                        <th style="padding: 0.8rem;">Lot ID</th>
+                                        <th style="padding: 0.8rem;">Inspector</th>
+                                        <th style="padding: 0.8rem;">Color Fastness</th>
+                                        <th style="padding: 0.8rem;">Shrinkage</th>
+                                        <th style="padding: 0.8rem;">Final Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr style="border-bottom: 1px solid var(--border-color);">
+                                        <td style="padding: 0.8rem; color: white;">#LOT-901</td>
+                                        <td style="padding: 0.8rem; color: #9ca3af;">Ahmed Khan</td>
+                                        <td style="padding: 0.8rem; color: #34d399;">Grade A (4.5/5)</td>
+                                        <td style="padding: 1.2rem 0.8rem; color: #34d399;">&lt; 2.1%</td>
+                                        <td style="padding: 0.8rem;"><span style="background: rgba(16,185,129,0.2); color: #34d399; padding: 0.2rem 0.6rem; border-radius: 9999px; font-size: 0.75rem;">PASSED</span></td>
+                                    </tr>
+                                    <tr style="border-bottom: 1px solid var(--border-color);">
+                                        <td style="padding: 0.8rem; color: white;">#LOT-902</td>
+                                        <td style="padding: 0.8rem; color: #9ca3af;">Bilal Ahmed</td>
+                                        <td style="padding: 0.8rem; color: #fbbf24;">Grade B (3.2/5)</td>
+                                        <td style="padding: 1.2rem 0.8rem; color: #f87171;">4.5%</td>
+                                        <td style="padding: 0.8rem;"><span style="background: rgba(239,68,68,0.2); color: #f87171; padding: 0.2rem 0.6rem; border-radius: 9999px; font-size: 0.75rem;">REWORK</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- 9. BILL OF MATERIALS & COSTING SHEET (NEW) -->
+                    <div id="tab-bom" class="tab-content hidden" style="display: none; flex-direction: column; gap: 1.5rem;">
+                        <h1 style="font-size: 1.875rem; font-weight: bold; color: #f3f4f6; margin: 0;">Bill of Materials (BOM) & Costing Sheet</h1>
+                        <div class="glass-card" style="padding: 2rem; border-radius: 0.875rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.5rem;">
+                            <div>
+                                <label style="display: block; font-size: 0.75rem; color: #9ca3af; margin-bottom: 0.4rem;">RAW COTTON/YARN COST ($/KG)</label>
+                                <input type="number" id="bom-yarn" value="4.50" oninput="calculateBOM()" style="width: 100%; background: var(--bg-main); border: 1px solid var(--border-color); border-radius: 0.5rem; padding: 0.6rem; color: white; box-sizing: border-box;">
+                            </div>
+                            <div>
+                                <label style="display: block; font-size: 0.75rem; color: #9ca3af; margin-bottom: 0.4rem;">DYES & CHEMICALS ($)</label>
+                                <input type="number" id="bom-dyes" value="1.20" oninput="calculateBOM()" style="width: 100%; background: var(--bg-main); border: 1px solid var(--border-color); border-radius: 0.5rem; padding: 0.6rem; color: white; box-sizing: border-box;">
+                            </div>
+                            <div>
+                                <label style="display: block; font-size: 0.75rem; color: #9ca3af; margin-bottom: 0.4rem;">LABOR & OVERHEAD ($)</label>
+                                <input type="number" id="bom-labor" value="2.10" oninput="calculateBOM()" style="width: 100%; background: var(--bg-main); border: 1px solid var(--border-color); border-radius: 0.5rem; padding: 0.6rem; color: white; box-sizing: border-box;">
+                            </div>
+                            <div style="background: var(--bg-main); padding: 1.25rem; border-radius: 0.5rem; border: 1px solid var(--border-color); grid-column: 1 / -1;">
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <span style="font-size: 0.875rem; color: #9ca3af;">Total Production Cost per Garment:</span>
+                                    <span id="bom-total" style="font-size: 1.5rem; font-weight: bold; color: var(--accent-green);">$7.80</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 10. WAREHOUSE LOCATION MANAGEMENT (NEW) -->
+                    <div id="tab-warehouse" class="tab-content hidden" style="display: none; flex-direction: column; gap: 1.5rem;">
+                        <h1 style="font-size: 1.875rem; font-weight: bold; color: #f3f4f6; margin: 0;">Warehouse & Bin Location Management</h1>
+                        <div class="glass-card" style="border-radius: 0.875rem; overflow-x: auto;">
+                            <table style="width: 100%; text-align: left; font-size: 0.875rem; border-collapse: collapse;">
+                                <thead style="background: var(--bg-main); color: #9ca3af; font-size: 0.75rem; text-transform: uppercase;">
+                                    <tr>
+                                        <th style="padding: 1rem;">Zone / Rack</th>
+                                        <th style="padding: 1rem;">Item Stored</th>
+                                        <th style="padding: 1rem;">Capacity Used</th>
+                                        <th style="padding: 1rem;">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr style="border-bottom: 1px solid var(--border-color);">
+                                        <td style="padding: 1rem; color: var(--accent-green); font-weight: 600;">Zone A - Rack 04</td>
+                                        <td style="padding: 1rem; color: white;">Greige Cotton Bales</td>
+                                        <td style="padding: 1rem; color: #60a5fa;">85% (4,250 KG)</td>
+                                        <td style="padding: 1rem; color: #34d399;">Active Stock</td>
+                                    </tr>
+                                    <tr style="border-bottom: 1px solid var(--border-color);">
+                                        <td style="padding: 1rem; color: var(--accent-green); font-weight: 600;">Zone B - Rack 12</td>
+                                        <td style="padding: 1rem; color: white;">Dyed Fabric Rolls</td>
+                                        <td style="padding: 1rem; color: #60a5fa;">60% (1,800 KG)</td>
+                                        <td style="padding: 1rem; color: #34d399;">Ready for Stitching</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- 11. BUYERS ORDER & DISPATCH (NEW) -->
+                    <div id="tab-orders" class="tab-content hidden" style="display: none; flex-direction: column; gap: 1.5rem;">
+                        <h1 style="font-size: 1.875rem; font-weight: bold; color: #f3f4f6; margin: 0;">Buyer Orders & Shipping Dispatch</h1>
+                        <div class="glass-card" style="border-radius: 0.875rem; overflow-x: auto;">
+                            <table style="width: 100%; text-align: left; font-size: 0.875rem; border-collapse: collapse;">
+                                <thead style="background: var(--bg-main); color: #9ca3af; font-size: 0.75rem; text-transform: uppercase;">
+                                    <tr>
+                                        <th style="padding: 1rem;">PO Number</th>
+                                        <th style="padding: 1rem;">EU Buyer</th>
+                                        <th style="padding: 1rem;">Destination</th>
+                                        <th style="padding: 1rem;">Dispatch Date</th>
+                                        <th style="padding: 1rem;">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr style="border-bottom: 1px solid var(--border-color);">
+                                        <td style="padding: 1rem; color: white; font-weight: 600;">EU-PO-8821</td>
+        <td style="padding: 1rem; color: #60a5fa;">Berliner Textiles GmbH (Germany)</td>
+                                        <td style="padding: 1rem; color: #9ca3af;">Berlin Hub</td>
+                                        <td style="padding: 1rem; color: #34d399;">2026-03-15</td>
+                                        <td style="padding: 1rem;"><span style="background: rgba(16,185,129,0.2); color: #34d399; padding: 0.2rem 0.6rem; border-radius: 9999px; font-size: 0.75rem;">Shipped</span></td>
+                                    </tr>
+                                    <tr style="border-bottom: 1px solid var(--border-color);">
+                                        <td style="padding: 1rem; color: white; font-weight: 600;">EU-PO-8825</td>
+                                        <td style="padding: 1rem; color: #60a5fa;">Nordic Garments AB (Sweden)</td>
+                                        <td style="padding: 1rem; color: #9ca3af;">Stockholm Port</td>
+                                        <td style="padding: 1rem; color: #fbbf24;">2026-03-22</td>
+                                        <td style="padding: 1rem;"><span style="background: rgba(251,191,36,0.2); color: #fbbf24; padding: 0.2rem 0.6rem; border-radius: 9999px; font-size: 0.75rem;">Packing</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- 12. AI ADVISOR TAB -->
+                    <div id="tab-ai" class="tab-content hidden" style="display: none; flex-direction: column; gap: 1.5rem;">
+                        <h1 style="font-size: 1.875rem; font-weight: bold; color: #f3f4f6; margin: 0;">AI Operations & Sustainability Advisor</h1>
+                        <div class="glass-card" style="padding: 2rem; border-radius: 0.875rem; display: flex; flex-direction: column; gap: 1rem;">
+                            <button onclick="runAIAudit()" style="background: #2563eb; color: white; padding: 0.625rem 1.125rem; border-radius: 0.625rem; border: none; cursor: pointer; font-weight: 600; width: fit-content;">Run AI Full Enterprise Audit</button>
+                            <div id="ai-output-box" style="background: var(--bg-main); padding: 1.25rem; border-radius: 0.5rem; border: 1px solid var(--border-color); font-size: 0.875rem; color: #9ca3af;">
+                                Click the button above to analyze ZDHC chemical compliance, production bottlenecks, and carbon tracking under Director Muhammad Meer.
+                            </div>
                         </div>
                     </div>
 
@@ -306,6 +488,7 @@
         window.addEventListener('DOMContentLoaded', () => {
             renderInventoryTable();
             calculateESG();
+            calculateBOM();
             initOverviewChart();
         });
 
@@ -344,7 +527,7 @@
             target.classList.remove('hidden');
             target.style.display = 'flex';
 
-            ['overview', 'inventory', 'dpp', 'traceability', 'esg', 'ai', 'history'].forEach(id => {
+            ['overview', 'inventory', 'dpp', 'traceability', 'esg', 'history', 'wip', 'qc', 'bom', 'warehouse', 'orders', 'ai'].forEach(id => {
                 const btn = document.getElementById('btn-' + id);
                 if (id === tabId) {
                     btn.style.background = 'var(--accent-glow)';
@@ -444,11 +627,27 @@
             document.getElementById('res-carbon').innerText = totalCarbon.toLocaleString() + ' kg CO2e';
         }
 
+        function calculateBOM() {
+            const yarn = parseFloat(document.getElementById('bom-yarn').value) || 0;
+            const dyes = parseFloat(document.getElementById('bom-dyes').value) || 0;
+            const labor = parseFloat(document.getElementById('bom-labor').value) || 0;
+            const total = yarn + dyes + labor;
+            document.getElementById('bom-total').innerText = '$' + total.toFixed(2);
+        }
+
+        function runAIAuditWIP() {
+            showToast('AI analyzed WIP stages: All production lines running at 94% efficiency.');
+        }
+
+        function runAIAuditQC() {
+            showToast('AI Defect Prediction: Lot #902 needs chemical concentration check in dyeing unit.');
+        }
+
         function runAIAudit() {
-            document.getElementById('ai-output-box').innerHTML = `<span style="color: #60a5fa;" class="ai-pulse">Running AI ESPR compliance check...</span>`;
+            document.getElementById('ai-output-box').innerHTML = `<span style="color: #60a5fa;" class="ai-pulse">Running AI full enterprise audit...</span>`;
             setTimeout(() => {
-                document.getElementById('ai-output-box').innerHTML = `<strong style="color: #10b981;">✓ EU Green Deal Audit Passed:</strong> Supply chain meets ZDHC wastewater standards and ESPR recyclability benchmarks under Director Muhammad Meer's profile.`;
-                showToast('AI Audit completed!');
+                document.getElementById('ai-output-box').innerHTML = `<strong style="color: #10b981;">✓ Enterprise Audit Passed:</strong> All 11 operational modules meet EU Green Deal, ZDHC, and ESPR guidelines under Director Muhammad Meer's supervision.`;
+                showToast('AI Full Audit completed!');
             }, 1000);
         }
 
