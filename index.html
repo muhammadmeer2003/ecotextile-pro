@@ -6,80 +6,98 @@
     <title>EcoTextile ESG Portal</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Supabase JS SDK CDN -->
+    <!-- Supabase JS SDK v2 -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
-<body class="bg-gray-900 text-white min-h-screen flex items-center justify-center p-4">
+<body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col items-center justify-center p-4">
 
-    <!-- Auth View Container (Login / Register) -->
-    <div id="auth-container" class="w-full max-w-md bg-gray-800 rounded-lg p-6 shadow-lg border border-gray-700">
+    <!-- Main Container -->
+    <div class="w-full max-w-md bg-slate-800 rounded-xl shadow-2xl border border-slate-700 p-8">
         
-        <!-- Login View -->
-        <div id="login-view">
-            <h2 class="text-2xl font-bold mb-6 text-center text-green-400">Textile ESG Portal</h2>
-            <form id="loginForm" class="space-y-4">
-                <div>
-                    <label class="block text-sm mb-1 text-gray-300">Email Address</label>
-                    <input type="email" id="login-email" class="w-full p-3 rounded bg-gray-700 border border-gray-600 focus:outline-none focus:border-green-500 text-white" required>
-                </div>
-                <div>
-                    <label class="block text-sm mb-1 text-gray-300">Password</label>
-                    <input type="password" id="login-password" class="w-full p-3 rounded bg-gray-700 border border-gray-600 focus:outline-none focus:border-green-500 text-white" required>
-                </div>
-                <button type="submit" class="w-full bg-green-600 hover:bg-green-700 p-3 rounded font-bold transition duration-200">Login</button>
-            </form>
-            <p class="mt-4 text-center text-sm text-gray-400">Account nahi hai? <a href="#" onclick="switchView('register')" class="text-green-400 underline font-semibold">Create a new account</a></p>
+        <!-- Header / Logo -->
+        <div class="text-center mb-6">
+            <h1 class="text-3xl font-extrabold text-emerald-400 tracking-tight">EcoTextile ESG</h1>
+            <p class="text-sm text-slate-400 mt-1">Enterprise Portal for Textile Reporting</p>
         </div>
 
-        <!-- Register View (Hidden by default) -->
-        <div id="register-view" class="hidden">
-            <h2 class="text-2xl font-bold mb-6 text-center text-blue-400">Create ESG Account</h2>
-            <form id="registerForm" class="space-y-4">
+        <!-- AUTH SECTION (Login & Register) -->
+        <div id="auth-container">
+            
+            <!-- Login Form -->
+            <div id="login-view">
+                <form id="loginForm" class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-semibold uppercase text-slate-300 mb-1">Email Address</label>
+                        <input type="email" id="login-email" class="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 focus:outline-none focus:border-emerald-500 text-white text-sm" placeholder="name@company.com" required>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold uppercase text-slate-300 mb-1">Password</label>
+                        <input type="password" id="login-password" class="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 focus:outline-none focus:border-emerald-500 text-white text-sm" placeholder="••••••••" required>
+                    </div>
+                    <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-lg transition duration-200 shadow-lg">Sign In</button>
+                </form>
+                <p class="mt-6 text-center text-sm text-slate-400">
+                    Don't have an account? <button onclick="switchView('register')" class="text-emerald-400 font-semibold hover:underline">Create account</button>
+                </p>
+            </div>
+
+            <!-- Register Form (Hidden by default) -->
+            <div id="register-view" class="hidden">
+                <form id="registerForm" class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-semibold uppercase text-slate-300 mb-1">Email Address</label>
+                        <input type="email" id="register-email" class="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 focus:outline-none focus:border-emerald-500 text-white text-sm" placeholder="name@company.com" required>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold uppercase text-slate-300 mb-1">Password</label>
+                        <input type="password" id="register-password" class="w-full px-4 py-3 rounded-lg bg-slate-900 border border-slate-700 focus:outline-none focus:border-emerald-500 text-white text-sm" placeholder="••••••••" required>
+                    </div>
+                    <button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-lg transition duration-200 shadow-lg">Create Account</button>
+                </form>
+                <p class="mt-6 text-center text-sm text-slate-400">
+                    Already have an account? <button onclick="switchView('login')" class="text-blue-400 font-semibold hover:underline">Sign In</button>
+                </p>
+            </div>
+
+        </div>
+
+        <!-- DASHBOARD SECTION (Hidden until logged in) -->
+        <div id="dashboard-container" class="hidden">
+            <div class="flex justify-between items-center mb-6 pb-4 border-b border-slate-700">
                 <div>
-                    <label class="block text-sm mb-1 text-gray-300">Email Address</label>
-                    <input type="email" id="register-email" class="w-full p-3 rounded bg-gray-700 border border-gray-600 focus:outline-none focus:border-blue-500 text-white" required>
+                    <h2 class="text-lg font-bold text-emerald-400">ESG Batch Portal</h2>
+                    <p id="user-email-display" class="text-xs text-slate-400 truncate max-w-[200px]"></p>
+                </div>
+                <button id="logoutBtn" class="bg-rose-600 hover:bg-rose-500 text-white px-3 py-1.5 rounded-lg text-xs font-bold transition">Logout</button>
+            </div>
+
+            <!-- ESG Form Data Entry -->
+            <form id="esgForm" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold uppercase text-slate-300 mb-1">Weight (numeric)</label>
+                    <input type="number" step="any" id="batch-weight" class="w-full px-4 py-2.5 rounded-lg bg-slate-900 border border-slate-700 focus:outline-none focus:border-emerald-500 text-white text-sm" placeholder="e.g. 1500" required>
                 </div>
                 <div>
-                    <label class="block text-sm mb-1 text-gray-300">Password</label>
-                    <input type="password" id="register-password" class="w-full p-3 rounded bg-gray-700 border border-gray-600 focus:outline-none focus:border-blue-500 text-white" required>
+                    <label class="block text-xs font-semibold uppercase text-slate-300 mb-1">Carbon Emissions</label>
+                    <input type="text" id="batch-carbon" class="w-full px-4 py-2.5 rounded-lg bg-slate-900 border border-slate-700 focus:outline-none focus:border-emerald-500 text-white text-sm" placeholder="e.g. 120 kg" required>
                 </div>
-                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 p-3 rounded font-bold transition duration-200">Register</button>
+                <div>
+                    <label class="block text-xs font-semibold uppercase text-slate-300 mb-1">Water Usage</label>
+                    <input type="text" id="batch-water" class="w-full px-4 py-2.5 rounded-lg bg-slate-900 border border-slate-700 focus:outline-none focus:border-emerald-500 text-white text-sm" placeholder="e.g. 500 L" required>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold uppercase text-slate-300 mb-1">Energy Consumption</label>
+                    <input type="text" id="batch-energy" class="w-full px-4 py-2.5 rounded-lg bg-slate-900 border border-slate-700 focus:outline-none focus:border-emerald-500 text-white text-sm" placeholder="e.g. 300 kWh" required>
+                </div>
+                <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-lg transition duration-200 shadow-lg mt-2">Save ESG Batch</button>
             </form>
-            <p class="mt-4 text-center text-sm text-gray-400">Pehle se account hai? <a href="#" onclick="switchView('login')" class="text-blue-400 underline font-semibold">Login karein</a></p>
         </div>
 
     </div>
 
-    <!-- Dashboard View Container (Hidden until logged in - ESG Form) -->
-    <div id="dashboard-container" class="hidden w-full max-w-xl bg-gray-800 rounded-lg p-6 shadow-lg border border-gray-700">
-        <div class="flex justify-between items-center mb-6">
-            <h2 class="text-xl font-bold text-green-400">ESG Batch Data Entry</h2>
-            <button id="logoutBtn" class="bg-red-600 hover:bg-red-700 px-4 py-2 rounded text-sm font-bold transition">Logout</button>
-        </div>
-
-        <form id="esgForm" class="space-y-4">
-            <div>
-                <label class="block text-sm mb-1 text-gray-300">Weight (numeric)</label>
-                <input type="number" step="any" id="batch-weight" class="w-full p-3 rounded bg-gray-700 border border-gray-600 focus:outline-none focus:border-green-500 text-white" placeholder="e.g. 1500" required>
-            </div>
-            <div>
-                <label class="block text-sm mb-1 text-gray-300">Carbon Emissions</label>
-                <input type="text" id="batch-carbon" class="w-full p-3 rounded bg-gray-700 border border-gray-600 focus:outline-none focus:border-green-500 text-white" placeholder="e.g. 120 kg" required>
-            </div>
-            <div>
-                <label class="block text-sm mb-1 text-gray-300">Water Usage</label>
-                <input type="text" id="batch-water" class="w-full p-3 rounded bg-gray-700 border border-gray-600 focus:outline-none focus:border-green-500 text-white" placeholder="e.g. 500 L" required>
-            </div>
-            <div>
-                <label class="block text-sm mb-1 text-gray-300">Energy Consumption</label>
-                <input type="text" id="batch-energy" class="w-full p-3 rounded bg-gray-700 border border-gray-600 focus:outline-none focus:border-green-500 text-white" placeholder="e.g. 300 kWh" required>
-            </div>
-            <button type="submit" class="w-full bg-green-600 hover:bg-green-700 p-3 rounded font-bold transition duration-200">Save Batch to Database</button>
-        </form>
-    </div>
-
+    <!-- JavaScript Application Logic -->
     <script>
-        // Supabase Initialization
+        // Supabase Configuration (Yahan apni project ki URL aur Anon Key ensure kar lein)
         const SUPABASE_URL = 'YOUR_SUPABASE_URL'; 
         const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
         const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -89,12 +107,13 @@
         const loginView = document.getElementById('login-view');
         const registerView = document.getElementById('register-view');
 
-        // Check Session
+        // Check active session on load
         async function checkUserSession() {
             const { data: { session } } = await supabase.auth.getSession();
             if (session) {
                 authContainer.classList.add('hidden');
                 dashboardContainer.classList.remove('hidden');
+                document.getElementById('user-email-display').textContent = session.user.email;
             } else {
                 authContainer.classList.remove('hidden');
                 dashboardContainer.classList.add('hidden');
@@ -102,7 +121,7 @@
         }
         checkUserSession();
 
-        // View Switching
+        // Switch between Login and Register views
         function switchView(view) {
             if (view === 'register') {
                 loginView.classList.add('hidden');
@@ -113,7 +132,7 @@
             }
         }
 
-        // Login Handler
+        // Login Handler (with preventDefault)
         document.getElementById('loginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const email = document.getElementById('login-email').value;
@@ -122,14 +141,14 @@
             const { data, error } = await supabase.auth.signInWithPassword({ email, password });
 
             if (error) {
-                alert(error.message);
+                alert("Login Error: " + error.message);
             } else {
                 alert("Login Successful!");
                 checkUserSession();
             }
         });
 
-        // Register Handler
+        // Register Handler (with preventDefault)
         document.getElementById('registerForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const email = document.getElementById('register-email').value;
@@ -138,9 +157,9 @@
             const { data, error } = await supabase.auth.signUp({ email, password });
 
             if (error) {
-                alert(error.message);
+                alert("Registration Error: " + error.message);
             } else {
-                alert("Account created successfully! Ab aap login kar sakte hain.");
+                alert("Account created successfully! Now you can sign in.");
                 switchView('login');
             }
         });
@@ -151,7 +170,7 @@
             checkUserSession();
         });
 
-        // ESG Data Form Submission Handler (`esg_batches` table)
+        // ESG Form Submission Handler (esg_batches table)
         document.getElementById('esgForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const weight = parseFloat(document.getElementById('batch-weight').value);
@@ -164,9 +183,9 @@
             ]);
 
             if (error) {
-                alert("Error: " + error.message);
+                alert("Database Error: " + error.message);
             } else {
-                alert("ESG Batch data successfully saved to database!");
+                alert("ESG Batch successfully saved to database!");
                 document.getElementById('esgForm').reset();
             }
         });
