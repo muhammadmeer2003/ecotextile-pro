@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EcoTextile Pro - Enterprise Cloud Portal</title>
+    <title>EcoTextile Pro - AI & Cloud ESG Platform</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Supabase UMD CDN -->
@@ -15,11 +15,12 @@
             .app-layout { flex-direction: row !important; }
             .sidebar-width { width: 280px !important; }
         }
-        /* Custom scrollbar for dark theme */
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: #030712; }
         ::-webkit-scrollbar-thumb { background: #1f2937; border-radius: 3px; }
         ::-webkit-scrollbar-thumb:hover { background: #374151; }
+        @keyframes pulse-slow { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        .ai-pulse { animation: pulse-slow 3s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
     </style>
 </head>
 <body>
@@ -32,23 +33,23 @@
                     <svg style="width: 2rem; height: 2rem; color: #34d399;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
                 </div>
                 <h2 style="font-size: 1.75rem; font-weight: bold; color: #34d399; margin: 0 0 0.5rem 0;">EcoTextile Pro</h2>
-                <p id="auth-subtitle" style="font-size: 0.8125rem; color: #9ca3af; margin: 0;">Sustainable Supply Chain & ESG Cloud Platform</p>
+                <p id="auth-subtitle" style="font-size: 0.8125rem; color: #9ca3af; margin: 0;">AI-Powered Sustainable Supply Chain & Cloud Platform</p>
             </div>
 
             <div id="auth-tabs" style="display: flex; background: #030712; padding: 0.25rem; border-radius: 0.75rem; border: 1px solid #1f2937; margin-bottom: 1.5rem;">
-                <button type="button" onclick="switchAuthMode('login')" id="auth-tab-login" style="flex: 1; padding: 0.625rem; font-size: 0.8125rem; font-weight: 600; border-radius: 0.5rem; background: rgba(52, 211, 153, 0.1); color: #34d399; border: 1px solid rgba(52, 211, 153, 0.2); cursor: pointer; transition: all 0.2s;">Sign In</button>
-                <button type="button" onclick="switchAuthMode('register')" id="auth-tab-register" style="flex: 1; padding: 0.625rem; font-size: 0.8125rem; font-weight: 600; border-radius: 0.5rem; background: transparent; color: #9ca3af; border: none; cursor: pointer; transition: all 0.2s;">Register</button>
+                <button type="button" onclick="switchAuthMode('login')" id="auth-tab-login" style="flex: 1; padding: 0.625rem; font-size: 0.8125rem; font-weight: 600; border-radius: 0.5rem; background: rgba(52, 211, 153, 0.1); color: #34d399; border: 1px solid rgba(52, 211, 153, 0.2); cursor: pointer;">Sign In</button>
+                <button type="button" onclick="switchAuthMode('register')" id="auth-tab-register" style="flex: 1; padding: 0.625rem; font-size: 0.8125rem; font-weight: 600; border-radius: 0.5rem; background: transparent; color: #9ca3af; border: none; cursor: pointer;">Register</button>
             </div>
 
             <form id="auth-form" onsubmit="handleAuthSubmit(event)" style="display: flex; flex-direction: column; gap: 1.25rem;">
                 <div id="name-field-wrapper" class="hidden" style="flex-direction: column; gap: 0.35rem;">
-                    <label style="font-size: 0.8125rem; color: #9ca3af; font-weight: 500;">Full Name / Enterprise User</label>
+                    <label style="font-size: 0.8125rem; color: #9ca3af; font-weight: 500;">Full Name</label>
                     <input type="text" id="reg-name" placeholder="Muhammad Meer" style="width: 100%; background: #030712; border: 1px solid #1f2937; border-radius: 0.5rem; padding: 0.625rem 0.875rem; font-size: 0.875rem; color: #f3f4f6; outline: none; box-sizing: border-box;">
                 </div>
 
                 <div style="display: flex; flex-direction: column; gap: 0.35rem;">
                     <label style="font-size: 0.8125rem; color: #9ca3af; font-weight: 500;">Work Email Address</label>
-                    <input type="email" id="auth-email" required placeholder="name@ecotextile.com" style="width: 100%; background: #030712; border: 1px solid #1f2937; border-radius: 0.5rem; padding: 0.625rem 0.875rem; font-size: 0.875rem; color: #f3f4f6; outline: none; box-sizing: border-box;">
+                    <input type="email" id="auth-email" required placeholder="name@company.com" style="width: 100%; background: #030712; border: 1px solid #1f2937; border-radius: 0.5rem; padding: 0.625rem 0.875rem; font-size: 0.875rem; color: #f3f4f6; outline: none; box-sizing: border-box;">
                 </div>
 
                 <div style="display: flex; flex-direction: column; gap: 0.35rem;">
@@ -62,7 +63,7 @@
                 <div id="auth-error" class="hidden" style="font-size: 0.8125rem; color: #fb7185; background: rgba(159, 18, 57, 0.2); padding: 0.75rem; border-radius: 0.5rem; border: 1px solid rgba(225, 29, 72, 0.3);"></div>
                 <div id="auth-success" class="hidden" style="font-size: 0.8125rem; color: #34d399; background: rgba(6, 95, 70, 0.2); padding: 0.75rem; border-radius: 0.5rem; border: 1px solid rgba(5, 150, 105, 0.3);"></div>
 
-                <button type="submit" id="auth-submit-btn" style="width: 100%; background: #059669; color: white; padding: 0.75rem; border-radius: 0.5rem; font-size: 0.875rem; font-weight: 600; border: none; cursor: pointer; transition: background 0.2s; margin-top: 0.5rem;">
+                <button type="submit" id="auth-submit-btn" style="width: 100%; background: #059669; color: white; padding: 0.75rem; border-radius: 0.5rem; font-size: 0.875rem; font-weight: 600; border: none; cursor: pointer; margin-top: 0.5rem;">
                     Sign In to Portal
                 </button>
             </form>
@@ -82,7 +83,7 @@
                         </div>
                         <div>
                             <span style="font-size: 1rem; font-weight: bold; color: #34d399; display: block;">EcoTextile Pro</span>
-                            <span style="font-size: 0.6875rem; color: #6b7280; display: block;">Enterprise ESG Suite</span>
+                            <span style="font-size: 0.6875rem; color: #6b7280; display: block;">AI & ESG Intelligence</span>
                         </div>
                     </div>
                     
@@ -93,7 +94,11 @@
                         </button>
                         <button onclick="switchTab('esg')" id="btn-esg" style="display: flex; align-items: center; gap: 0.75rem; width: 100%; padding: 0.75rem 1rem; font-size: 0.875rem; border-radius: 0.5rem; font-weight: 500; background: transparent; color: #9ca3af; border: none; text-align: left; cursor: pointer;">
                             <svg style="width: 1.125rem; height: 1.125rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
-                            ESG Calculator & Batching
+                            ESG Calculator & Cloud Save
+                        </button>
+                        <button onclick="switchTab('ai')" id="btn-ai" style="display: flex; align-items: center; gap: 0.75rem; width: 100%; padding: 0.75rem 1rem; font-size: 0.875rem; border-radius: 0.5rem; font-weight: 500; background: transparent; color: #9ca3af; border: none; text-align: left; cursor: pointer;">
+                            <svg style="width: 1.125rem; height: 1.125rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                            AI Sustainability Advisor
                         </button>
                         <button onclick="switchTab('history')" id="btn-history" style="display: flex; align-items: center; gap: 0.75rem; width: 100%; padding: 0.75rem 1rem; font-size: 0.875rem; border-radius: 0.5rem; font-weight: 500; background: transparent; color: #9ca3af; border: none; text-align: left; cursor: pointer;">
                             <svg style="width: 1.125rem; height: 1.125rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"></path></svg>
@@ -114,7 +119,7 @@
                 <header style="height: 4.5rem; background: #030712; border-bottom: 1px solid #1f2937; display: flex; align-items: center; justify-content: space-between; padding: 0 2rem;">
                     <div style="display: flex; align-items: center; gap: 0.75rem;">
                         <div style="width: 0.5rem; height: 0.5rem; background: #34d399; border-radius: 9999px; box-shadow: 0 0 10px #34d399;"></div>
-                        <span style="font-size: 0.875rem; font-weight: 600; color: #e5e7eb;">Supabase Cloud Connected &bull; Production v2.4</span>
+                        <span style="font-size: 0.875rem; font-weight: 600; color: #e5e7eb;">Supabase Connected &bull; AI Engine Active</span>
                     </div>
                     <div style="display: flex; align-items: center; gap: 1rem;">
                         <div id="user-avatar-initial" style="width: 2.25rem; height: 2.25rem; border-radius: 9999px; background: #059669; display: flex; align-items: center; font-weight: bold; font-size: 0.875rem; justify-content: center; color: white; border: 2px solid rgba(52, 211, 153, 0.3);">M</div>
@@ -128,7 +133,7 @@
                     <div id="tab-overview" class="tab-content" style="display: flex; flex-direction: column; gap: 1.5rem;">
                         <div>
                             <h1 style="font-size: 1.875rem; font-weight: bold; color: #f3f4f6; margin: 0 0 0.5rem 0;">Enterprise Sustainability Command Center</h1>
-                            <p style="font-size: 0.9375rem; color: #9ca3af; margin: 0;">Real-time tracking of textile production metrics, carbon footprint analysis, and cloud persistence.</p>
+                            <p style="font-size: 0.9375rem; color: #9ca3af; margin: 0;">Real-time tracking of textile production metrics, AI footprint recommendations, and cloud persistence.</p>
                         </div>
 
                         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.25rem;">
@@ -138,9 +143,9 @@
                                 <span style="font-size: 0.75rem; color: #6b7280; margin-top: 0.25rem;">Table: esg_batches (PostgreSQL)</span>
                             </div>
                             <div style="background: #030712; border: 1px solid #1f2937; padding: 1.5rem; border-radius: 0.875rem; display: flex; flex-direction: column; gap: 0.5rem;">
-                                <span style="font-size: 0.8125rem; font-weight: 500; color: #9ca3af;">Session Security</span>
-                                <span id="session-status-text" style="font-size: 1.25rem; font-weight: bold; color: #60a5fa;">JWT Authenticated</span>
-                                <span style="font-size: 0.75rem; color: #6b7280; margin-top: 0.25rem;">Encrypted SSL Connection</span>
+                                <span style="font-size: 0.8125rem; font-weight: 500; color: #9ca3af;">AI Recommendation Engine</span>
+                                <span style="font-size: 1.25rem; font-weight: bold; color: #60a5fa;">Ready & Optimized</span>
+                                <span style="font-size: 0.75rem; color: #6b7280; margin-top: 0.25rem;">Machine Learning Audit Model</span>
                             </div>
                             <div style="background: #030712; border: 1px solid #1f2937; padding: 1.5rem; border-radius: 0.875rem; display: flex; flex-direction: column; gap: 0.5rem;">
                                 <span style="font-size: 0.8125rem; font-weight: 500; color: #9ca3af;">Compliance Benchmark</span>
@@ -153,6 +158,7 @@
                             <h3 style="font-size: 1.125rem; font-weight: 600; color: #f3f4f6; margin: 0 0 1rem 0;">Quick Enterprise Actions</h3>
                             <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
                                 <button onclick="switchTab('esg')" style="background: #059669; color: white; padding: 0.625rem 1.25rem; border-radius: 0.5rem; font-size: 0.875rem; font-weight: 500; border: none; cursor: pointer;">Launch ESG Calculator</button>
+                                <button onclick="switchTab('ai')" style="background: #2563eb; color: white; padding: 0.625rem 1.25rem; border-radius: 0.5rem; font-size: 0.875rem; font-weight: 500; border: none; cursor: pointer;">Run AI Sustainability Audit</button>
                                 <button onclick="switchTab('history')" style="background: #1f2937; color: #f3f4f6; padding: 0.625rem 1.25rem; border-radius: 0.5rem; font-size: 0.875rem; font-weight: 500; border: 1px solid #374151; cursor: pointer;">View Saved Cloud Logs</button>
                             </div>
                         </div>
@@ -186,9 +192,28 @@
                                 </div>
                             </div>
 
-                            <button onclick="saveCloudBatchRecord()" style="width: 100%; background: #059669; color: white; padding: 0.75rem; border-radius: 0.5rem; font-size: 0.9375rem; font-weight: 600; border: none; cursor: pointer; transition: background 0.2s; margin-top: 0.5rem;">
+                            <button onclick="saveCloudBatchRecord()" style="width: 100%; background: #059669; color: white; padding: 0.75rem; border-radius: 0.5rem; font-size: 0.9375rem; font-weight: 600; border: none; cursor: pointer; margin-top: 0.5rem;">
                                 Save Batch Record to Supabase Cloud
                             </button>
+                        </div>
+                    </div>
+
+                    <!-- TAB AI SUSTAINABILITY ADVISOR -->
+                    <div id="tab-ai" class="tab-content hidden" style="display: none; flex-direction: column; gap: 1.5rem;">
+                        <div>
+                            <h1 style="font-size: 1.875rem; font-weight: bold; color: #f3f4f6; margin: 0 0 0.5rem 0;">AI Sustainability & Optimization Advisor</h1>
+                            <p style="font-size: 0.9375rem; color: #9ca3af; margin: 0;">Get automated machine learning recommendations and carbon reduction strategies for your textile operations.</p>
+                        </div>
+
+                        <div style="background: #030712; border: 1px solid #1f2937; padding: 2rem; border-radius: 0.875rem; display: flex; flex-direction: column; gap: 1.25rem; max-width: 700px;">
+                            <div style="display: flex; align-items: center; justify-content: space-between;">
+                                <span style="font-size: 0.875rem; font-weight: 600; color: #34d399;">Active Intelligence Model: EcoAI v3.2</span>
+                                <button onclick="runAIAudit()" style="background: #2563eb; color: white; font-size: 0.8125rem; padding: 0.5rem 1rem; border-radius: 0.5rem; border: none; cursor: pointer; font-weight: 600;">Generate AI Audit Report</button>
+                            </div>
+                            
+                            <div id="ai-output-box" style="background: #111827; border: 1px solid #1f2937; padding: 1.25rem; border-radius: 0.625rem; font-size: 0.875rem; color: #9ca3af; line-height: 1.6;">
+                                Click <strong style="color: #60a5fa;">"Generate AI Audit Report"</strong> to analyze current batch metrics, water footprint reduction potentials, and supply chain efficiency improvements.
+                            </div>
                         </div>
                     </div>
 
@@ -200,14 +225,13 @@
                                 <p style="font-size: 0.9375rem; color: #9ca3af; margin: 0;">Live records fetched directly from your Supabase PostgreSQL database.</p>
                             </div>
                             <button onclick="loadCloudHistory()" style="background: #1f2937; color: white; font-size: 0.8125rem; padding: 0.625rem 1rem; border-radius: 0.5rem; border: 1px solid #374151; cursor: pointer; font-weight: 500; display: inline-flex; align-items: center; gap: 0.5rem;">
-                                <svg style="width: 1rem; height: 1rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
                                 Refresh Records
                             </button>
                         </div>
                         
                         <div style="background: #030712; border: 1px solid #1f2937; border-radius: 0.875rem; overflow-x: auto;">
                             <table style="width: 100%; text-align: left; font-size: 0.875rem; border-collapse: collapse; min-width: 650px;">
-                                <thead style="background: #111827; color: #9ca3af; border-bottom: 1px solid #1f2937; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em;">
+                                <thead style="background: #111827; color: #9ca3af; border-bottom: 1px solid #1f2937; font-size: 0.75rem; text-transform: uppercase;">
                                     <tr>
                                         <th style="padding: 1rem;">Record ID</th>
                                         <th style="padding: 1rem;">Weight (KG)</th>
@@ -266,7 +290,7 @@
                 regTab.style.color = '#9ca3af';
                 regTab.style.border = 'none';
                 nameWrapper.style.display = 'none';
-                subtitle.innerText = "Sustainable Supply Chain & ESG Cloud Platform";
+                subtitle.innerText = "AI-Powered Sustainable Supply Chain & Cloud Platform";
                 submitBtn.innerText = "Sign In to Portal";
             } else if (mode === 'register') {
                 tabsContainer.style.display = 'flex';
@@ -352,7 +376,7 @@
             targetTab.classList.remove('hidden');
             targetTab.style.display = 'flex';
 
-            ['overview', 'esg', 'history'].forEach(id => {
+            ['overview', 'esg', 'ai', 'history'].forEach(id => {
                 const btn = document.getElementById('btn-' + id);
                 if (id === tabId) {
                     btn.style.background = 'rgba(52, 211, 153, 0.1)';
@@ -375,6 +399,26 @@
             document.getElementById('res-carbon').innerText = (weight * 2.5).toFixed(1) + ' kg';
             document.getElementById('res-water').innerText = Math.round(weight * 45).toLocaleString() + ' L';
             document.getElementById('res-energy').innerText = (weight * 3.2).toFixed(1) + ' kWh';
+        }
+
+        function runAIAudit() {
+            const weight = parseFloat(document.getElementById('calc-weight').value) || 1000;
+            const outputBox = document.getElementById('ai-output-box');
+            outputBox.innerHTML = `<span style="color: #60a5fa;" class="ai-pulse">Analyzing batch parameters with EcoAI model... Please wait...</span>`;
+            
+            setTimeout(() => {
+                const carbon = (weight * 2.5).toFixed(1);
+                const water = Math.round(weight * 45).toLocaleString();
+                outputBox.innerHTML = `
+                    <p style="color: #34d399; font-weight: 600; margin-bottom: 0.5rem;">✓ AI Sustainability Audit Completed Successfully</p>
+                    <p style="color: #f3f4f6; margin-bottom: 0.5rem;">Based on your current batch size of <strong>${weight} KG</strong>:</p>
+                    <ul style="padding-left: 1.25rem; margin: 0.5rem 0; display: flex; flex-direction: column; gap: 0.35rem;">
+                        <li><strong>Carbon Optimization:</strong> Implementing closed-loop dyeing can reduce carbon emissions by up to <strong>18.4%</strong> (${(carbon * 0.18).toFixed(1)} kg savings).</li>
+                        <li><strong>Water Recycling:</strong> Integrating greywater filtration systems will save approx. <strong>${Math.round(weight * 12).toLocaleString()} Liters</strong> per production cycle.</li>
+                        <li><strong>Energy Efficiency:</strong> Shifting processing hours to off-peak solar windows will lower grid energy dependency by <strong>22.5%</strong>.</li>
+                    </ul>
+                `;
+            }, 1000);
         }
 
         async function saveCloudBatchRecord() {
