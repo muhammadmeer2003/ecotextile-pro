@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EcoTextile Enterprise OS | Powered by Director Muhammad Meer</title>
+    <title>EcoTextile Enterprise OS | Director Muhammad Meer</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Supabase JS SDK CDN -->
@@ -11,40 +11,49 @@
     <style>
       @keyframes float {
         0%, 100% { transform: translateY(0px); }
-        50% { transform: translateY(-6px); }
+        50% { transform: translateY(-8px); }
       }
       @keyframes fadeIn {
         from { opacity: 0; transform: scale(0.98); }
         to { opacity: 1; transform: scale(1); }
       }
+      @keyframes marquee {
+        0% { transform: translateX(100%); }
+        100% { transform: translateX(-100%); }
+      }
       .animate-float { animation: float 4s ease-in-out infinite; }
-      .animate-fade-in { animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+      .animate-fade-in { animation: fadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+      .marquee-text { animation: marquee 18s linear infinite; }
+      .glass-card {
+        background: rgba(17, 24, 39, 0.75);
+        backdrop-filter: blur(16px);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+      }
     </style>
 </head>
-<body class="bg-gray-950 text-white font-sans antialiased m-0 p-0 overflow-x-hidden min-h-screen flex flex-col">
+<body class="bg-gray-950 text-gray-100 font-sans antialiased m-0 p-0 overflow-x-hidden min-h-screen flex flex-col selection:bg-emerald-500 selection:text-white">
 
-    <!-- ================= AUTHENTICATION / LOGIN SCREEN ================= -->
-    <div id="auth-screen" class="fixed inset-0 z-50 flex items-center justify-center bg-gray-950 p-4 overflow-y-auto">
-      <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-emerald-900/20 via-gray-950 to-gray-950 pointer-events-none"></div>
+    <!-- ================= AUTHENTICATION SCREEN ================= -->
+    <div id="auth-screen" class="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto bg-cover bg-center" style="background-image: linear-gradient(to bottom, rgba(3, 7, 18, 0.9), rgba(3, 7, 18, 0.95)), url('https://images.unsplash.com/photo-1558769132-cb1aea458c5e?q=80&w=1920&auto=format&fit=crop');">
       
-      <div class="relative w-full max-w-md bg-gray-900/90 border border-gray-800 rounded-2xl p-6 sm:p-8 shadow-2xl backdrop-blur-xl animate-fade-in">
+      <div class="relative w-full max-w-md glass-card rounded-3xl p-8 shadow-2xl animate-fade-in">
         
         <div class="text-center mb-6">
-          <div class="inline-block mb-2 animate-float">
+          <div class="inline-flex p-3 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 mb-3 animate-float">
             <span class="text-3xl">🌿</span>
           </div>
-          <h1 id="auth-main-title" class="text-xl font-bold text-white tracking-tight">EcoTextile Enterprise OS</h1>
-          <p class="text-[11px] text-emerald-400 mt-1 font-medium">B2B Cloud Compliance & ERP Suite</p>
-          <div class="mt-2 text-[10px] text-gray-500 font-mono border-t border-gray-800 pt-2">
-            Architected & Developed by <span class="text-emerald-300 font-semibold">Director Muhammad Meer</span>
+          <h1 id="auth-main-title" class="text-2xl font-bold tracking-tight text-white">EcoTextile Enterprise</h1>
+          <p class="text-xs text-emerald-400 mt-1 font-medium">B2B Cloud Compliance & ERP Suite</p>
+          <div class="mt-3 text-[11px] text-gray-400 border-t border-gray-800/80 pt-3">
+            Lead Architect & Creator: <span class="text-emerald-300 font-semibold">Director Muhammad Meer</span>
           </div>
         </div>
 
-        <div class="grid grid-cols-2 gap-1 bg-gray-950 p-1 rounded-xl mb-6 border border-gray-800">
-          <button type="button" id="tab-login-btn" onclick="switchAuthMode('login')" class="py-2 text-xs font-semibold rounded-lg transition-all bg-emerald-600 text-white shadow-sm">
+        <div class="grid grid-cols-2 gap-1.5 bg-gray-950/80 p-1.5 rounded-2xl mb-6 border border-gray-800/80">
+          <button type="button" id="tab-login-btn" onclick="switchAuthMode('login')" class="py-2.5 text-xs font-semibold rounded-xl transition-all bg-emerald-600 text-white shadow-lg shadow-emerald-900/30">
             Sign In
           </button>
-          <button type="button" id="tab-reg-btn" onclick="switchAuthMode('register')" class="py-2 text-xs font-semibold rounded-lg transition-all text-gray-400 hover:text-white">
+          <button type="button" id="tab-reg-btn" onclick="switchAuthMode('register')" class="py-2.5 text-xs font-semibold rounded-xl transition-all text-gray-400 hover:text-white">
             Register Client
           </button>
         </div>
@@ -52,42 +61,42 @@
         <form id="auth-form" onsubmit="handleAuthSubmit(event)" class="space-y-4">
           
           <div id="name-field-container" class="hidden">
-            <label class="block text-[11px] font-medium text-gray-300 mb-1">Company / Administrator Name</label>
-            <input type="text" id="auth-name" placeholder="e.g. Gul Ahmed Textile Compliance" class="w-full bg-gray-950 border border-gray-800 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-emerald-500 transition-colors">
+            <label class="block text-xs font-medium text-gray-300 mb-1">Client Company Name</label>
+            <input type="text" id="auth-name" placeholder="e.g. Gul Ahmed Textile Mills" class="w-full bg-gray-950/80 border border-gray-800 rounded-xl px-4 py-3 text-xs text-white focus:outline-none focus:border-emerald-500 transition-colors">
           </div>
 
           <div>
-            <label class="block text-[11px] font-medium text-gray-300 mb-1">Enterprise Work Email</label>
-            <input type="email" id="auth-email" required placeholder="admin@gulahmed.com" class="w-full bg-gray-950 border border-gray-800 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-emerald-500 transition-colors">
+            <label class="block text-xs font-medium text-gray-300 mb-1">Corporate Work Email</label>
+            <input type="email" id="auth-email" required placeholder="admin@gulahmed.com" class="w-full bg-gray-950/80 border border-gray-800 rounded-xl px-4 py-3 text-xs text-white focus:outline-none focus:border-emerald-500 transition-colors">
           </div>
 
           <div>
-            <label class="block text-[11px] font-medium text-gray-300 mb-1">Password</label>
-            <input type="password" id="auth-password" required placeholder="••••••••••••" class="w-full bg-gray-950 border border-gray-800 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-emerald-500 transition-colors">
+            <label class="block text-xs font-medium text-gray-300 mb-1">Password</label>
+            <input type="password" id="auth-password" required placeholder="••••••••••••" class="w-full bg-gray-950/80 border border-gray-800 rounded-xl px-4 py-3 text-xs text-white focus:outline-none focus:border-emerald-500 transition-colors">
           </div>
 
-          <div class="flex items-center justify-between bg-gray-950 border border-gray-800 rounded-xl p-3">
+          <div class="flex items-center justify-between bg-gray-950/80 border border-gray-800 rounded-xl p-3.5">
             <label class="flex items-center gap-3 cursor-pointer select-none">
               <input type="checkbox" id="robot-check" required class="w-4 h-4 rounded bg-gray-900 border-gray-700 text-emerald-600 focus:ring-emerald-500 accent-emerald-600">
-              <span class="text-xs text-gray-300 font-medium">I'm not a robot (reCAPTCHA)</span>
+              <span class="text-xs text-gray-300 font-medium">Verify reCAPTCHA Security</span>
             </label>
           </div>
 
-          <div id="auth-error-msg" class="text-rose-400 text-xs text-center hidden"></div>
+          <div id="auth-error-msg" class="text-rose-400 text-xs text-center hidden bg-rose-950/40 p-2.5 rounded-lg border border-rose-900/50"></div>
 
-          <button type="submit" id="auth-submit-btn" class="w-full py-3 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold rounded-xl shadow-lg shadow-emerald-900/30 transition-all active:scale-[0.98]">
+          <button type="submit" id="auth-submit-btn" class="w-full py-3.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold rounded-xl shadow-xl shadow-emerald-900/40 transition-all active:scale-[0.98]">
             Sign In to Enterprise Workspace
           </button>
         </form>
 
         <div class="mt-4 text-center">
-          <button type="button" onclick="handleForgotPassword()" class="text-[11px] text-emerald-400 hover:underline">
+          <button type="button" onclick="handleForgotPassword()" class="text-xs text-emerald-400 hover:underline">
             Forgot Password?
           </button>
         </div>
 
-        <div class="mt-6 pt-4 border-t border-gray-800 text-center text-[10px] text-gray-500">
-          Secured via Supabase Cloud • Copyright © 2026 Director Muhammad Meer
+        <div class="mt-6 pt-4 border-t border-gray-800/80 text-center text-[10px] text-gray-500 leading-relaxed">
+          EcoTextile Enterprise OS — Architected & Developed by Director Muhammad Meer (Copyright © All Rights Reserved).
         </div>
 
       </div>
@@ -97,35 +106,37 @@
     <!-- ================= MAIN SOFTWARE DASHBOARD ================= -->
     <div id="main-app" class="hidden min-h-screen flex flex-col md:flex-row relative flex-1 animate-fade-in">
       
-      <div id="backdrop" onclick="toggleMobileMenu()" class="fixed inset-0 bg-black/70 z-40 hidden md:hidden transition-opacity"></div>
+      <div id="backdrop" onclick="toggleMobileMenu()" class="fixed inset-0 bg-black/80 z-40 hidden md:hidden transition-opacity"></div>
 
       <!-- Mobile Header -->
-      <div class="md:hidden bg-gray-900 border-b border-gray-800 p-4 flex items-center justify-between sticky top-0 z-30 shadow-md">
+      <div class="md:hidden bg-gray-900/90 border-b border-gray-800 p-4 flex items-center justify-between sticky top-0 z-30 backdrop-blur-md">
         <div>
-          <h1 id="mobile-comp-name" class="text-base font-bold text-emerald-400">EcoTextile OS</h1>
-          <p class="text-[10px] text-gray-400">Creator: Director Muhammad Meer</p>
+          <h1 id="mobile-comp-name" class="text-sm font-bold text-emerald-400">EcoTextile OS</h1>
+          <p class="text-[10px] text-gray-400">Director Muhammad Meer</p>
         </div>
         <div class="flex items-center gap-2">
-          <button onclick="logoutSession()" class="px-2 py-1 rounded bg-rose-950/60 text-rose-300 text-[11px] border border-rose-900/40">Logout</button>
-          <button onclick="toggleMobileMenu()" id="menu-btn" class="px-3 py-1.5 rounded bg-gray-800 text-gray-200 text-xs font-medium border border-gray-700">☰ Menu</button>
+          <button onclick="logoutSession()" class="px-2.5 py-1.5 rounded-lg bg-rose-950/80 text-rose-300 text-xs border border-rose-900/50 font-medium">Sign Out</button>
+          <button onclick="toggleMobileMenu()" id="menu-btn" class="px-3 py-1.5 rounded-lg bg-gray-800 text-gray-200 text-xs font-medium border border-gray-700">☰ Menu</button>
         </div>
       </div>
 
       <!-- Sidebar -->
-      <aside id="sidebar" class="fixed top-0 bottom-0 left-0 z-50 w-72 bg-gray-900 border-r border-gray-800 p-4 flex flex-col transition-transform duration-300 ease-in-out -translate-x-full md:translate-x-0 md:static md:inset-auto shadow-2xl md:shadow-none">
+      <aside id="sidebar" class="fixed top-0 bottom-0 left-0 z-50 w-72 bg-gray-900/95 border-r border-gray-800/80 p-4 flex flex-col transition-transform duration-300 ease-in-out -translate-x-full md:translate-x-0 md:static md:inset-auto backdrop-blur-xl shadow-2xl md:shadow-none">
         
-        <div class="hidden md:block mb-5 pb-3 border-b border-gray-800">
-          <h2 id="desktop-comp-name" class="text-lg font-bold text-emerald-400">EcoTextile OS</h2>
-          <p class="text-[11px] text-emerald-300 font-medium mt-0.5">Enterprise Cloud ERP</p>
-          <div class="mt-2 text-[10px] text-gray-400 bg-gray-950 p-2 rounded border border-gray-800">
-            <span class="text-emerald-400 block font-semibold">Lead Architect:</span> Director Muhammad Meer
+        <div class="hidden md:block mb-4 pb-4 border-b border-gray-800/80">
+          <div class="flex items-center gap-2.5 mb-1.5">
+            <span class="text-xl">🌿</span>
+            <h2 id="desktop-comp-name" class="text-base font-bold text-white">EcoTextile OS</h2>
+          </div>
+          <p class="text-[11px] text-emerald-400 font-medium">Enterprise Cloud ERP Suite</p>
+          <div class="mt-2.5 text-[10px] text-gray-400 bg-gray-950/80 p-2.5 rounded-xl border border-gray-800/80">
+            <span class="text-emerald-400 font-semibold block">Lead Architect:</span> Director Muhammad Meer
           </div>
         </div>
 
         <div class="flex md:hidden items-center justify-between mb-4 pb-3 border-b border-gray-800">
           <div>
-            <h2 class="text-base font-bold text-emerald-400">Modules Menu</h2>
-            <p class="text-[10px] text-gray-400">EcoTextile Suite</p>
+            <h2 class="text-sm font-bold text-emerald-400">Enterprise Modules</h2>
           </div>
           <button onclick="toggleMobileMenu()" class="text-gray-400 hover:text-white p-1 text-sm font-bold">✕</button>
         </div>
@@ -134,41 +145,75 @@
           <!-- Populated by JS -->
         </nav>
 
-        <div class="pt-3 mt-2 border-t border-gray-800 text-[10px] text-gray-500 text-center">
-          EU Green Deal & ESPR Ready
+        <!-- Sidebar Signout & Footer Info -->
+        <div class="pt-3 mt-2 border-t border-gray-800/80 space-y-2">
+          <button onclick="logoutSession()" class="w-full py-2.5 px-3 bg-rose-950/50 hover:bg-rose-900/50 text-rose-300 border border-rose-900/40 rounded-xl text-xs font-semibold flex items-center justify-center gap-2 transition-all">
+            <span>🚪</span> Sign Out Workspace
+          </button>
+          <div class="text-[9px] text-gray-500 text-center px-1">
+            Copyright © All Rights Reserved
+          </div>
         </div>
       </aside>
 
-      <!-- Main Content -->
-      <main class="flex-1 p-4 md:p-8 overflow-y-auto bg-gray-950 w-full">
-        <div class="max-w-6xl mx-auto">
-          
-          <header class="mb-6 pb-4 border-b border-gray-800 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <div>
-              <span class="text-xs uppercase tracking-wider text-emerald-400 font-semibold bg-emerald-950/50 px-2.5 py-1 rounded-full border border-emerald-800/40">
-                Active Enterprise Module
-              </span>
-              <h2 id="module-title" class="text-xl md:text-2xl font-bold mt-2 text-white">
-                1. Dashboard & Analytics
-              </h2>
-            </div>
-            <div class="flex items-center gap-3">
-              <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                ● Cloud Live Sync Active
-              </span>
-            </div>
-          </header>
-
-          <div class="bg-gray-900/60 border border-gray-800/80 rounded-xl p-5 md:p-6 shadow-xl backdrop-blur-sm">
-            <h3 class="text-base font-semibold text-gray-200 mb-1">Module Workspace</h3>
-            <p id="module-desc" class="text-gray-400 text-xs mb-6">Real-time automated data processing and enterprise workflow.</p>
-
-            <div id="module-content">
-              <!-- Dynamic Content -->
-            </div>
+      <!-- Main Content Area -->
+      <main class="flex-1 flex flex-col bg-gray-950 min-h-screen">
+        
+        <!-- Animated Banner Header -->
+        <div class="bg-gradient-to-r from-emerald-950/60 via-gray-900 to-emerald-950/60 border-b border-gray-800/80 overflow-hidden py-2 px-4 flex items-center">
+          <div class="text-xs text-emerald-300 font-medium whitespace-nowrap marquee-text">
+            ✨ Welcome to the EcoTextile enterprises — Empowering Sustainable European Standards, Traceability & Advanced Cloud ERP 🌍
           </div>
-
         </div>
+
+        <div class="p-4 md:p-8 flex-1">
+          <div class="max-w-6xl mx-auto">
+            
+            <header class="mb-6 pb-4 border-b border-gray-800/80 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+              <div>
+                <span class="text-[11px] uppercase tracking-wider text-emerald-400 font-semibold bg-emerald-950/60 px-3 py-1 rounded-full border border-emerald-800/40">
+                  Active Enterprise Module
+                </span>
+                <h2 id="module-title" class="text-xl md:text-2xl font-bold mt-2 text-white">
+                  1. Executive Dashboard & KPIs
+                </h2>
+              </div>
+              <div class="flex items-center gap-3">
+                <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 shadow-sm">
+                  <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Cloud Live Sync Active
+                </span>
+                <button onclick="logoutSession()" class="hidden sm:inline-flex px-3 py-1.5 rounded-xl bg-gray-900 hover:bg-gray-800 text-gray-300 text-xs border border-gray-800 transition-colors">
+                  Sign Out
+                </button>
+              </div>
+            </header>
+
+            <!-- Aesthetic Module Container with Image Touch -->
+            <div class="glass-card rounded-2xl p-6 md:p-8 shadow-2xl relative overflow-hidden">
+              <div class="absolute -right-16 -top-16 w-64 h-64 bg-emerald-500/5 rounded-full blur-3xl pointer-events-none"></div>
+              
+              <div class="flex items-center justify-between mb-6 pb-4 border-b border-gray-800/60">
+                <div>
+                  <h3 id="module-sub-heading" class="text-sm font-semibold text-white">Module Workspace</h3>
+                  <p id="module-desc" class="text-gray-400 text-xs mt-0.5">Real-time automated data processing and enterprise workflow.</p>
+                </div>
+                <div class="hidden sm:block">
+                  <img src="https://images.unsplash.com/photo-1578932750294-f5075e85f44a?q=80&w=120&auto=format&fit=crop" alt="Textile Industry" class="w-12 h-12 rounded-xl object-cover border border-emerald-500/30 shadow-md">
+                </div>
+              </div>
+
+              <div id="module-content">
+                <!-- Dynamic Content -->
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Aesthetic Footer -->
+        <footer class="py-4 px-6 border-t border-gray-900 bg-gray-950 text-center text-xs text-gray-500 mt-auto">
+          EcoTextile Enterprise OS — Architected & Developed by Director Muhammad Meer (Copyright © All Rights Reserved).
+        </footer>
       </main>
 
     </div>
@@ -207,19 +252,19 @@
         document.getElementById('auth-error-msg').classList.add('hidden');
 
         if (mode === 'login') {
-          titleEl.innerText = 'EcoTextile Enterprise OS';
+          titleEl.innerText = 'EcoTextile Enterprise';
           nameContainer.classList.add('hidden');
           document.getElementById('auth-name').removeAttribute('required');
           submitBtn.innerText = 'Sign In to Enterprise Workspace';
-          loginBtn.className = 'py-2 text-xs font-semibold rounded-lg transition-all bg-emerald-600 text-white shadow-sm';
-          regBtn.className = 'py-2 text-xs font-semibold rounded-lg transition-all text-gray-400 hover:text-white';
+          loginBtn.className = 'py-2.5 text-xs font-semibold rounded-xl transition-all bg-emerald-600 text-white shadow-lg shadow-emerald-900/30';
+          regBtn.className = 'py-2.5 text-xs font-semibold rounded-xl transition-all text-gray-400 hover:text-white';
         } else {
           titleEl.innerText = 'Register Client Company';
           nameContainer.classList.remove('hidden');
           document.getElementById('auth-name').setAttribute('required', 'true');
           submitBtn.innerText = 'Register & Setup Workspace';
-          regBtn.className = 'py-2 text-xs font-semibold rounded-lg transition-all bg-emerald-600 text-white shadow-sm';
-          loginBtn.className = 'py-2 text-xs font-semibold rounded-lg transition-all text-gray-400 hover:text-white';
+          regBtn.className = 'py-2.5 text-xs font-semibold rounded-xl transition-all bg-emerald-600 text-white shadow-lg shadow-emerald-900/30';
+          loginBtn.className = 'py-2.5 text-xs font-semibold rounded-xl transition-all text-gray-400 hover:text-white';
         }
       }
 
@@ -231,7 +276,7 @@
         const errorEl = document.getElementById('auth-error-msg');
 
         if (!isRobotChecked) {
-          errorEl.innerText = 'Please verify reCAPTCHA.';
+          errorEl.innerText = 'Please verify reCAPTCHA security.';
           errorEl.classList.remove('hidden');
           return;
         }
@@ -274,7 +319,7 @@
 
       function handleForgotPassword() {
         const email = document.getElementById('auth-email').value;
-        if (!email) { alert('Enter your work email first.'); return; }
+        if (!email) { alert('Enter your corporate work email first.'); return; }
         if (_supabase) {
           _supabase.auth.resetPasswordForEmail(email).then(({ error }) => {
             if (error) alert('Error: ' + error.message);
@@ -286,11 +331,13 @@
       }
 
       function logoutSession() {
-        if (_supabase) _supabase.auth.signOut();
-        document.getElementById('main-app').classList.add('hidden');
-        document.getElementById('auth-screen').classList.remove('hidden');
-        document.getElementById('auth-form').reset();
-        switchAuthMode('login');
+        if (confirm('Are you sure you want to sign out from the enterprise workspace?')) {
+          if (_supabase) _supabase.auth.signOut();
+          document.getElementById('main-app').classList.add('hidden');
+          document.getElementById('auth-screen').classList.remove('hidden');
+          document.getElementById('auth-form').reset();
+          switchAuthMode('login');
+        }
       }
 
       // 17 Comprehensive Enterprise Modules
@@ -340,9 +387,9 @@
         navList.innerHTML = '';
         modules.forEach(mod => {
           const btn = document.createElement('button');
-          btn.className = `w-full text-left px-3 py-2 rounded-lg text-xs font-medium transition-colors ${
+          btn.className = `w-full text-left px-3 py-2 rounded-xl text-xs font-medium transition-all ${
             activeTab === mod.id
-              ? 'bg-emerald-950/85 text-emerald-300 border border-emerald-800/50 shadow-sm'
+              ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-900/30'
               : 'text-gray-300 hover:bg-gray-800/60 hover:text-white'
           }`;
           btn.innerText = mod.title;
@@ -364,76 +411,91 @@
         if (id === 0) {
           contentDiv.innerHTML = `
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-              <div class="bg-gray-950 p-4 rounded-lg border border-gray-800">
+              <div class="bg-gray-950/80 p-5 rounded-xl border border-gray-800/80">
                 <p class="text-xs text-gray-400">Active Tenant Company</p>
                 <h4 class="text-base font-bold text-emerald-400 mt-1">${appState.currentCompany}</h4>
               </div>
-              <div class="bg-gray-950 p-4 rounded-lg border border-gray-800">
+              <div class="bg-gray-950/80 p-5 rounded-xl border border-gray-800/80">
                 <p class="text-xs text-gray-400">Cloud Inventory Stock</p>
                 <h4 class="text-xl font-bold text-emerald-400 mt-1">${appState.inventory.length} Items</h4>
               </div>
-              <div class="bg-gray-950 p-4 rounded-lg border border-gray-800">
+              <div class="bg-gray-950/80 p-5 rounded-xl border border-gray-800/80">
                 <p class="text-xs text-gray-400">Active DPP Passports</p>
                 <h4 class="text-xl font-bold text-emerald-400 mt-1">${appState.dppRecords.length} Hashes</h4>
               </div>
             </div>
-            <div class="p-4 bg-gray-950 rounded-lg border border-gray-800 text-xs text-gray-400">
-              <p class="text-emerald-300 font-semibold mb-1">Software Architecture Note:</p>
-              Platform architecture designed & engineered by <span class="text-white font-medium">Director Muhammad Meer</span>. Licensed for enterprise deployment.
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="p-5 bg-gray-950/80 rounded-xl border border-gray-800/80 flex items-center gap-4">
+                <img src="https://images.unsplash.com/photo-1582582494705-f8ce0b0c24f0?q=80&w=300&auto=format&fit=crop" class="w-20 h-20 rounded-lg object-cover border border-gray-800">
+                <div>
+                  <h5 class="text-xs font-semibold text-emerald-300">Sustainable Manufacturing</h5>
+                  <p class="text-[11px] text-gray-400 mt-1">Real-time telemetry and compliance tracking across textile units.</p>
+                </div>
+              </div>
+              <div class="p-5 bg-gray-950/80 rounded-xl border border-gray-800/80 flex items-center gap-4">
+                <img src="https://images.unsplash.com/photo-1598532163257-ae3c6b2524b6?q=80&w=300&auto=format&fit=crop" class="w-20 h-20 rounded-lg object-cover border border-gray-800">
+                <div>
+                  <h5 class="text-xs font-semibold text-emerald-300">Architectural Note</h5>
+                  <p class="text-[11px] text-gray-400 mt-1">Designed & engineered by <strong class="text-white">Director Muhammad Meer</strong>.</p>
+                </div>
+              </div>
             </div>`;
         } 
         else if (id === 1) {
           let rowsHtml = appState.inventory.length > 0 ? appState.inventory.map(item => `
-            <tr>
-              <td class="p-3 font-medium text-white">${item.material_id || item.id}</td>
-              <td class="p-3">${item.name}</td>
-              <td class="p-3">${item.quantity || item.qty} Kg</td>
-              <td class="p-3 text-emerald-400">${item.status || 'Verified'}</td>
+            <tr class="hover:bg-gray-900/50 transition-colors">
+              <td class="p-3.5 font-medium text-white">${item.material_id || item.id}</td>
+              <td class="p-3.5">${item.name}</td>
+              <td class="p-3.5">${item.quantity || item.qty} Kg</td>
+              <td class="p-3.5 text-emerald-400 font-semibold">${item.status || 'Verified'}</td>
             </tr>
-          `).join('') : `<tr><td colspan="4" class="p-6 text-center text-gray-500 text-xs">No inventory records found in cloud database.</td></tr>`;
+          `).join('') : `<tr><td colspan="4" class="p-8 text-center text-gray-500 text-xs">No inventory records found in cloud database.</td></tr>`;
 
           contentDiv.innerHTML = `
-            <div class="mb-6 p-4 bg-gray-950 rounded-lg border border-gray-800">
+            <div class="mb-6 p-5 bg-gray-950/80 rounded-xl border border-gray-800/80">
               <h4 class="text-xs font-semibold text-emerald-300 mb-3">Add Inventory Record</h4>
               <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-3">
-                <input type="text" id="inv-id" placeholder="Material ID (e.g. MAT-001)" class="bg-gray-900 border border-gray-800 p-2 rounded text-xs text-white focus:outline-none focus:border-emerald-500">
-                <input type="text" id="inv-name" placeholder="Material Name" class="bg-gray-900 border border-gray-800 p-2 rounded text-xs text-white focus:outline-none focus:border-emerald-500">
-                <input type="text" id="inv-qty" placeholder="Quantity (Kg)" class="bg-gray-900 border border-gray-800 p-2 rounded text-xs text-white focus:outline-none focus:border-emerald-500">
+                <input type="text" id="inv-id" placeholder="Material ID (e.g. MAT-001)" class="bg-gray-900 border border-gray-800 p-2.5 rounded-xl text-xs text-white focus:outline-none focus:border-emerald-500">
+                <input type="text" id="inv-name" placeholder="Material Name" class="bg-gray-900 border border-gray-800 p-2.5 rounded-xl text-xs text-white focus:outline-none focus:border-emerald-500">
+                <input type="text" id="inv-qty" placeholder="Quantity (Kg)" class="bg-gray-900 border border-gray-800 p-2.5 rounded-xl text-xs text-white focus:outline-none focus:border-emerald-500">
               </div>
-              <button onclick="addInventoryItem()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold rounded transition-colors">
+              <button onclick="addInventoryItem()" class="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold rounded-xl transition-all shadow-md shadow-emerald-900/20">
                 + Save to Cloud
               </button>
             </div>
-            <div class="overflow-x-auto">
+            <div class="overflow-x-auto rounded-xl border border-gray-800/80">
               <table class="w-full text-left text-xs text-gray-300">
                 <thead class="bg-gray-950 text-gray-400 uppercase border-b border-gray-800">
                   <tr>
-                    <th class="p-3">Material ID</th>
-                    <th class="p-3">Name</th>
-                    <th class="p-3">Quantity</th>
-                    <th class="p-3">Status</th>
+                    <th class="p-3.5">Material ID</th>
+                    <th class="p-3.5">Name</th>
+                    <th class="p-3.5">Quantity</th>
+                    <th class="p-3.5">Status</th>
                   </tr>
                 </thead>
-                <tbody class="divide-y divide-gray-800">${rowsHtml}</tbody>
+                <tbody class="divide-y divide-gray-800/60">${rowsHtml}</tbody>
               </table>
             </div>`;
         } 
         else if (id === 2) {
           let dppHtml = appState.dppRecords.length > 0 ? appState.dppRecords.map(dpp => `
-            <div class="p-3 bg-gray-950 rounded-lg border border-gray-800 mb-2">
-              <span class="text-[11px] text-emerald-400 font-mono">Hash: ${dpp.hash}</span>
-              <h4 class="text-sm font-bold text-white mt-0.5">${dpp.batch_name || dpp.batchName}</h4>
+            <div class="p-4 bg-gray-950/80 rounded-xl border border-gray-800/80 mb-2.5 flex items-center justify-between">
+              <div>
+                <span class="text-[11px] text-emerald-400 font-mono font-medium">Hash: ${dpp.hash}</span>
+                <h4 class="text-sm font-bold text-white mt-0.5">${dpp.batch_name || dpp.batchName}</h4>
+              </div>
+              <span class="px-2.5 py-1 rounded-full text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">ESPR Verified</span>
             </div>
-          `).join('') : `<p class="text-xs text-gray-500 text-center py-4">No DPP passports found.</p>`;
+          `).join('') : `<p class="text-xs text-gray-500 text-center py-6">No DPP passports found.</p>`;
 
           contentDiv.innerHTML = `
-            <div class="mb-6 p-4 bg-gray-950 rounded-lg border border-gray-800">
+            <div class="mb-6 p-5 bg-gray-950/80 rounded-xl border border-gray-800/80">
               <h4 class="text-xs font-semibold text-emerald-300 mb-3">Issue Digital Product Passport</h4>
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
-                <input type="text" id="dpp-hash" placeholder="Hash (#EU-TX-091)" class="bg-gray-900 border border-gray-800 p-2 rounded text-xs text-white focus:outline-none focus:border-emerald-500">
-                <input type="text" id="dpp-name" placeholder="Batch Name" class="bg-gray-900 border border-gray-800 p-2 rounded text-xs text-white focus:outline-none focus:border-emerald-500">
+                <input type="text" id="dpp-hash" placeholder="Hash (#EU-TX-091)" class="bg-gray-900 border border-gray-800 p-2.5 rounded-xl text-xs text-white focus:outline-none focus:border-emerald-500">
+                <input type="text" id="dpp-name" placeholder="Batch Name" class="bg-gray-900 border border-gray-800 p-2.5 rounded-xl text-xs text-white focus:outline-none focus:border-emerald-500">
               </div>
-              <button onclick="addDppRecord()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold rounded transition-colors">
+              <button onclick="addDppRecord()" class="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold rounded-xl transition-all shadow-md shadow-emerald-900/20">
                 + Save DPP
               </button>
             </div>
@@ -441,68 +503,68 @@
         }
         else if (id === 4) {
           contentDiv.innerHTML = `
-            <div class="p-5 bg-gray-950 rounded-lg border border-gray-800">
+            <div class="p-6 bg-gray-950/80 rounded-xl border border-gray-800/80">
               <h4 class="text-xs font-semibold text-emerald-300 mb-3">⚡ Carbon Footprint & ESG Calculator</h4>
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
-                <input type="number" id="calc-energy" placeholder="Energy (kWh)" class="bg-gray-900 border border-gray-800 p-2 rounded text-xs text-white focus:outline-none focus:border-emerald-500">
-                <input type="number" id="calc-weight" placeholder="Weight (Kg)" class="bg-gray-900 border border-gray-800 p-2 rounded text-xs text-white focus:outline-none focus:border-emerald-500">
+                <input type="number" id="calc-energy" placeholder="Energy (kWh)" class="bg-gray-900 border border-gray-800 p-2.5 rounded-xl text-xs text-white focus:outline-none focus:border-emerald-500">
+                <input type="number" id="calc-weight" placeholder="Weight (Kg)" class="bg-gray-900 border border-gray-800 p-2.5 rounded-xl text-xs text-white focus:outline-none focus:border-emerald-500">
               </div>
-              <button onclick="calculateCarbon()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold rounded transition-colors">Calculate</button>
-              <div id="calc-result" class="mt-3 p-3 bg-gray-900 rounded border border-gray-800 text-xs text-emerald-300 hidden"></div>
+              <button onclick="calculateCarbon()" class="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold rounded-xl transition-all shadow-md shadow-emerald-900/20">Calculate Footprint</button>
+              <div id="calc-result" class="mt-4 p-4 bg-gray-900 rounded-xl border border-gray-800 text-xs text-emerald-300 hidden"></div>
             </div>`;
         }
         else if (id === 12) {
           contentDiv.innerHTML = `
-            <div class="p-5 bg-gray-950 rounded-lg border border-gray-800">
+            <div class="p-6 bg-gray-950/80 rounded-xl border border-gray-800/80">
               <h4 class="text-xs font-semibold text-emerald-300 mb-3">🇪🇺 CBAM Export Tax Estimator</h4>
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
-                <input type="number" id="cbam-tons" placeholder="Export Volume (Tons)" class="bg-gray-900 border border-gray-800 p-2 rounded text-xs text-white focus:outline-none focus:border-emerald-500">
-                <input type="number" id="cbam-price" placeholder="EU Carbon Certificate Price (€/Ton)" class="bg-gray-900 border border-gray-800 p-2 rounded text-xs text-white focus:outline-none focus:border-emerald-500">
+                <input type="number" id="cbam-tons" placeholder="Export Volume (Tons)" class="bg-gray-900 border border-gray-800 p-2.5 rounded-xl text-xs text-white focus:outline-none focus:border-emerald-500">
+                <input type="number" id="cbam-price" placeholder="EU Carbon Certificate Price (€/Ton)" class="bg-gray-900 border border-gray-800 p-2.5 rounded-xl text-xs text-white focus:outline-none focus:border-emerald-500">
               </div>
-              <button onclick="calculateCBAM()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold rounded transition-colors">Compute Tax</button>
-              <div id="cbam-result" class="mt-3 p-3 bg-gray-900 rounded border border-gray-800 text-xs text-emerald-300 hidden"></div>
+              <button onclick="calculateCBAM()" class="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold rounded-xl transition-all shadow-md shadow-emerald-900/20">Compute Tax Liability</button>
+              <div id="cbam-result" class="mt-4 p-4 bg-gray-900 rounded-xl border border-gray-800 text-xs text-emerald-300 hidden"></div>
             </div>`;
         }
         else if (id === 13) {
           contentDiv.innerHTML = `
-            <div class="p-5 bg-gray-950 rounded-lg border border-gray-800">
+            <div class="p-6 bg-gray-950/80 rounded-xl border border-gray-800/80">
               <h4 class="text-xs font-semibold text-emerald-300 mb-3">🔗 Blockchain Hash Audit Generator</h4>
-              <button onclick="generateBlockchainHash()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold rounded transition-colors">Generate Immutable Hash</button>
-              <div id="bc-result" class="mt-3 p-3 bg-gray-900 rounded border border-gray-800 font-mono text-[11px] text-emerald-400 hidden"></div>
+              <button onclick="generateBlockchainHash()" class="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold rounded-xl transition-all shadow-md shadow-emerald-900/20">Generate Immutable Hash</button>
+              <div id="bc-result" class="mt-4 p-4 bg-gray-900 rounded-xl border border-gray-800 font-mono text-xs text-emerald-400 hidden"></div>
             </div>`;
         }
         else if (id === 14) {
           contentDiv.innerHTML = `
-            <div class="p-5 bg-gray-950 rounded-lg border border-gray-800">
+            <div class="p-6 bg-gray-950/80 rounded-xl border border-gray-800/80">
               <h4 class="text-xs font-semibold text-emerald-300 mb-3">📡 IoT Telemetry Live Status</h4>
-              <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 text-xs">
-                <div class="bg-gray-900 p-3 rounded border border-gray-800"><p class="text-gray-400">Spinning Unit</p><p class="text-emerald-400 font-bold mt-1">480 kW (Normal)</p></div>
-                <div class="bg-gray-900 p-3 rounded border border-gray-800"><p class="text-gray-400">Dyeing Temp</p><p class="text-emerald-400 font-bold mt-1">115°C (Stable)</p></div>
-                <div class="bg-gray-900 p-3 rounded border border-gray-800"><p class="text-gray-400">Weaving Load</p><p class="text-emerald-400 font-bold mt-1">92% Capacity</p></div>
+              <div class="grid grid-cols-2 sm:grid-cols-3 gap-4 text-xs">
+                <div class="bg-gray-900 p-4 rounded-xl border border-gray-800"><p class="text-gray-400">Spinning Unit</p><p class="text-emerald-400 font-bold mt-1.5 text-sm">480 kW (Normal)</p></div>
+                <div class="bg-gray-900 p-4 rounded-xl border border-gray-800"><p class="text-gray-400">Dyeing Temp</p><p class="text-emerald-400 font-bold mt-1.5 text-sm">115°C (Stable)</p></div>
+                <div class="bg-gray-900 p-4 rounded-xl border border-gray-800"><p class="text-gray-400">Weaving Load</p><p class="text-emerald-400 font-bold mt-1.5 text-sm">92% Capacity</p></div>
               </div>
             </div>`;
         }
         else if (id === 15) {
           contentDiv.innerHTML = `
-            <div class="p-5 bg-gray-950 rounded-lg border border-gray-800">
+            <div class="p-6 bg-gray-950/80 rounded-xl border border-gray-800/80">
               <h4 class="text-xs font-semibold text-emerald-300 mb-3">♻️ AI Circularity & Recycling Score</h4>
-              <p class="text-xs text-gray-400 mb-3">Analyzes material composition for EU circular economy standards.</p>
-              <button onclick="checkCircularity()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold rounded transition-colors">Run AI Analysis</button>
-              <div id="circ-result" class="mt-3 p-3 bg-gray-900 rounded border border-gray-800 text-xs text-emerald-300 hidden"></div>
+              <p class="text-xs text-gray-400 mb-4">Analyzes material composition for EU circular economy standards.</p>
+              <button onclick="checkCircularity()" class="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold rounded-xl transition-all shadow-md shadow-emerald-900/20">Run AI Analysis</button>
+              <div id="circ-result" class="mt-4 p-4 bg-gray-900 rounded-xl border border-gray-800 text-xs text-emerald-300 hidden"></div>
             </div>`;
         }
         else if (id === 16) {
           contentDiv.innerHTML = `
-            <div class="p-5 bg-gray-950 rounded-lg border border-gray-800">
+            <div class="p-6 bg-gray-950/80 rounded-xl border border-gray-800/80">
               <h4 class="text-xs font-semibold text-emerald-300 mb-3">📄 Official Compliance Exporter</h4>
-              <p class="text-xs text-gray-400 mb-3">Generate official compliance report for <span class="text-white font-medium">${appState.currentCompany}</span>.</p>
-              <button onclick="exportCertificate()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold rounded transition-colors">Generate Certificate</button>
-              <div id="cert-result" class="mt-3 p-3 bg-gray-900 rounded border border-gray-800 text-xs text-white hidden"></div>
+              <p class="text-xs text-gray-400 mb-4">Generate official compliance report for <span class="text-white font-medium">${appState.currentCompany}</span>.</p>
+              <button onclick="exportCertificate()" class="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold rounded-xl transition-all shadow-md shadow-emerald-900/20">Generate Certificate</button>
+              <div id="cert-result" class="mt-4 p-4 bg-gray-900 rounded-xl border border-gray-800 text-xs text-white hidden"></div>
             </div>`;
         }
         else {
           contentDiv.innerHTML = `
-            <div class="p-6 text-center border border-dashed border-gray-800 rounded-lg bg-gray-950/30">
+            <div class="p-8 text-center border border-dashed border-gray-800 rounded-xl bg-gray-950/30">
               <p class="text-gray-400 text-xs">
                 Active workspace for <span class="text-emerald-300 font-medium">${mod.title}</span> under tenant <span class="text-white font-semibold">${appState.currentCompany}</span>.
               </p>
