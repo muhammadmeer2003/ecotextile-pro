@@ -68,12 +68,12 @@
             <form id="auth-form" onsubmit="handleAuthSubmit(event)" style="display: flex; flex-direction: column; gap: 1.1rem;">
                 <div style="display: flex; flex-direction: column; gap: 0.3rem;">
                     <label style="font-size: 0.8125rem; color: #9ca3af; font-weight: 500;">Work Email Address</label>
-                    <input type="email" id="auth-email" required value="michaelsmith@example.com" style="width: 100%; background: var(--bg-main); border: 1px solid var(--border-color); border-radius: 0.625rem; padding: 0.7rem 0.875rem; font-size: 0.875rem; color: #f3f4f6; outline: none; box-sizing: border-box;">
+                    <input type="email" id="auth-email" required placeholder="name@example.com" style="width: 100%; background: var(--bg-main); border: 1px solid var(--border-color); border-radius: 0.625rem; padding: 0.7rem 0.875rem; font-size: 0.875rem; color: #f3f4f6; outline: none; box-sizing: border-box;">
                 </div>
 
                 <div style="display: flex; flex-direction: column; gap: 0.3rem;">
                     <label style="font-size: 0.8125rem; color: #9ca3af; font-weight: 500;">Password</label>
-                    <input type="password" id="auth-password" required value="password123" style="width: 100%; background: var(--bg-main); border: 1px solid var(--border-color); border-radius: 0.625rem; padding: 0.7rem 0.875rem; font-size: 0.875rem; color: #f3f4f6; outline: none; box-sizing: border-box;">
+                    <input type="password" id="auth-password" required placeholder="••••••••" style="width: 100%; background: var(--bg-main); border: 1px solid var(--border-color); border-radius: 0.625rem; padding: 0.7rem 0.875rem; font-size: 0.875rem; color: #f3f4f6; outline: none; box-sizing: border-box;">
                 </div>
 
                 <!-- Forgot Password & Create Account Links -->
@@ -114,7 +114,7 @@
                         </div>
                         <div>
                             <span style="font-size: 1.05rem; font-weight: 800; color: #ffffff; display: block;">EcoTextile EU</span>
-                            <span style="font-size: 0.75rem; color: var(--accent-green); font-weight: 600; display: block;">Director: Muhammad Meer</span>
+                            <span style="font-size: 0.75rem; color: var(--accent-green); font-weight: 600; display: block;">Director Portal</span>
                         </div>
                     </div>
                     
@@ -196,7 +196,7 @@
                         </div>
                     </div>
 
-                    <!-- 2. INVENTORY TAB -->
+                    <!-- 2. INVENTORY TAB (Zero/Empty State) -->
                     <div id="tab-inventory" class="tab-content hidden" style="display: none; flex-direction: column; gap: 1.5rem;">
                         <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
                             <h1 style="font-size: 1.875rem; font-weight: bold; color: #f3f4f6; margin: 0;">Textile Inventory & Excel Management</h1>
@@ -224,23 +224,12 @@
                         </div>
                     </div>
 
-                    <!-- 3. DPP TAB -->
+                    <!-- 3. DPP TAB (Zero/Empty State) -->
                     <div id="tab-dpp" class="tab-content hidden" style="display: none; flex-direction: column; gap: 1.5rem;">
                         <h1 style="font-size: 1.875rem; font-weight: bold; color: #f3f4f6; margin: 0;">EU Digital Product Passport (DPP - ESPR)</h1>
                         <p style="color: #9ca3af; font-size: 0.9rem;">Mandatory EU passport containing circularity index, material composition, and supply transparency.</p>
-                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;">
-                            <div class="glass-card" style="padding: 1.5rem; border-radius: 0.875rem;">
-                                <h3 style="color: white; margin-top: 0;">Batch #EU-DNM-2026-01</h3>
-                                <p style="color: #d1d5db; font-size: 0.875rem;"><strong>Material:</strong> 80% Organic Cotton, 20% Recycled Elastane</p>
-                                <p style="color: #d1d5db; font-size: 0.875rem;"><strong>Recyclability Index:</strong> 98% (Grade A+)</p>
-                                <p style="color: #d1d5db; font-size: 0.875rem;"><strong>Repairability:</strong> High (Modular Design)</p>
-                                <span style="background: rgba(16,185,129,0.2); color: #34d399; padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 600;">EU Market Ready</span>
-                            </div>
-                            <div class="glass-card" style="padding: 1.5rem; border-radius: 0.875rem; text-align: center;">
-                                <h4 style="color: white; margin-top: 0;">Dynamic QR Code for EU Customs</h4>
-                                <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://example.com/dpp/batch-eu-2026" alt="DPP QR" style="border-radius: 0.5rem; border: 4px solid white; margin: 0.5rem 0;">
-                                <p style="font-size: 0.75rem; color: #9ca3af;">Scan to verify European Ecodesign standards.</p>
-                            </div>
+                        <div class="glass-card" style="padding: 3rem 2rem; border-radius: 0.875rem; text-align: center; color: #9ca3af;">
+                            <p style="font-size: 1rem; margin: 0;">No Digital Product Passports generated yet. Upload inventory or add batches to initialize EU compliance tracking.</p>
                         </div>
                     </div>
 
@@ -250,20 +239,20 @@
                         <div class="glass-card" style="padding: 1.5rem; border-radius: 0.875rem; display: flex; flex-direction: column; gap: 1rem;">
                             <div style="border-left: 3px solid #10b981; padding-left: 1rem;">
                                 <strong style="color: white;">Tier 3: Raw Material Extraction</strong>
-                                <p style="color: #9ca3af; font-size: 0.85rem; margin: 0.2rem 0 0 0;">Organic Cotton Farming & Harvesting &bull; Izmir, Turkey (GOTS Certified)</p>
+                                <p style="color: #9ca3af; font-size: 0.85rem; margin: 0.2rem 0 0 0;">Awaiting supplier node configuration...</p>
                             </div>
                             <div style="border-left: 3px solid #60a5fa; padding-left: 1rem;">
                                 <strong style="color: white;">Tier 2: Processing & Spinning</strong>
-                                <p style="color: #9ca3af; font-size: 0.85rem; margin: 0.2rem 0 0 0;">EcoSpin Mills &bull; Porto, Portugal (ISO 14001 Environmental Standard)</p>
+                                <p style="color: #9ca3af; font-size: 0.85rem; margin: 0.2rem 0 0 0;">Awaiting mill node configuration...</p>
                             </div>
                             <div style="border-left: 3px solid #fbbf24; padding-left: 1rem;">
                                 <strong style="color: white;">Tier 1: Manufacturing & Stitching</strong>
-                                <p style="color: #9ca3af; font-size: 0.85rem; margin: 0.2rem 0 0 0;">Milano Garments SRL &bull; Milan, Italy (Fair Labor Verified)</p>
+                                <p style="color: #9ca3af; font-size: 0.85rem; margin: 0.2rem 0 0 0;">Awaiting manufacturing unit setup...</p>
                             </div>
                         </div>
                     </div>
 
-                    <!-- 5. ESG TAB -->
+                    <!-- 5. ESG TAB (Zeroed out) -->
                     <div id="tab-esg" class="tab-content hidden" style="display: none; flex-direction: column; gap: 1.5rem;">
                         <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
                             <h1 style="font-size: 1.875rem; font-weight: bold; color: #f3f4f6; margin: 0;">Advanced ESG & CSRD Report</h1>
@@ -274,16 +263,16 @@
                                 <label style="display: block; font-size: 0.75rem; color: #9ca3af; margin-bottom: 0.4rem;">FABRIC TYPE</label>
                                 <select id="calc-material" onchange="calculateESG()" style="width: 100%; background: var(--bg-main); border: 1px solid var(--border-color); border-radius: 0.5rem; padding: 0.6rem; color: white;">
                                     <option value="organic_cotton">Organic Cotton</option>
-                                    <option value="recycled_poly" selected>Recycled Polyester</option>
+                                    <option value="recycled_poly">Recycled Polyester</option>
                                 </select>
                             </div>
                             <div>
                                 <label style="display: block; font-size: 0.75rem; color: #9ca3af; margin-bottom: 0.4rem;">BATCH WEIGHT (KG)</label>
-                                <input type="number" id="calc-weight" value="1200" oninput="calculateESG()" style="width: 100%; background: var(--bg-main); border: 1px solid var(--border-color); border-radius: 0.5rem; padding: 0.6rem; color: white; box-sizing: border-box;">
+                                <input type="number" id="calc-weight" value="0" oninput="calculateESG()" style="width: 100%; background: var(--bg-main); border: 1px solid var(--border-color); border-radius: 0.5rem; padding: 0.6rem; color: white; box-sizing: border-box;">
                             </div>
                             <div style="background: var(--bg-main); padding: 1rem; border-radius: 0.5rem; border: 1px solid var(--border-color);">
                                 <span style="font-size: 0.75rem; color: #9ca3af;">Total Carbon (CO2e)</span>
-                                <div id="res-carbon" style="font-size: 1.25rem; font-weight: bold; color: var(--accent-green);">--</div>
+                                <div id="res-carbon" style="font-size: 1.25rem; font-weight: bold; color: var(--accent-green);">0 kg CO2e</div>
                             </div>
                         </div>
                     </div>
@@ -302,13 +291,13 @@
                                     </tr>
                                 </thead>
                                 <tbody id="cloud-records-body">
-                                    <tr><td colspan="4" style="padding: 2rem; text-align: center; color: #6b7280;">Loading cloud records...</td></tr>
+                                    <tr><td colspan="4" style="padding: 2rem; text-align: center; color: #6b7280;">No cloud records found yet. Connected to Supabase Frankfurt cluster.</td></tr>
                                 </tbody>
                             </table>
                         </div>
                     </div>
 
-                    <!-- 7. PRODUCTION WIP STAGES -->
+                    <!-- 7. PRODUCTION WIP STAGES (Zero/Empty State) -->
                     <div id="tab-wip" class="tab-content hidden" style="display: none; flex-direction: column; gap: 1.5rem;">
                         <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
                             <h1 style="font-size: 1.875rem; font-weight: bold; color: #f3f4f6; margin: 0;">Production & WIP Stages</h1>
@@ -326,29 +315,12 @@
                                         <th style="padding: 1rem;">AI Status</th>
                                     </tr>
                                 </thead>
-                                <tbody>
-                                    <tr style="border-bottom: 1px solid var(--border-color);">
-                                        <td style="padding: 1rem; color: white; font-weight: 600;">ORD-501</td>
-                                        <td style="padding: 1rem; color: #34d399;">Completed</td>
-                                        <td style="padding: 1rem; color: #34d399;">Completed</td>
-                                        <td style="padding: 1rem; color: #fbbf24;">In Progress (70%)</td>
-                                        <td style="padding: 1rem; color: #9ca3af;">Pending</td>
-                                        <td style="padding: 1rem; color: var(--accent-green);">Optimal Flow</td>
-                                    </tr>
-                                    <tr style="border-bottom: 1px solid var(--border-color);">
-                                        <td style="padding: 1rem; color: white; font-weight: 600;">ORD-502</td>
-                                        <td style="padding: 1rem; color: #34d399;">Completed</td>
-                                        <td style="padding: 1rem; color: #fbbf24;">In Progress (40%)</td>
-                                        <td style="padding: 1rem; color: #9ca3af;">Pending</td>
-                                        <td style="padding: 1rem; color: #9ca3af;">Pending</td>
-                                        <td style="padding: 1rem; color: #f87171;">Minor Delay in Weaving</td>
-                                    </tr>
-                                </tbody>
+                                <tbody id="wip-table-body"></tbody>
                             </table>
                         </div>
                     </div>
 
-                    <!-- 8. QUALITY CONTROL & INSPECTION -->
+                    <!-- 8. QUALITY CONTROL & INSPECTION (Zero/Empty State) -->
                     <div id="tab-qc" class="tab-content hidden" style="display: none; flex-direction: column; gap: 1.5rem;">
                         <h1 style="font-size: 1.875rem; font-weight: bold; color: #f3f4f6; margin: 0;">Quality Control & Inspection (QC)</h1>
                         <div class="glass-card" style="padding: 1.5rem; border-radius: 0.875rem; display: flex; flex-direction: column; gap: 1rem;">
@@ -366,52 +338,37 @@
                                         <th style="padding: 0.8rem;">Final Status</th>
                                     </tr>
                                 </thead>
-                                <tbody>
-                                    <tr style="border-bottom: 1px solid var(--border-color);">
-                                        <td style="padding: 0.8rem; color: white;">#LOT-901</td>
-                                        <td style="padding: 0.8rem; color: #9ca3af;">Ahmed Khan</td>
-                                        <td style="padding: 0.8rem; color: #34d399;">Grade A (4.5/5)</td>
-                                        <td style="padding: 1.2rem 0.8rem; color: #34d399;">&lt; 2.1%</td>
-                                        <td style="padding: 0.8rem;"><span style="background: rgba(16,185,129,0.2); color: #34d399; padding: 0.2rem 0.6rem; border-radius: 9999px; font-size: 0.75rem;">PASSED</span></td>
-                                    </tr>
-                                    <tr style="border-bottom: 1px solid var(--border-color);">
-                                        <td style="padding: 0.8rem; color: white;">#LOT-902</td>
-                                        <td style="padding: 0.8rem; color: #9ca3af;">Bilal Ahmed</td>
-                                        <td style="padding: 0.8rem; color: #fbbf24;">Grade B (3.2/5)</td>
-                                        <td style="padding: 1.2rem 0.8rem; color: #f87171;">4.5%</td>
-                                        <td style="padding: 0.8rem;"><span style="background: rgba(239,68,68,0.2); color: #f87171; padding: 0.2rem 0.6rem; border-radius: 9999px; font-size: 0.75rem;">REWORK</span></td>
-                                    </tr>
-                                </tbody>
+                                <tbody id="qc-table-body"></tbody>
                             </table>
                         </div>
                     </div>
 
-                    <!-- 9. BILL OF MATERIALS & COSTING SHEET -->
+                    <!-- 9. BILL OF MATERIALS & COSTING SHEET (Zeroed out) -->
                     <div id="tab-bom" class="tab-content hidden" style="display: none; flex-direction: column; gap: 1.5rem;">
                         <h1 style="font-size: 1.875rem; font-weight: bold; color: #f3f4f6; margin: 0;">Bill of Materials (BOM) & Costing Sheet</h1>
                         <div class="glass-card" style="padding: 2rem; border-radius: 0.875rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.5rem;">
                             <div>
                                 <label style="display: block; font-size: 0.75rem; color: #9ca3af; margin-bottom: 0.4rem;">RAW COTTON/YARN COST ($/KG)</label>
-                                <input type="number" id="bom-yarn" value="4.50" oninput="calculateBOM()" style="width: 100%; background: var(--bg-main); border: 1px solid var(--border-color); border-radius: 0.5rem; padding: 0.6rem; color: white; box-sizing: border-box;">
+                                <input type="number" id="bom-yarn" value="0.00" oninput="calculateBOM()" style="width: 100%; background: var(--bg-main); border: 1px solid var(--border-color); border-radius: 0.5rem; padding: 0.6rem; color: white; box-sizing: border-box;">
                             </div>
                             <div>
                                 <label style="display: block; font-size: 0.75rem; color: #9ca3af; margin-bottom: 0.4rem;">DYES & CHEMICALS ($)</label>
-                                <input type="number" id="bom-dyes" value="1.20" oninput="calculateBOM()" style="width: 100%; background: var(--bg-main); border: 1px solid var(--border-color); border-radius: 0.5rem; padding: 0.6rem; color: white; box-sizing: border-box;">
+                                <input type="number" id="bom-dyes" value="0.00" oninput="calculateBOM()" style="width: 100%; background: var(--bg-main); border: 1px solid var(--border-color); border-radius: 0.5rem; padding: 0.6rem; color: white; box-sizing: border-box;">
                             </div>
                             <div>
                                 <label style="display: block; font-size: 0.75rem; color: #9ca3af; margin-bottom: 0.4rem;">LABOR & OVERHEAD ($)</label>
-                                <input type="number" id="bom-labor" value="2.10" oninput="calculateBOM()" style="width: 100%; background: var(--bg-main); border: 1px solid var(--border-color); border-radius: 0.5rem; padding: 0.6rem; color: white; box-sizing: border-box;">
+                                <input type="number" id="bom-labor" value="0.00" oninput="calculateBOM()" style="width: 100%; background: var(--bg-main); border: 1px solid var(--border-color); border-radius: 0.5rem; padding: 0.6rem; color: white; box-sizing: border-box;">
                             </div>
                             <div style="background: var(--bg-main); padding: 1.25rem; border-radius: 0.5rem; border: 1px solid var(--border-color); grid-column: 1 / -1;">
                                 <div style="display: flex; justify-content: space-between; align-items: center;">
                                     <span style="font-size: 0.875rem; color: #9ca3af;">Total Production Cost per Garment:</span>
-                                    <span id="bom-total" style="font-size: 1.5rem; font-weight: bold; color: var(--accent-green);">$7.80</span>
+                                    <span id="bom-total" style="font-size: 1.5rem; font-weight: bold; color: var(--accent-green);">$0.00</span>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- 10. WAREHOUSE LOCATION MANAGEMENT -->
+                    <!-- 10. WAREHOUSE LOCATION MANAGEMENT (Zero/Empty State) -->
                     <div id="tab-warehouse" class="tab-content hidden" style="display: none; flex-direction: column; gap: 1.5rem;">
                         <h1 style="font-size: 1.875rem; font-weight: bold; color: #f3f4f6; margin: 0;">Warehouse & Bin Location Management</h1>
                         <div class="glass-card" style="border-radius: 0.875rem; overflow-x: auto;">
@@ -424,25 +381,12 @@
                                         <th style="padding: 1rem;">Status</th>
                                     </tr>
                                 </thead>
-                                <tbody>
-                                    <tr style="border-bottom: 1px solid var(--border-color);">
-                                        <td style="padding: 1rem; color: var(--accent-green); font-weight: 600;">Zone A - Rack 04</td>
-                                        <td style="padding: 1rem; color: white;">Greige Cotton Bales</td>
-                                        <td style="padding: 1rem; color: #60a5fa;">85% (4,250 KG)</td>
-                                        <td style="padding: 1rem; color: #34d399;">Active Stock</td>
-                                    </tr>
-                                    <tr style="border-bottom: 1px solid var(--border-color);">
-                                        <td style="padding: 1rem; color: var(--accent-green); font-weight: 600;">Zone B - Rack 12</td>
-                                        <td style="padding: 1rem; color: white;">Dyed Fabric Rolls</td>
-                                        <td style="padding: 1rem; color: #60a5fa;">60% (1,800 KG)</td>
-                                        <td style="padding: 1rem; color: #34d399;">Ready for Stitching</td>
-                                    </tr>
-                                </tbody>
+                                <tbody id="warehouse-table-body"></tbody>
                             </table>
                         </div>
                     </div>
 
-                    <!-- 11. BUYERS ORDER & DISPATCH -->
+                    <!-- 11. BUYERS ORDER & DISPATCH (Zero/Empty State) -->
                     <div id="tab-orders" class="tab-content hidden" style="display: none; flex-direction: column; gap: 1.5rem;">
                         <h1 style="font-size: 1.875rem; font-weight: bold; color: #f3f4f6; margin: 0;">Buyer Orders & Shipping Dispatch</h1>
                         <div class="glass-card" style="border-radius: 0.875rem; overflow-x: auto;">
@@ -456,22 +400,7 @@
                                         <th style="padding: 1rem;">Status</th>
                                     </tr>
                                 </thead>
-                                <tbody>
-                                    <tr style="border-bottom: 1px solid var(--border-color);">
-                                        <td style="padding: 1rem; color: white; font-weight: 600;">EU-PO-8821</td>
-                                        <td style="padding: 1rem; color: #60a5fa;">Berliner Textiles GmbH (Germany)</td>
-                                        <td style="padding: 1rem; color: #9ca3af;">Berlin Hub</td>
-                                        <td style="padding: 1rem; color: #34d399;">2026-03-15</td>
-                                        <td style="padding: 1rem;"><span style="background: rgba(16,185,129,0.2); color: #34d399; padding: 0.2rem 0.6rem; border-radius: 9999px; font-size: 0.75rem;">Shipped</span></td>
-                                    </tr>
-                                    <tr style="border-bottom: 1px solid var(--border-color);">
-                                        <td style="padding: 1rem; color: white; font-weight: 600;">EU-PO-8825</td>
-                                        <td style="padding: 1rem; color: #60a5fa;">Nordic Garments AB (Sweden)</td>
-                                        <td style="padding: 1rem; color: #9ca3af;">Stockholm Port</td>
-                                        <td style="padding: 1rem; color: #fbbf24;">2026-03-22</td>
-                                        <td style="padding: 1rem;"><span style="background: rgba(251,191,36,0.2); color: #fbbf24; padding: 0.2rem 0.6rem; border-radius: 9999px; font-size: 0.75rem;">Packing</span></td>
-                                    </tr>
-                                </tbody>
+                                <tbody id="orders-table-body"></tbody>
                             </table>
                         </div>
                     </div>
@@ -482,7 +411,7 @@
                         <div class="glass-card" style="padding: 2rem; border-radius: 0.875rem; display: flex; flex-direction: column; gap: 1rem;">
                             <button onclick="runAIAudit()" style="background: #2563eb; color: white; padding: 0.625rem 1.125rem; border-radius: 0.625rem; border: none; cursor: pointer; font-weight: 600; width: fit-content;">Run AI Full Enterprise Audit</button>
                             <div id="ai-output-box" style="background: var(--bg-main); padding: 1.25rem; border-radius: 0.5rem; border: 1px solid var(--border-color); font-size: 0.875rem; color: #9ca3af;">
-                                Click the button above to analyze ZDHC chemical compliance, production bottlenecks, and carbon tracking under Director Muhammad Meer.
+                                Click the button above to initialize ZDHC chemical compliance and carbon tracking under Director Muhammad Meer.
                             </div>
                         </div>
                     </div>
@@ -499,13 +428,19 @@
         let overviewChartInstance = null;
         let isSignUpMode = false;
 
-        let inventoryList = [
-            { id: 101, name: 'Organic Cotton Twill', weight: 1200, supplier: 'Izmir Farms (Turkey)', carbon: '1,500.0 kg' },
-            { id: 102, name: 'Recycled Polyester Blend', weight: 850, supplier: 'EcoSpin (Portugal)', carbon: '1,020.0 kg' }
-        ];
+        // Completely empty state datasets
+        let inventoryList = [];
+        let wipList = [];
+        let qcList = [];
+        let warehouseList = [];
+        let ordersList = [];
 
         window.addEventListener('DOMContentLoaded', () => {
             renderInventoryTable();
+            renderWIPTable();
+            renderQCTable();
+            renderWarehouseTable();
+            renderOrdersTable();
             calculateESG();
             calculateBOM();
             initOverviewChart();
@@ -615,10 +550,10 @@
             overviewChartInstance = new Chart(ctx, {
                 type: 'bar',
                 data: {
-                    labels: inventoryList.map(i => i.name),
+                    labels: inventoryList.length > 0 ? inventoryList.map(i => i.name) : ['No Data'],
                     datasets: [{
                         label: 'Batch Weight (KG)',
-                        data: inventoryList.map(i => i.weight),
+                        data: inventoryList.length > 0 ? inventoryList.map(i => i.weight) : [0],
                         backgroundColor: 'rgba(16, 185, 129, 0.6)',
                         borderColor: '#10b981',
                         borderWidth: 1
@@ -639,6 +574,10 @@
         function renderInventoryTable() {
             const tbody = document.getElementById('inventory-table-body');
             tbody.innerHTML = '';
+            if (inventoryList.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" style="padding: 2.5rem; text-align: center; color: #6b7280;">No inventory items recorded. Upload an Excel sheet above to populate data.</td></tr>`;
+                return;
+            }
             inventoryList.forEach(item => {
                 tbody.innerHTML += `
                     <tr style="border-bottom: 1px solid var(--border-color);">
@@ -647,6 +586,86 @@
                         <td style="padding: 1rem; color: #60a5fa;">${item.weight} KG</td>
                         <td style="padding: 1rem; color: #9ca3af;">${item.supplier}</td>
                         <td style="padding: 1rem; color: var(--accent-green);">${item.carbon}</td>
+                    </tr>
+                `;
+            });
+        }
+
+        function renderWIPTable() {
+            const tbody = document.getElementById('wip-table-body');
+            tbody.innerHTML = '';
+            if (wipList.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" style="padding: 2.5rem; text-align: center; color: #6b7280;">No production orders in progress. Add or dispatch orders to track WIP stages.</td></tr>`;
+                return;
+            }
+            wipList.forEach(item => {
+                tbody.innerHTML += `
+                    <tr style="border-bottom: 1px solid var(--border-color);">
+                        <td style="padding: 1rem; color: var(--accent-green); font-weight: 600;">${item.order}</td>
+                        <td style="padding: 1rem; color: #f3f4f6;">${item.spinning}</td>
+                        <td style="padding: 1rem; color: #f3f4f6;">${item.weaving}</td>
+                        <td style="padding: 1rem; color: #f3f4f6;">${item.dyeing}</td>
+                        <td style="padding: 1rem; color: #f3f4f6;">${item.stitching}</td>
+                        <td style="padding: 1rem; color: #60a5fa;">${item.status}</td>
+                    </tr>
+                `;
+            });
+        }
+
+        function renderQCTable() {
+            const tbody = document.getElementById('qc-table-body');
+            tbody.innerHTML = '';
+            if (qcList.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" style="padding: 2.5rem; text-align: center; color: #6b7280;">No quality inspection lots recorded yet.</td></tr>`;
+                return;
+            }
+            qcList.forEach(item => {
+                tbody.innerHTML += `
+                    <tr style="border-bottom: 1px solid var(--border-color);">
+                        <td style="padding: 0.8rem; color: var(--accent-green);">${item.lot}</td>
+                        <td style="padding: 0.8rem; color: #f3f4f6;">${item.inspector}</td>
+                        <td style="padding: 0.8rem; color: #f3f4f6;">${item.fastness}</td>
+                        <td style="padding: 0.8rem; color: #f3f4f6;">${item.shrinkage}</td>
+                        <td style="padding: 0.8rem; color: #34d399;">${item.status}</td>
+                    </tr>
+                `;
+            });
+        }
+
+        function renderWarehouseTable() {
+            const tbody = document.getElementById('warehouse-table-body');
+            tbody.innerHTML = '';
+            if (warehouseList.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" style="padding: 2.5rem; text-align: center; color: #6b7280;">Warehouse bins are currently empty. Assign zones to stock items.</td></tr>`;
+                return;
+            }
+            warehouseList.forEach(item => {
+                tbody.innerHTML += `
+                    <tr style="border-bottom: 1px solid var(--border-color);">
+                        <td style="padding: 1rem; color: var(--accent-green);">${item.zone}</td>
+                        <td style="padding: 1rem; color: #f3f4f6;">${item.item}</td>
+                        <td style="padding: 1rem; color: #60a5fa;">${item.capacity}</td>
+                        <td style="padding: 1rem; color: #34d399;">${item.status}</td>
+                    </tr>
+                `;
+            });
+        }
+
+        function renderOrdersTable() {
+            const tbody = document.getElementById('orders-table-body');
+            tbody.innerHTML = '';
+            if (ordersList.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" style="padding: 2.5rem; text-align: center; color: #6b7280;">No buyer purchase orders or dispatches logged yet.</td></tr>`;
+                return;
+            }
+            ordersList.forEach(item => {
+                tbody.innerHTML += `
+                    <tr style="border-bottom: 1px solid var(--border-color);">
+                        <td style="padding: 1rem; color: var(--accent-green);">${item.po}</td>
+                        <td style="padding: 1rem; color: #f3f4f6;">${item.buyer}</td>
+                        <td style="padding: 1rem; color: #60a5fa;">${item.destination}</td>
+                        <td style="padding: 1rem; color: #9ca3af;">${item.date}</td>
+                        <td style="padding: 1rem; color: #34d399;">${item.status}</td>
                     </tr>
                 `;
             });
@@ -671,6 +690,7 @@
                         });
                     });
                     renderInventoryTable();
+                    initOverviewChart();
                     showToast('Excel sheet successfully synced!');
                 }
             };
@@ -678,6 +698,10 @@
         }
 
         function exportInventoryToExcel() {
+            if (inventoryList.length === 0) {
+                showToast('No inventory data available to export.', 'error');
+                return;
+            }
             const ws = XLSX.utils.json_to_sheet(inventoryList);
             const wb = XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(wb, ws, "Inventory");
@@ -700,18 +724,18 @@
         }
 
         function runAIAuditWIP() {
-            showToast('AI analyzed WIP stages: All production lines running at 94% efficiency.');
+            showToast('AI WIP Audit: No active bottlenecks detected in production queues.');
         }
 
         function runAIAuditQC() {
-            showToast('AI Defect Prediction: Lot #902 needs chemical concentration check in dyeing unit.');
+            showToast('AI QC Audit: Inspection logs clean. Awaiting active lot inputs.');
         }
 
         function runAIAudit() {
             document.getElementById('ai-output-box').innerHTML = `<span style="color: #60a5fa;" class="ai-pulse">Running AI full enterprise audit...</span>`;
             setTimeout(() => {
-                document.getElementById('ai-output-box').innerHTML = `<strong style="color: #10b981;">✓ Enterprise Audit Passed:</strong> All 11 operational modules meet EU Green Deal, ZDHC, and ESPR guidelines under Director Muhammad Meer's supervision.`;
-                showToast('AI Full Audit completed!');
+                document.getElementById('ai-output-box').innerHTML = `<strong style="color: #10b981;">✓ Enterprise Suite Active:</strong> Ready for data entry under Director Muhammad Meer's supervision.`;
+                showToast('AI Audit completed!');
             }, 1000);
         }
 
