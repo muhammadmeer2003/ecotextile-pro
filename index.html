@@ -3,761 +3,272 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EcoTextile Enterprise &bull; EU DPP & Cloud Intelligence Suite</title>
+    <title>EcoTextile EU - Director Portal</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Supabase UMD CDN -->
-    <script src="https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-    <!-- SheetJS for Excel/CSV Import & Export -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-    <!-- Chart.js for Interactive Enterprise Analytics -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        :root {
-            --bg-main: #030712;
-            --bg-card: #0b0f19;
-            --bg-card-hover: #111827;
-            --border-color: #1f2937;
-            --accent-green: #10b981;
-            --accent-glow: rgba(16, 185, 129, 0.15);
-            --accent-blue: #3b82f6;
-        }
-        body { background-color: var(--bg-main); color: #f3f4f6; font-family: system-ui, -apple-system, sans-serif; margin: 0; min-height: 100vh; display: flex; flex-direction: column; }
-        .hidden { display: none !important; }
-        @media (min-width: 1024px) {
-            .app-layout { flex-direction: row !important; }
-            .sidebar-width { width: 320px !important; }
-        }
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: var(--bg-main); }
-        ::-webkit-scrollbar-thumb { background: #1f2937; border-radius: 3px; }
-        @keyframes pulse-slow { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
-        .ai-pulse { animation: pulse-slow 2.5s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
-        @keyframes slideIn { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-        .toast-animate { animation: slideIn 0.3s ease-out forwards; }
-        @keyframes modalPop { 0% { transform: scale(0.92); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
-        .auth-card-animate { animation: modalPop 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-        .glass-card { background: linear-gradient(135deg, rgba(17, 24, 39, 0.85), rgba(3, 7, 18, 0.95)); backdrop-filter: blur(16px); border: 1px solid var(--border-color); box-shadow: 0 10px 30px -10px rgba(0,0,0,0.5); }
-        .hero-banner {
-            background: linear-gradient(to right, rgba(3, 7, 18, 0.95), rgba(3, 7, 18, 0.75)), url('https://images.unsplash.com/photo-1558769132-cb1aea458c5e?auto=format&fit=crop&w=1600&q=80');
-            background-size: cover; background-position: center;
-        }
-        @media print {
-            body { background: white !important; color: black !important; }
-            .glass-card { background: white !important; border: 1px solid #ccc !important; color: black !important; }
-            aside, header, #toast-container, button, .no-print { display: none !important; }
-        }
-    </style>
 </head>
-<body>
+<body class="bg-gray-950 text-white font-sans antialiased m-0 p-0 overflow-x-hidden">
 
-    <!-- TOAST NOTIFICATION CONTAINER -->
-    <div id="toast-container" style="position: fixed; top: 1.5rem; right: 1.5rem; z-index: 150; display: flex; flex-direction: column; gap: 0.75rem; pointer-events: none;"></div>
+    <!-- Mobile Backdrop Overlay -->
+    <div id="backdrop" onclick="toggleMobileMenu()" class="fixed inset-0 bg-black/70 z-40 hidden md:hidden transition-opacity"></div>
 
-    <!-- AUTHENTICATION OVERLAY -->
-    <div id="auth-container" style="position: fixed; inset: 0; background: var(--bg-main); display: flex; align-items: center; justify-content: center; z-index: 50; padding: 1rem; overflow-y: auto;">
-        <div class="glass-card auth-card-animate" style="border-radius: 1.25rem; width: 100%; max-width: 440px; padding: 2.5rem; box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.8);">
-            <div style="text-align: center; margin-bottom: 1.75rem;">
-                <div style="display: inline-flex; padding: 0.875rem; background: var(--accent-glow); border-radius: 1rem; border: 1px solid rgba(16, 185, 129, 0.3); margin-bottom: 1rem;">
-                    <svg style="width: 2.25rem; height: 2.25rem; color: var(--accent-green);" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
-                </div>
-                <h2 id="auth-title" style="font-size: 1.75rem; font-weight: 800; color: #ffffff; margin: 0 0 0.35rem 0;">EcoTextile EU Suite</h2>
-                <p id="auth-subtitle" style="font-size: 0.8125rem; color: #9ca3af; margin: 0;">Director Portal & AI Textile Intelligence</p>
+    <div class="min-h-screen flex flex-col md:flex-row relative">
+      
+      <!-- Mobile Top Header Bar -->
+      <div class="md:hidden bg-gray-900 border-b border-gray-800 p-4 flex items-center justify-between sticky top-0 z-30 shadow-md">
+        <div>
+          <h1 class="text-base font-bold text-emerald-400">EcoTextile EU</h1>
+          <p class="text-xs text-gray-400">Director Portal</p>
+        </div>
+        <button 
+          onclick="toggleMobileMenu()"
+          id="menu-btn"
+          class="px-3 py-1.5 rounded bg-gray-800 text-gray-200 text-sm font-medium focus:outline-none border border-gray-700 active:scale-95 transition-transform"
+        >
+          ☰ Menu
+        </button>
+      </div>
+
+      <!-- Sidebar Navigation -->
+      <aside id="sidebar" class="fixed top-0 bottom-0 left-0 z-50 w-72 bg-gray-900 border-r border-gray-800 p-4 flex flex-col transition-transform duration-300 ease-in-out -translate-x-full md:translate-x-0 md:static md:inset-auto shadow-2xl md:shadow-none">
+        
+        <!-- Sidebar Header (Desktop) -->
+        <div class="hidden md:block mb-6">
+          <h2 class="text-xl font-bold text-emerald-400">EcoTextile EU</h2>
+          <p class="text-xs text-gray-400">Director Portal</p>
+        </div>
+
+        <!-- Mobile Header inside Sidebar -->
+        <div class="flex md:hidden items-center justify-between mb-4 pb-3 border-b border-gray-800">
+          <div>
+            <h2 class="text-lg font-bold text-emerald-400">Navigation Menu</h2>
+            <p class="text-[11px] text-gray-400">Select a module below</p>
+          </div>
+          <button onclick="toggleMobileMenu()" class="text-gray-400 hover:text-white p-1 text-sm font-bold">✕</button>
+        </div>
+
+        <!-- Sidebar Menu Items -->
+        <nav class="space-y-1.5 flex-1 overflow-y-auto pr-1" id="nav-list">
+          <!-- Populated by JS -->
+        </nav>
+
+        <div class="pt-4 mt-2 border-t border-gray-800 text-[11px] text-gray-500 text-center">
+          EU Green Deal & ESPR Compliant
+        </div>
+      </aside>
+
+      <!-- Main Content Area -->
+      <main class="flex-1 p-4 md:p-8 overflow-y-auto bg-gray-950 w-full">
+        <div class="max-w-6xl mx-auto">
+          
+          <!-- Header Banner -->
+          <header class="mb-6 pb-4 border-b border-gray-800 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div>
+              <span class="text-xs uppercase tracking-wider text-emerald-400 font-semibold bg-emerald-950/50 px-2.5 py-1 rounded-full border border-emerald-800/40">
+                Active Compliance Module
+              </span>
+              <h2 id="module-title" class="text-xl md:text-3xl font-bold mt-2 text-white">
+                1. Dashboard & Analytics
+              </h2>
             </div>
+            <div class="flex items-center gap-3">
+              <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                ● Live System Sync
+              </span>
+            </div>
+          </header>
 
-            <form id="auth-form" onsubmit="handleAuthSubmit(event)" style="display: flex; flex-direction: column; gap: 1.1rem;">
-                <div style="display: flex; flex-direction: column; gap: 0.3rem;">
-                    <label style="font-size: 0.8125rem; color: #9ca3af; font-weight: 500;">Work Email Address</label>
-                    <input type="email" id="auth-email" required placeholder="name@example.com" style="width: 100%; background: var(--bg-main); border: 1px solid var(--border-color); border-radius: 0.625rem; padding: 0.7rem 0.875rem; font-size: 0.875rem; color: #f3f4f6; outline: none; box-sizing: border-box;">
-                </div>
+          <!-- Module Card Content -->
+          <div class="bg-gray-900/60 border border-gray-800/80 rounded-xl p-5 md:p-6 shadow-xl backdrop-blur-sm">
+            <h3 class="text-lg font-semibold text-gray-200 mb-1">Module Overview</h3>
+            <p id="module-desc" class="text-gray-400 text-sm mb-6">Overview of KPIs, carbon footprint, and production metrics.</p>
 
-                <div style="display: flex; flex-direction: column; gap: 0.3rem;">
-                    <label style="font-size: 0.8125rem; color: #9ca3af; font-weight: 500;">Password</label>
-                    <input type="password" id="auth-password" required placeholder="••••••••" style="width: 100%; background: var(--bg-main); border: 1px solid var(--border-color); border-radius: 0.625rem; padding: 0.7rem 0.875rem; font-size: 0.875rem; color: #f3f4f6; outline: none; box-sizing: border-box;">
-                </div>
+            <div id="module-content">
+              <!-- Default Content -->
+            </div>
+          </div>
 
-                <!-- Forgot Password & Create Account Links -->
-                <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem;">
-                    <a href="#" onclick="handleForgotPassword(event)" style="color: #60a5fa; text-decoration: none;">Forgot password?</a>
-                    <a href="#" onclick="toggleAuthMode(event)" id="auth-toggle-link" style="color: var(--accent-green); text-decoration: none; font-weight: 500;">Create new account</a>
-                </div>
-
-                <!-- I'm not a robot reCAPTCHA Simulation -->
-                <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid var(--border-color); border-radius: 0.625rem; padding: 0.75rem 1rem; display: flex; align-items: center; justify-content: space-between;">
-                    <label style="display: flex; align-items: center; gap: 0.75rem; cursor: pointer; font-size: 0.825rem; color: #d1d5db;">
-                        <input type="checkbox" id="robot-check" required style="width: 1.1rem; height: 1.1rem; accent-color: #10b981; cursor: pointer;">
-                        I'm not a robot
-                    </label>
-                    <div style="display: flex; flex-direction: column; align-items: center; opacity: 0.8;">
-                        <svg style="width: 1.25rem; height: 1.25rem; color: #10b981;" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z"/></svg>
-                        <span style="font-size: 0.55rem; color: #9ca3af; margin-top: 1px;">reCAPTCHA</span>
-                    </div>
-                </div>
-
-                <button type="submit" id="auth-submit-btn" style="width: 100%; background: #059669; color: white; padding: 0.75rem; border-radius: 0.625rem; font-size: 0.9375rem; font-weight: 600; border: none; cursor: pointer; margin-top: 0.25rem; box-shadow: 0 4px 12px rgba(5, 150, 105, 0.3);">
-                    Sign In
-                </button>
-            </form>
         </div>
+      </main>
+
     </div>
 
-    <!-- MAIN APP CONTAINER -->
-    <div id="main-app-container" class="hidden" style="width: 100%; min-height: 100vh;">
-        <div class="app-layout" style="display: flex; flex-direction: column; width: 100%; min-height: 100vh;">
-            
-            <!-- SIDEBAR (11+ SECTIONS) -->
-            <aside class="sidebar-width" style="width: 100%; background: var(--bg-main); border-right: 1px solid var(--border-color); display: flex; flex-direction: column; justify-content: space-between; height: 100vh; position: sticky; top: 0; overflow-y: auto;">
-                <div>
-                    <div style="padding: 1.5rem; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; gap: 0.875rem; background: rgba(3, 7, 18, 0.8);">
-                        <div style="padding: 0.625rem; background: var(--accent-glow); border-radius: 0.75rem; border: 1px solid rgba(16, 185, 129, 0.3);">
-                            <svg style="width: 1.375rem; height: 1.375rem; color: var(--accent-green);" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
-                        </div>
-                        <div>
-                            <span style="font-size: 1.05rem; font-weight: 800; color: #ffffff; display: block;">EcoTextile EU</span>
-                            <span style="font-size: 0.75rem; color: var(--accent-green); font-weight: 600; display: block;">Director Portal</span>
-                        </div>
-                    </div>
-                    
-                    <nav style="padding: 1rem; display: flex; flex-direction: column; gap: 0.35rem;">
-                        <button onclick="switchTab('overview')" id="btn-overview" style="display: flex; align-items: center; gap: 0.75rem; width: 100%; padding: 0.65rem 0.875rem; font-size: 0.825rem; border-radius: 0.625rem; font-weight: 500; background: var(--accent-glow); color: var(--accent-green); border: 1px solid rgba(16, 185, 129, 0.3); text-align: left; cursor: pointer;">
-                            📊 1. Dashboard & Analytics
-                        </button>
-                        <button onclick="switchTab('inventory')" id="btn-inventory" style="display: flex; align-items: center; gap: 0.75rem; width: 100%; padding: 0.65rem 0.875rem; font-size: 0.825rem; border-radius: 0.625rem; font-weight: 500; background: transparent; color: #9ca3af; border: none; text-align: left; cursor: pointer;">
-                            📦 2. Inventory & Excel Sheets
-                        </button>
-                        <button onclick="switchTab('dpp')" id="btn-dpp" style="display: flex; align-items: center; gap: 0.75rem; width: 100%; padding: 0.65rem 0.875rem; font-size: 0.825rem; border-radius: 0.625rem; font-weight: 500; background: transparent; color: #9ca3af; border: none; text-align: left; cursor: pointer;">
-                            🏷️ 3. EU Digital Product Passport
-                        </button>
-                        <button onclick="switchTab('traceability')" id="btn-traceability" style="display: flex; align-items: center; gap: 0.75rem; width: 100%; padding: 0.65rem 0.875rem; font-size: 0.825rem; border-radius: 0.625rem; font-weight: 500; background: transparent; color: #9ca3af; border: none; text-align: left; cursor: pointer;">
-                            🔗 4. Multi-Tier Supply Traceability
-                        </button>
-                        <button onclick="switchTab('esg')" id="btn-esg" style="display: flex; align-items: center; gap: 0.75rem; width: 100%; padding: 0.65rem 0.875rem; font-size: 0.825rem; border-radius: 0.625rem; font-weight: 500; background: transparent; color: #9ca3af; border: none; text-align: left; cursor: pointer;">
-                            📈 5. Advanced ESG & CSRD Report
-                        </button>
-                        <button onclick="switchTab('history')" id="btn-history" style="display: flex; align-items: center; gap: 0.75rem; width: 100%; padding: 0.65rem 0.875rem; font-size: 0.825rem; border-radius: 0.625rem; font-weight: 500; background: transparent; color: #9ca3af; border: none; text-align: left; cursor: pointer;">
-                            ☁️ 6. Supabase Cloud Records
-                        </button>
-                        <button onclick="switchTab('wip')" id="btn-wip" style="display: flex; align-items: center; gap: 0.75rem; width: 100%; padding: 0.65rem 0.875rem; font-size: 0.825rem; border-radius: 0.625rem; font-weight: 500; background: transparent; color: #9ca3af; border: none; text-align: left; cursor: pointer;">
-                            ⚙️ 7. Production WIP Stages
-                        </button>
-                        <button onclick="switchTab('qc')" id="btn-qc" style="display: flex; align-items: center; gap: 0.75rem; width: 100%; padding: 0.65rem 0.875rem; font-size: 0.825rem; border-radius: 0.625rem; font-weight: 500; background: transparent; color: #9ca3af; border: none; text-align: left; cursor: pointer;">
-                            🔍 8. Quality Control & Inspection
-                        </button>
-                        <button onclick="switchTab('bom')" id="btn-bom" style="display: flex; align-items: center; gap: 0.75rem; width: 100%; padding: 0.65rem 0.875rem; font-size: 0.825rem; border-radius: 0.625rem; font-weight: 500; background: transparent; color: #9ca3af; border: none; text-align: left; cursor: pointer;">
-                            📋 9. BOM & Costing Sheet
-                        </button>
-                        <button onclick="switchTab('warehouse')" id="btn-warehouse" style="display: flex; align-items: center; gap: 0.75rem; width: 100%; padding: 0.65rem 0.875rem; font-size: 0.825rem; border-radius: 0.625rem; font-weight: 500; background: transparent; color: #9ca3af; border: none; text-align: left; cursor: pointer;">
-                            🏭 10. Warehouse Location Management
-                        </button>
-                        <button onclick="switchTab('orders')" id="btn-orders" style="display: flex; align-items: center; gap: 0.75rem; width: 100%; padding: 0.65rem 0.875rem; font-size: 0.825rem; border-radius: 0.625rem; font-weight: 500; background: transparent; color: #9ca3af; border: none; text-align: left; cursor: pointer;">
-                            🚢 11. Buyers Order & Dispatch
-                        </button>
-                        <button onclick="switchTab('ai')" id="btn-ai" style="display: flex; align-items: center; gap: 0.75rem; width: 100%; padding: 0.65rem 0.875rem; font-size: 0.825rem; border-radius: 0.625rem; font-weight: 500; background: transparent; color: #9ca3af; border: none; text-align: left; cursor: pointer;">
-                            🤖 12. AI Operations Advisor
-                        </button>
-                    </nav>
-                </div>
-                <div style="padding: 1rem; border-top: 1px solid var(--border-color); background: rgba(3, 7, 18, 0.8);">
-                    <button onclick="handleLogout()" style="display: flex; align-items: center; gap: 0.75rem; width: 100%; padding: 0.625rem 1rem; font-size: 0.85rem; color: #f87171; background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.2); border-radius: 0.625rem; cursor: pointer; font-weight: 500;">
-                        Sign Out
-                    </button>
-                </div>
-            </aside>
-
-            <!-- MAIN CONTENT AREA -->
-            <main style="flex: 1; display: flex; flex-direction: column; background: var(--bg-card); min-width: 0;">
-                <header style="height: 4.5rem; background: var(--bg-main); border-bottom: 1px solid var(--border-color); display: flex; align-items: center; justify-content: space-between; padding: 0 2rem;">
-                    <div style="display: flex; align-items: center; gap: 0.75rem;">
-                        <div style="width: 0.5rem; height: 0.5rem; background: var(--accent-green); border-radius: 9999px;"></div>
-                        <span style="font-size: 0.875rem; font-weight: 600; color: #e5e7eb;">EU Textile Suite &bull; <span style="color: var(--accent-green);">Director Portal</span></span>
-                    </div>
-                    <div style="display: flex; align-items: center; gap: 1rem;">
-                        <div style="width: 2.375rem; height: 2.375rem; border-radius: 9999px; background: #059669; display: flex; align-items: center; font-weight: bold; font-size: 0.875rem; justify-content: center; color: white;">MM</div>
-                        <span style="font-size: 0.875rem; font-weight: 600; color: #f3f4f6;">Muhammad Meer</span>
-                    </div>
-                </header>
-
-                <div style="flex: 1; padding: 2.5rem; display: flex; flex-direction: column; gap: 1.5rem; box-sizing: border-box;">
-                    
-                    <!-- 1. OVERVIEW TAB -->
-                    <div id="tab-overview" class="tab-content" style="display: flex; flex-direction: column; gap: 1.5rem;">
-                        <div class="hero-banner glass-card" style="border-radius: 1rem; padding: 3rem 2.5rem; display: flex; flex-direction: column; gap: 1rem;">
-                            <div style="max-width: 650px; z-index: 10;">
-                                <span style="background: var(--accent-glow); color: var(--accent-green); font-size: 0.75rem; font-weight: 700; padding: 0.35rem 0.875rem; border-radius: 9999px; border: 1px solid rgba(16, 185, 129, 0.4); text-transform: uppercase;">EU Green Deal & Enterprise Intelligence</span>
-                                <h1 style="font-size: 2.25rem; font-weight: 800; color: #ffffff; margin: 1rem 0 0.75rem 0;">Sustainable Textile Value Chain Suite</h1>
-                                <p style="font-size: 0.9375rem; color: #9ca3af; margin: 0;">Supervised by Director Muhammad Meer. Live analytics, WIP production, quality inspection, and ESPR compliance.</p>
-                            </div>
-                        </div>
-                        <div class="glass-card" style="padding: 2rem; border-radius: 1rem;">
-                            <h3 style="font-size: 1.125rem; font-weight: bold; color: #ffffff; margin: 0 0 1rem 0;">Carbon Emissions Analytics by Fabric Lot</h3>
-                            <div style="position: relative; height: 280px; width: 100%;">
-                                <canvas id="overviewAnalyticsChart"></canvas>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- 2. INVENTORY TAB (Zero/Empty State) -->
-                    <div id="tab-inventory" class="tab-content hidden" style="display: none; flex-direction: column; gap: 1.5rem;">
-                        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
-                            <h1 style="font-size: 1.875rem; font-weight: bold; color: #f3f4f6; margin: 0;">Textile Inventory & Excel Management</h1>
-                            <div style="display: flex; gap: 0.75rem;">
-                                <label style="background: #059669; color: white; padding: 0.625rem 1.125rem; border-radius: 0.625rem; font-size: 0.8125rem; font-weight: 600; cursor: pointer;">
-                                    Upload Excel Sheet
-                                    <input type="file" id="excel-file-input" accept=".xlsx, .xls, .csv" onchange="handleExcelUpload(event)" style="display: none;">
-                                </label>
-                                <button onclick="exportInventoryToExcel()" style="background: #2563eb; color: white; padding: 0.625rem 1.125rem; border-radius: 0.625rem; font-size: 0.8125rem; font-weight: 600; border: none; cursor: pointer;">Export Excel</button>
-                            </div>
-                        </div>
-                        <div class="glass-card" style="border-radius: 0.875rem; overflow-x: auto;">
-                            <table style="width: 100%; text-align: left; font-size: 0.875rem; border-collapse: collapse;">
-                                <thead style="background: var(--bg-main); color: #9ca3af; border-bottom: 1px solid var(--border-color); font-size: 0.75rem; text-transform: uppercase;">
-                                    <tr>
-                                        <th style="padding: 1rem;">Batch ID</th>
-                                        <th style="padding: 1rem;">Fabric Type / Name</th>
-                                        <th style="padding: 1rem;">Weight (KG)</th>
-                                        <th style="padding: 1rem;">Supplier Origin</th>
-                                        <th style="padding: 1rem;">Est. Carbon</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="inventory-table-body"></tbody>
-                            </table>
-                        </div>
-                    </div>
-
-                    <!-- 3. DPP TAB (Zero/Empty State) -->
-                    <div id="tab-dpp" class="tab-content hidden" style="display: none; flex-direction: column; gap: 1.5rem;">
-                        <h1 style="font-size: 1.875rem; font-weight: bold; color: #f3f4f6; margin: 0;">EU Digital Product Passport (DPP - ESPR)</h1>
-                        <p style="color: #9ca3af; font-size: 0.9rem;">Mandatory EU passport containing circularity index, material composition, and supply transparency.</p>
-                        <div class="glass-card" style="padding: 3rem 2rem; border-radius: 0.875rem; text-align: center; color: #9ca3af;">
-                            <p style="font-size: 1rem; margin: 0;">No Digital Product Passports generated yet. Upload inventory or add batches to initialize EU compliance tracking.</p>
-                        </div>
-                    </div>
-
-                    <!-- 4. TRACEABILITY TAB -->
-                    <div id="tab-traceability" class="tab-content hidden" style="display: none; flex-direction: column; gap: 1.5rem;">
-                        <h1 style="font-size: 1.875rem; font-weight: bold; color: #f3f4f6; margin: 0;">Multi-Tier Supply Chain Traceability</h1>
-                        <div class="glass-card" style="padding: 1.5rem; border-radius: 0.875rem; display: flex; flex-direction: column; gap: 1rem;">
-                            <div style="border-left: 3px solid #10b981; padding-left: 1rem;">
-                                <strong style="color: white;">Tier 3: Raw Material Extraction</strong>
-                                <p style="color: #9ca3af; font-size: 0.85rem; margin: 0.2rem 0 0 0;">Awaiting supplier node configuration...</p>
-                            </div>
-                            <div style="border-left: 3px solid #60a5fa; padding-left: 1rem;">
-                                <strong style="color: white;">Tier 2: Processing & Spinning</strong>
-                                <p style="color: #9ca3af; font-size: 0.85rem; margin: 0.2rem 0 0 0;">Awaiting mill node configuration...</p>
-                            </div>
-                            <div style="border-left: 3px solid #fbbf24; padding-left: 1rem;">
-                                <strong style="color: white;">Tier 1: Manufacturing & Stitching</strong>
-                                <p style="color: #9ca3af; font-size: 0.85rem; margin: 0.2rem 0 0 0;">Awaiting manufacturing unit setup...</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- 5. ESG TAB (Zeroed out) -->
-                    <div id="tab-esg" class="tab-content hidden" style="display: none; flex-direction: column; gap: 1.5rem;">
-                        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
-                            <h1 style="font-size: 1.875rem; font-weight: bold; color: #f3f4f6; margin: 0;">Advanced ESG & CSRD Report</h1>
-                            <button onclick="window.print()" style="background: #2563eb; color: white; padding: 0.625rem 1.125rem; border-radius: 0.625rem; font-size: 0.8125rem; font-weight: 600; border: none; cursor: pointer;">Download PDF Audit</button>
-                        </div>
-                        <div class="glass-card" style="padding: 2rem; border-radius: 0.875rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1rem;">
-                            <div>
-                                <label style="display: block; font-size: 0.75rem; color: #9ca3af; margin-bottom: 0.4rem;">FABRIC TYPE</label>
-                                <select id="calc-material" onchange="calculateESG()" style="width: 100%; background: var(--bg-main); border: 1px solid var(--border-color); border-radius: 0.5rem; padding: 0.6rem; color: white;">
-                                    <option value="organic_cotton">Organic Cotton</option>
-                                    <option value="recycled_poly">Recycled Polyester</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label style="display: block; font-size: 0.75rem; color: #9ca3af; margin-bottom: 0.4rem;">BATCH WEIGHT (KG)</label>
-                                <input type="number" id="calc-weight" value="0" oninput="calculateESG()" style="width: 100%; background: var(--bg-main); border: 1px solid var(--border-color); border-radius: 0.5rem; padding: 0.6rem; color: white; box-sizing: border-box;">
-                            </div>
-                            <div style="background: var(--bg-main); padding: 1rem; border-radius: 0.5rem; border: 1px solid var(--border-color);">
-                                <span style="font-size: 0.75rem; color: #9ca3af;">Total Carbon (CO2e)</span>
-                                <div id="res-carbon" style="font-size: 1.25rem; font-weight: bold; color: var(--accent-green);">0 kg CO2e</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- 6. HISTORY TAB -->
-                    <div id="tab-history" class="tab-content hidden" style="display: none; flex-direction: column; gap: 1.5rem;">
-                        <h1 style="font-size: 1.875rem; font-weight: bold; color: #f3f4f6; margin: 0;">Supabase Cloud Records</h1>
-                        <div class="glass-card" style="border-radius: 0.875rem; overflow-x: auto;">
-                            <table style="width: 100%; text-align: left; font-size: 0.875rem; border-collapse: collapse;">
-                                <thead style="background: var(--bg-main); color: #9ca3af; font-size: 0.75rem; text-transform: uppercase;">
-                                    <tr>
-                                        <th style="padding: 1rem;">Record ID</th>
-                                        <th style="padding: 1rem;">Weight (KG)</th>
-                                        <th style="padding: 1rem;">Carbon</th>
-                                        <th style="padding: 1rem;">Timestamp</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="cloud-records-body">
-                                    <tr><td colspan="4" style="padding: 2rem; text-align: center; color: #6b7280;">No cloud records found yet. Connected to Supabase Frankfurt cluster.</td></tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-
-                    <!-- 7. PRODUCTION WIP STAGES (Zero/Empty State) -->
-                    <div id="tab-wip" class="tab-content hidden" style="display: none; flex-direction: column; gap: 1.5rem;">
-                        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
-                            <h1 style="font-size: 1.875rem; font-weight: bold; color: #f3f4f6; margin: 0;">Production & WIP Stages</h1>
-                            <button onclick="runAIAuditWIP()" style="background: #059669; color: white; padding: 0.625rem 1.125rem; border-radius: 0.625rem; font-size: 0.8125rem; font-weight: 600; border: none; cursor: pointer;">🤖 AI Bottleneck Scan</button>
-                        </div>
-                        <div class="glass-card" style="border-radius: 0.875rem; overflow-x: auto;">
-                            <table style="width: 100%; text-align: left; font-size: 0.875rem; border-collapse: collapse;">
-                                <thead style="background: var(--bg-main); color: #9ca3af; font-size: 0.75rem; text-transform: uppercase;">
-                                    <tr>
-                                        <th style="padding: 1rem;">Order #</th>
-                                        <th style="padding: 1rem;">Spinning</th>
-                                        <th style="padding: 1rem;">Weaving / Knitting</th>
-                                        <th style="padding: 1rem;">Dyeing & Wet Proc.</th>
-                                        <th style="padding: 1rem;">Stitching / Finish</th>
-                                        <th style="padding: 1rem;">AI Status</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="wip-table-body"></tbody>
-                            </table>
-                        </div>
-                    </div>
-
-                    <!-- 8. QUALITY CONTROL & INSPECTION (Zero/Empty State) -->
-                    <div id="tab-qc" class="tab-content hidden" style="display: none; flex-direction: column; gap: 1.5rem;">
-                        <h1 style="font-size: 1.875rem; font-weight: bold; color: #f3f4f6; margin: 0;">Quality Control & Inspection (QC)</h1>
-                        <div class="glass-card" style="padding: 1.5rem; border-radius: 0.875rem; display: flex; flex-direction: column; gap: 1rem;">
-                            <div style="display: flex; justify-content: space-between; align-items: center;">
-                                <h3 style="color: white; margin: 0;">Inspection Logs & 4-Point System</h3>
-                                <button onclick="runAIAuditQC()" style="background: #2563eb; color: white; padding: 0.5rem 1rem; border-radius: 0.5rem; border: none; font-size: 0.8rem; cursor: pointer; font-weight: 600;">🤖 AI Defect Prediction</button>
-                            </div>
-                            <table style="width: 100%; text-align: left; font-size: 0.875rem; border-collapse: collapse;">
-                                <thead style="background: var(--bg-main); color: #9ca3af; font-size: 0.75rem; text-transform: uppercase;">
-                                    <tr>
-                                        <th style="padding: 0.8rem;">Lot ID</th>
-                                        <th style="padding: 0.8rem;">Inspector</th>
-                                        <th style="padding: 0.8rem;">Color Fastness</th>
-                                        <th style="padding: 0.8rem;">Shrinkage</th>
-                                        <th style="padding: 0.8rem;">Final Status</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="qc-table-body"></tbody>
-                            </table>
-                        </div>
-                    </div>
-
-                    <!-- 9. BILL OF MATERIALS & COSTING SHEET (Zeroed out) -->
-                    <div id="tab-bom" class="tab-content hidden" style="display: none; flex-direction: column; gap: 1.5rem;">
-                        <h1 style="font-size: 1.875rem; font-weight: bold; color: #f3f4f6; margin: 0;">Bill of Materials (BOM) & Costing Sheet</h1>
-                        <div class="glass-card" style="padding: 2rem; border-radius: 0.875rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.5rem;">
-                            <div>
-                                <label style="display: block; font-size: 0.75rem; color: #9ca3af; margin-bottom: 0.4rem;">RAW COTTON/YARN COST ($/KG)</label>
-                                <input type="number" id="bom-yarn" value="0.00" oninput="calculateBOM()" style="width: 100%; background: var(--bg-main); border: 1px solid var(--border-color); border-radius: 0.5rem; padding: 0.6rem; color: white; box-sizing: border-box;">
-                            </div>
-                            <div>
-                                <label style="display: block; font-size: 0.75rem; color: #9ca3af; margin-bottom: 0.4rem;">DYES & CHEMICALS ($)</label>
-                                <input type="number" id="bom-dyes" value="0.00" oninput="calculateBOM()" style="width: 100%; background: var(--bg-main); border: 1px solid var(--border-color); border-radius: 0.5rem; padding: 0.6rem; color: white; box-sizing: border-box;">
-                            </div>
-                            <div>
-                                <label style="display: block; font-size: 0.75rem; color: #9ca3af; margin-bottom: 0.4rem;">LABOR & OVERHEAD ($)</label>
-                                <input type="number" id="bom-labor" value="0.00" oninput="calculateBOM()" style="width: 100%; background: var(--bg-main); border: 1px solid var(--border-color); border-radius: 0.5rem; padding: 0.6rem; color: white; box-sizing: border-box;">
-                            </div>
-                            <div style="background: var(--bg-main); padding: 1.25rem; border-radius: 0.5rem; border: 1px solid var(--border-color); grid-column: 1 / -1;">
-                                <div style="display: flex; justify-content: space-between; align-items: center;">
-                                    <span style="font-size: 0.875rem; color: #9ca3af;">Total Production Cost per Garment:</span>
-                                    <span id="bom-total" style="font-size: 1.5rem; font-weight: bold; color: var(--accent-green);">$0.00</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- 10. WAREHOUSE LOCATION MANAGEMENT (Zero/Empty State) -->
-                    <div id="tab-warehouse" class="tab-content hidden" style="display: none; flex-direction: column; gap: 1.5rem;">
-                        <h1 style="font-size: 1.875rem; font-weight: bold; color: #f3f4f6; margin: 0;">Warehouse & Bin Location Management</h1>
-                        <div class="glass-card" style="border-radius: 0.875rem; overflow-x: auto;">
-                            <table style="width: 100%; text-align: left; font-size: 0.875rem; border-collapse: collapse;">
-                                <thead style="background: var(--bg-main); color: #9ca3af; font-size: 0.75rem; text-transform: uppercase;">
-                                    <tr>
-                                        <th style="padding: 1rem;">Zone / Rack</th>
-                                        <th style="padding: 1rem;">Item Stored</th>
-                                        <th style="padding: 1rem;">Capacity Used</th>
-                                        <th style="padding: 1rem;">Status</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="warehouse-table-body"></tbody>
-                            </table>
-                        </div>
-                    </div>
-
-                    <!-- 11. BUYERS ORDER & DISPATCH (Zero/Empty State) -->
-                    <div id="tab-orders" class="tab-content hidden" style="display: none; flex-direction: column; gap: 1.5rem;">
-                        <h1 style="font-size: 1.875rem; font-weight: bold; color: #f3f4f6; margin: 0;">Buyer Orders & Shipping Dispatch</h1>
-                        <div class="glass-card" style="border-radius: 0.875rem; overflow-x: auto;">
-                            <table style="width: 100%; text-align: left; font-size: 0.875rem; border-collapse: collapse;">
-                                <thead style="background: var(--bg-main); color: #9ca3af; font-size: 0.75rem; text-transform: uppercase;">
-                                    <tr>
-                                        <th style="padding: 1rem;">PO Number</th>
-                                        <th style="padding: 1rem;">EU Buyer</th>
-                                        <th style="padding: 1rem;">Destination</th>
-                                        <th style="padding: 1rem;">Dispatch Date</th>
-                                        <th style="padding: 1rem;">Status</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="orders-table-body"></tbody>
-                            </table>
-                        </div>
-                    </div>
-
-                    <!-- 12. AI ADVISOR TAB -->
-                    <div id="tab-ai" class="tab-content hidden" style="display: none; flex-direction: column; gap: 1.5rem;">
-                        <h1 style="font-size: 1.875rem; font-weight: bold; color: #f3f4f6; margin: 0;">AI Operations & Sustainability Advisor</h1>
-                        <div class="glass-card" style="padding: 2rem; border-radius: 0.875rem; display: flex; flex-direction: column; gap: 1rem;">
-                            <button onclick="runAIAudit()" style="background: #2563eb; color: white; padding: 0.625rem 1.125rem; border-radius: 0.625rem; border: none; cursor: pointer; font-weight: 600; width: fit-content;">Run AI Full Enterprise Audit</button>
-                            <div id="ai-output-box" style="background: var(--bg-main); padding: 1.25rem; border-radius: 0.5rem; border: 1px solid var(--border-color); font-size: 0.875rem; color: #9ca3af;">
-                                Click the button above to initialize ZDHC chemical compliance and carbon tracking under Director Muhammad Meer.
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-            </main>
-        </div>
-    </div>
-
+    <!-- JavaScript Application Logic -->
     <script>
-        const SUPABASE_URL = 'https://muwsgfyanqctkvkogyay.supabase.co';
-        const SUPABASE_ANON_KEY = 'sb_publishable_vVBcYHSUcdNGeuMxyhEnrQ_W7bBnGbh';
-        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        let overviewChartInstance = null;
-        let isSignUpMode = false;
+      const modules = [
+        { 
+          id: 0, 
+          title: "1. Dashboard & Analytics", 
+          desc: "Overview of KPIs, carbon footprint, and production metrics under EU Green Deal guidelines." 
+        },
+        { 
+          id: 1, 
+          title: "2. Inventory & Excel Sheets", 
+          desc: "Manage raw materials, organic cotton bales, and warehouse stock inventories." 
+        },
+        { 
+          id: 2, 
+          title: "3. EU Digital Product Passport", 
+          desc: "Generate and track DPP compliance records, QR hashes, and circularity metrics." 
+        },
+        { 
+          id: 3, 
+          title: "4. Multi-Tier Supply Traceability", 
+          desc: "Track supply chain transparency from Tier 3 (Farms) to Tier 1 (Stitching units)." 
+        },
+        { 
+          id: 4, 
+          title: "5. Advanced ESG & CSRD Report", 
+          desc: "Sustainability metrics, carbon reporting, and European Union compliance audits." 
+        },
+        { 
+          id: 5, 
+          title: "6. Supabase Cloud Records", 
+          desc: "Real-time cloud database synchronization, secure tokens, and immutable audit logs." 
+        },
+        { 
+          id: 6, 
+          title: "7. Production WIP Stages", 
+          desc: "Work-in-progress tracking across spinning, weaving, wet processing, and dyeing." 
+        },
+        { 
+          id: 7, 
+          title: "8. Quality Control & Inspection", 
+          desc: "4-point inspection system, fabric defect logs, and pass/fail QA thresholds." 
+        },
+        { 
+          id: 8, 
+          title: "9. BOM & Costing Sheet", 
+          desc: "Bill of materials, chemical inputs breakdown, and financial cost modeling." 
+        },
+        { 
+          id: 9, 
+          title: "10. Warehouse Location Management", 
+          desc: "Inventory warehouse storage bins, sector racks, and zone mapping." 
+        },
+        { 
+          id: 10, 
+          title: "11. Buyers Order & Dispatch", 
+          desc: "European buyer export orders, container shipping status, and logistics tracking." 
+        },
+        { 
+          id: 11, 
+          title: "12. AI Operations Advisor", 
+          desc: "AI-powered recommendations for textile energy efficiency and penalty risk mitigation." 
+        }
+      ];
 
-        // Completely empty state datasets
-        let inventoryList = [];
-        let wipList = [];
-        let qcList = [];
-        let warehouseList = [];
-        let ordersList = [];
+      let activeTab = 0;
+      let mobileMenuOpen = false;
 
-        window.addEventListener('DOMContentLoaded', () => {
-            renderInventoryTable();
-            renderWIPTable();
-            renderQCTable();
-            renderWarehouseTable();
-            renderOrdersTable();
-            calculateESG();
-            calculateBOM();
-            initOverviewChart();
+      function renderNav() {
+        const navList = document.getElementById('nav-list');
+        navList.innerHTML = '';
+        modules.forEach(mod => {
+          const btn = document.createElement('button');
+          btn.className = `w-full text-left px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
+            activeTab === mod.id
+              ? 'bg-emerald-950/85 text-emerald-300 border border-emerald-800/50 shadow-sm'
+              : 'text-gray-300 hover:bg-gray-800/60 hover:text-white'
+          }`;
+          btn.innerText = mod.title;
+          btn.onclick = () => switchTab(mod.id);
+          navList.appendChild(btn);
         });
+      }
 
-        function showToast(message, type = 'success') {
-            const container = document.getElementById('toast-container');
-            const toast = document.createElement('div');
-            toast.className = 'toast-animate';
-            toast.style.cssText = `background: rgba(6, 95, 70, 0.9); border: 1px solid #10b981; color: #34d399; padding: 0.875rem 1.25rem; border-radius: 0.75rem; font-size: 0.875rem; font-weight: 600;`;
-            toast.innerText = message;
-            container.appendChild(toast);
-            setTimeout(() => toast.remove(), 3000);
+      function switchTab(id) {
+        activeTab = id;
+        if (window.innerWidth < 768) {
+          toggleMobileMenu();
         }
 
-        function toggleAuthMode(event) {
-            event.preventDefault();
-            isSignUpMode = !isSignUpMode;
-            const title = document.getElementById('auth-title');
-            const subtitle = document.getElementById('auth-subtitle');
-            const submitBtn = document.getElementById('auth-submit-btn');
-            const toggleLink = document.getElementById('auth-toggle-link');
+        const mod = modules[id];
+        document.getElementById('module-title').innerText = mod.title;
+        document.getElementById('module-desc').innerText = mod.desc;
 
-            if (isSignUpMode) {
-                title.innerText = 'Create Account';
-                subtitle.innerText = 'Join EcoTextile Enterprise Suite';
-                submitBtn.innerText = 'Sign Up';
-                toggleLink.innerText = 'Already have an account? Sign In';
-                showToast('Switched to Account Registration mode.');
-            } else {
-                title.innerText = 'EcoTextile EU Suite';
-                subtitle.innerText = 'Director Portal & AI Textile Intelligence';
-                submitBtn.innerText = 'Sign In';
-                toggleLink.innerText = 'Create new account';
-                showToast('Switched to Sign In mode.');
-            }
+        const contentDiv = document.getElementById('module-content');
+        
+        // Render custom detailed UI based on selected tab index
+        if (id === 0) {
+          contentDiv.innerHTML = `
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+              <div class="bg-gray-950 p-4 rounded-lg border border-gray-800">
+                <p class="text-xs text-gray-400">Total Carbon Emission</p>
+                <h4 class="text-xl font-bold text-emerald-400 mt-1">1,240 tCO2e</h4>
+              </div>
+              <div class="bg-gray-950 p-4 rounded-lg border border-gray-800">
+                <p class="text-xs text-gray-400">Active DPP Batches</p>
+                <h4 class="text-xl font-bold text-emerald-400 mt-1">48 Units</h4>
+              </div>
+              <div class="bg-gray-950 p-4 rounded-lg border border-gray-800">
+                <p class="text-xs text-gray-400">ESG Compliance Score</p>
+                <h4 class="text-xl font-bold text-emerald-400 mt-1">94.8%</h4>
+              </div>
+            </div>
+            <div class="p-6 bg-gray-950/60 rounded-lg border border-gray-800">
+              <h4 class="text-sm font-semibold text-emerald-300 mb-2">Executive Summary</h4>
+              <p class="text-xs text-gray-400 leading-relaxed">System metrics indicate optimal compliance with ESPR guidelines. Real-time telemetry is active across all 3 production tiers in Karachi facility.</p>
+            </div>`;
+        } else if (id === 1) {
+          contentDiv.innerHTML = `
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs text-gray-300">
+                <thead class="bg-gray-950 text-gray-400 uppercase border-b border-gray-800">
+                  <tr>
+                    <th class="p-3">Material ID</th>
+                    <th class="p-3">Type</th>
+                    <th class="p-3">Quantity (Kg)</th>
+                    <th class="p-3">Status</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-800">
+                  <tr><td class="p-3 font-medium text-white">MAT-101</td><td class="p-3">Organic Cotton</td><td class="p-3">4,500</td><td class="p-3 text-emerald-400">Verified EU</td></tr>
+                  <tr><td class="p-3 font-medium text-white">MAT-102</td><td class="p-3">Recycled Polyester</td><td class="p-3">2,800</td><td class="p-3 text-emerald-400">Verified GRS</td></tr>
+                </tbody>
+              </table>
+            </div>`;
+        } else if (id === 2) {
+          contentDiv.innerHTML = `
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="p-4 bg-gray-950 rounded-lg border border-gray-800">
+                <span class="text-xs text-emerald-400 font-mono">DPP Hash: #EU-9942-TX</span>
+                <h4 class="text-base font-bold text-white mt-1">Batch #48 - Summer Organic Line</h4>
+                <p class="text-xs text-gray-400 mt-2">Circularity Index: 92% • Recyclability: High</p>
+              </div>
+              <div class="p-4 bg-gray-950 rounded-lg border border-gray-800 flex items-center justify-center">
+                <span class="text-xs text-gray-400">[ QR Code Verification Active ]</span>
+              </div>
+            </div>`;
+        } else {
+          contentDiv.innerHTML = `
+            <div class="p-8 text-center border border-dashed border-gray-800 rounded-lg bg-gray-950/30">
+              <p class="text-gray-400 text-sm">
+                Active enterprise workspace for <span class="text-emerald-300 font-medium">${mod.title}</span> is online and synchronized with live cloud records.
+              </p>
+            </div>`;
         }
+        renderNav();
+      }
 
-        function handleForgotPassword(event) {
-            event.preventDefault();
-            const email = document.getElementById('auth-email').value;
-            if (!email) {
-                showToast('Please enter your work email first.', 'error');
-                return;
-            }
-            showToast(`Password reset link sent successfully to ${email}!`);
+      function toggleMobileMenu() {
+        mobileMenuOpen = !mobileMenuOpen;
+        const sidebar = document.getElementById('sidebar');
+        const backdrop = document.getElementById('backdrop');
+        const menuBtn = document.getElementById('menu-btn');
+        
+        if (mobileMenuOpen) {
+          sidebar.classList.remove('-translate-x-full');
+          backdrop.classList.remove('hidden');
+          menuBtn.innerText = '✕ Close';
+        } else {
+          sidebar.classList.add('-translate-x-full');
+          backdrop.classList.add('hidden');
+          menuBtn.innerText = '☰ Menu';
         }
+      }
 
-        function handleAuthSubmit(event) {
-            event.preventDefault();
-            const robotChecked = document.getElementById('robot-check').checked;
-            if (!robotChecked) {
-                showToast('Please verify that you are not a robot.', 'error');
-                return;
-            }
-
-            document.getElementById('auth-container').style.display = 'none';
-            const mainApp = document.getElementById('main-app-container');
-            mainApp.classList.remove('hidden');
-            mainApp.style.display = 'block';
-
-            if (isSignUpMode) {
-                showToast('New account created and signed in as Director Muhammad Meer!');
-            } else {
-                showToast('Signed in successfully as Director Muhammad Meer!');
-            }
-            setTimeout(initOverviewChart, 150);
-        }
-
-        function handleLogout() {
-            document.getElementById('main-app-container').style.display = 'none';
-            document.getElementById('auth-container').style.display = 'flex';
-            document.getElementById('robot-check').checked = false;
-            showToast('Signed out.', 'error');
-        }
-
-        function switchTab(tabId) {
-            document.querySelectorAll('.tab-content').forEach(el => {
-                el.style.display = 'none';
-                el.classList.add('hidden');
-            });
-            const target = document.getElementById('tab-' + tabId);
-            target.classList.remove('hidden');
-            target.style.display = 'flex';
-
-            ['overview', 'inventory', 'dpp', 'traceability', 'esg', 'history', 'wip', 'qc', 'bom', 'warehouse', 'orders', 'ai'].forEach(id => {
-                const btn = document.getElementById('btn-' + id);
-                if (id === tabId) {
-                    btn.style.background = 'var(--accent-glow)';
-                    btn.style.color = 'var(--accent-green)';
-                    btn.style.border = '1px solid rgba(16, 185, 129, 0.3)';
-                } else {
-                    btn.style.background = 'transparent';
-                    btn.style.color = '#9ca3af';
-                    btn.style.border = 'none';
-                }
-            });
-
-            if (tabId === 'overview') setTimeout(initOverviewChart, 100);
-            if (tabId === 'history') loadCloudHistory();
-        }
-
-        function initOverviewChart() {
-            const ctx = document.getElementById('overviewAnalyticsChart');
-            if (!ctx) return;
-            if (overviewChartInstance) overviewChartInstance.destroy();
-            overviewChartInstance = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: inventoryList.length > 0 ? inventoryList.map(i => i.name) : ['No Data'],
-                    datasets: [{
-                        label: 'Batch Weight (KG)',
-                        data: inventoryList.length > 0 ? inventoryList.map(i => i.weight) : [0],
-                        backgroundColor: 'rgba(16, 185, 129, 0.6)',
-                        borderColor: '#10b981',
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { labels: { color: '#f3f4f6' } } },
-                    scales: {
-                        x: { ticks: { color: '#9ca3af' }, grid: { color: '#1f2937' } },
-                        y: { ticks: { color: '#9ca3af' }, grid: { color: '#1f2937' } }
-                    }
-                }
-            });
-        }
-
-        function renderInventoryTable() {
-            const tbody = document.getElementById('inventory-table-body');
-            tbody.innerHTML = '';
-            if (inventoryList.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="5" style="padding: 2.5rem; text-align: center; color: #6b7280;">No inventory items recorded. Upload an Excel sheet above to populate data.</td></tr>`;
-                return;
-            }
-            inventoryList.forEach(item => {
-                tbody.innerHTML += `
-                    <tr style="border-bottom: 1px solid var(--border-color);">
-                        <td style="padding: 1rem; color: var(--accent-green); font-weight: 600;">#${item.id}</td>
-                        <td style="padding: 1rem; color: #f3f4f6; font-weight: 600;">${item.name}</td>
-                        <td style="padding: 1rem; color: #60a5fa;">${item.weight} KG</td>
-                        <td style="padding: 1rem; color: #9ca3af;">${item.supplier}</td>
-                        <td style="padding: 1rem; color: var(--accent-green);">${item.carbon}</td>
-                    </tr>
-                `;
-            });
-        }
-
-        function renderWIPTable() {
-            const tbody = document.getElementById('wip-table-body');
-            tbody.innerHTML = '';
-            if (wipList.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" style="padding: 2.5rem; text-align: center; color: #6b7280;">No production orders in progress. Add or dispatch orders to track WIP stages.</td></tr>`;
-                return;
-            }
-            wipList.forEach(item => {
-                tbody.innerHTML += `
-                    <tr style="border-bottom: 1px solid var(--border-color);">
-                        <td style="padding: 1rem; color: var(--accent-green); font-weight: 600;">${item.order}</td>
-                        <td style="padding: 1rem; color: #f3f4f6;">${item.spinning}</td>
-                        <td style="padding: 1rem; color: #f3f4f6;">${item.weaving}</td>
-                        <td style="padding: 1rem; color: #f3f4f6;">${item.dyeing}</td>
-                        <td style="padding: 1rem; color: #f3f4f6;">${item.stitching}</td>
-                        <td style="padding: 1rem; color: #60a5fa;">${item.status}</td>
-                    </tr>
-                `;
-            });
-        }
-
-        function renderQCTable() {
-            const tbody = document.getElementById('qc-table-body');
-            tbody.innerHTML = '';
-            if (qcList.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="5" style="padding: 2.5rem; text-align: center; color: #6b7280;">No quality inspection lots recorded yet.</td></tr>`;
-                return;
-            }
-            qcList.forEach(item => {
-                tbody.innerHTML += `
-                    <tr style="border-bottom: 1px solid var(--border-color);">
-                        <td style="padding: 0.8rem; color: var(--accent-green);">${item.lot}</td>
-                        <td style="padding: 0.8rem; color: #f3f4f6;">${item.inspector}</td>
-                        <td style="padding: 0.8rem; color: #f3f4f6;">${item.fastness}</td>
-                        <td style="padding: 0.8rem; color: #f3f4f6;">${item.shrinkage}</td>
-                        <td style="padding: 0.8rem; color: #34d399;">${item.status}</td>
-                    </tr>
-                `;
-            });
-        }
-
-        function renderWarehouseTable() {
-            const tbody = document.getElementById('warehouse-table-body');
-            tbody.innerHTML = '';
-            if (warehouseList.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="4" style="padding: 2.5rem; text-align: center; color: #6b7280;">Warehouse bins are currently empty. Assign zones to stock items.</td></tr>`;
-                return;
-            }
-            warehouseList.forEach(item => {
-                tbody.innerHTML += `
-                    <tr style="border-bottom: 1px solid var(--border-color);">
-                        <td style="padding: 1rem; color: var(--accent-green);">${item.zone}</td>
-                        <td style="padding: 1rem; color: #f3f4f6;">${item.item}</td>
-                        <td style="padding: 1rem; color: #60a5fa;">${item.capacity}</td>
-                        <td style="padding: 1rem; color: #34d399;">${item.status}</td>
-                    </tr>
-                `;
-            });
-        }
-
-        function renderOrdersTable() {
-            const tbody = document.getElementById('orders-table-body');
-            tbody.innerHTML = '';
-            if (ordersList.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="5" style="padding: 2.5rem; text-align: center; color: #6b7280;">No buyer purchase orders or dispatches logged yet.</td></tr>`;
-                return;
-            }
-            ordersList.forEach(item => {
-                tbody.innerHTML += `
-                    <tr style="border-bottom: 1px solid var(--border-color);">
-                        <td style="padding: 1rem; color: var(--accent-green);">${item.po}</td>
-                        <td style="padding: 1rem; color: #f3f4f6;">${item.buyer}</td>
-                        <td style="padding: 1rem; color: #60a5fa;">${item.destination}</td>
-                        <td style="padding: 1rem; color: #9ca3af;">${item.date}</td>
-                        <td style="padding: 1rem; color: #34d399;">${item.status}</td>
-                    </tr>
-                `;
-            });
-        }
-
-        function handleExcelUpload(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const data = new Uint8Array(e.target.result);
-                const workbook = XLSX.read(data, { type: 'array' });
-                const jsonRows = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]]);
-                if (jsonRows.length > 0) {
-                    jsonRows.forEach(row => {
-                        inventoryList.unshift({
-                            id: Math.floor(100 + Math.random() * 900),
-                            name: row['Name'] || 'Imported Lot',
-                            weight: parseFloat(row['Weight']) || 500,
-                            supplier: row['Supplier'] || 'EU Partner',
-                            carbon: '900.0 kg'
-                        });
-                    });
-                    renderInventoryTable();
-                    initOverviewChart();
-                    showToast('Excel sheet successfully synced!');
-                }
-            };
-            reader.readAsArrayBuffer(file);
-        }
-
-        function exportInventoryToExcel() {
-            if (inventoryList.length === 0) {
-                showToast('No inventory data available to export.', 'error');
-                return;
-            }
-            const ws = XLSX.utils.json_to_sheet(inventoryList);
-            const wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, ws, "Inventory");
-            XLSX.writeFile(wb, "EcoTextile_EU_Export.xlsx");
-            showToast('Excel file exported successfully!');
-        }
-
-        function calculateESG() {
-            const weight = parseFloat(document.getElementById('calc-weight').value) || 0;
-            const totalCarbon = weight * 1.5;
-            document.getElementById('res-carbon').innerText = totalCarbon.toLocaleString() + ' kg CO2e';
-        }
-
-        function calculateBOM() {
-            const yarn = parseFloat(document.getElementById('bom-yarn').value) || 0;
-            const dyes = parseFloat(document.getElementById('bom-dyes').value) || 0;
-            const labor = parseFloat(document.getElementById('bom-labor').value) || 0;
-            const total = yarn + dyes + labor;
-            document.getElementById('bom-total').innerText = '$' + total.toFixed(2);
-        }
-
-        function runAIAuditWIP() {
-            showToast('AI WIP Audit: No active bottlenecks detected in production queues.');
-        }
-
-        function runAIAuditQC() {
-            showToast('AI QC Audit: Inspection logs clean. Awaiting active lot inputs.');
-        }
-
-        function runAIAudit() {
-            document.getElementById('ai-output-box').innerHTML = `<span style="color: #60a5fa;" class="ai-pulse">Running AI full enterprise audit...</span>`;
-            setTimeout(() => {
-                document.getElementById('ai-output-box').innerHTML = `<strong style="color: #10b981;">✓ Enterprise Suite Active:</strong> Ready for data entry under Director Muhammad Meer's supervision.`;
-                showToast('AI Audit completed!');
-            }, 1000);
-        }
-
-        async function loadCloudHistory() {
-            const tbody = document.getElementById('cloud-records-body');
-            const { data, error } = await supabaseClient.from('esg_batches').select('*').limit(5);
-            if (error || !data || data.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="4" style="padding: 1.5rem; text-align: center; color: #9ca3af;">No cloud records found yet. Connected to Supabase Frankfurt cluster.</td></tr>`;
-                return;
-            }
-            tbody.innerHTML = '';
-            data.forEach(row => {
-                tbody.innerHTML += `
-                    <tr style="border-bottom: 1px solid var(--border-color);">
-                        <td style="padding: 1rem; color: var(--accent-green);">#${row.id}</td>
-                        <td style="padding: 1rem; color: #f3f4f6;">${row.weight} KG</td>
-                        <td style="padding: 1rem; color: #34d399;">${row.carbon}</td>
-                        <td style="padding: 1rem; color: #9ca3af;">${new Date(row.created_at).toLocaleString()}</td>
-                    </tr>
-                `;
-            });
-        }
+      renderNav();
     </script>
 </body>
 </html>
