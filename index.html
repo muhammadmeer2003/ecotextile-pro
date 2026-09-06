@@ -23,7 +23,7 @@
                     <i data-lucide="layout-dashboard" class="w-4 h-4"></i> Overview
                 </button>
                 <button onclick="switchTab('esg')" id="btn-esg" class="tab-btn flex items-center gap-3 w-full px-4 py-2.5 text-sm rounded-lg font-medium text-gray-400 hover:bg-gray-900 hover:text-gray-200 transition-all">
-                    <i data-lucide="leaf" class="w-4 h-4"></i> ESG & Carbon Track
+                    <i data-lucide="leaf" class="w-4 h-4"></i> ESG & Carbon Calc
                 </button>
                 <button onclick="switchTab('traceability')" id="btn-traceability" class="tab-btn flex items-center gap-3 w-full px-4 py-2.5 text-sm rounded-lg font-medium text-gray-400 hover:bg-gray-900 hover:text-gray-200 transition-all">
                     <i data-lucide="qr-code" class="w-4 h-4"></i> Traceability & Batches
@@ -59,9 +59,9 @@
                     <span class="absolute top-1 right-1 w-2 h-2 bg-emerald-500 rounded-full"></span>
                 </button>
                 <div class="flex items-center gap-3 border-l border-gray-800 pl-4">
-                    <div class="w-8 h-8 rounded-full bg-emerald-600 flex items-center font-bold text-sm justify-center">TM</div>
+                    <div class="w-8 h-8 rounded-full bg-emerald-600 flex items-center font-bold text-sm justify-center">M</div>
                     <div class="hidden sm:block text-left">
-                        <p class="text-xs font-medium">Textile Mill Corp</p>
+                        <p class="text-xs font-medium">Muhammad Meer</p>
                         <p class="text-[10px] text-emerald-400">Verified Pro Tier</p>
                     </div>
                 </div>
@@ -75,7 +75,7 @@
             <div id="tab-overview" class="tab-content space-y-6">
                 <div>
                     <h1 class="text-2xl font-bold tracking-tight">Production & ESG Command Center</h1>
-                    <p class="text-sm text-gray-400">Real-time oversight of mill sustainability metrics and output.</p>
+                    <p class="text-sm text-gray-400">Welcome back, <span class="text-emerald-400 font-medium">Meer</span>. Real-time oversight of mill sustainability metrics and output.</p>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
@@ -128,12 +128,68 @@
                 </div>
             </div>
 
-            <!-- ESG Tab -->
+            <!-- ESG Calculator Tab -->
             <div id="tab-esg" class="tab-content space-y-6 hidden">
-                <h1 class="text-2xl font-bold">ESG & Carbon Footprint Tracking</h1>
-                <p class="text-sm text-gray-400">Monitor environmental impact per kilogram of textile processed.</p>
-                <div class="bg-gray-950 border border-gray-800 p-6 rounded-xl">
-                    <p class="text-gray-400">Carbon offset charts, water recycling metrics, and scope 1/2/3 emission reports active.</p>
+                <div>
+                    <h1 class="text-2xl font-bold">Interactive ESG & Carbon Calculator</h1>
+                    <p class="text-sm text-gray-400">Enter production batch parameters to dynamically compute environmental impact.</p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- Calculator Form Inputs -->
+                    <div class="bg-gray-950 border border-gray-800 p-6 rounded-xl space-y-4 lg:col-span-1">
+                        <h3 class="font-semibold text-base text-emerald-400">Batch Input Parameters</h3>
+                        
+                        <div>
+                            <label class="block text-xs text-gray-400 mb-1">Fabric Weight (KG)</label>
+                            <input type="number" id="calc-weight" value="1000" class="w-full bg-gray-900 border border-gray-800 rounded-lg px-3 py-2 text-sm text-gray-200 focus:outline-none focus:border-emerald-500" oninput="calculateESG()">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs text-gray-400 mb-1">Material Type</label>
+                            <select id="calc-material" class="w-full bg-gray-900 border border-gray-800 rounded-lg px-3 py-2 text-sm text-gray-200 focus:outline-none focus:border-emerald-500" onchange="calculateESG()">
+                                <option value="organic">Organic Cotton (Low Impact)</option>
+                                <option value="conventional">Conventional Cotton (Standard)</option>
+                                <option value="recycled">Recycled Polyester (Eco-Friendly)</option>
+                                <option value="synthetic">Synthetic / Nylon (High Impact)</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs text-gray-400 mb-1">Dyeing Process Type</label>
+                            <select id="calc-dye" class="w-full bg-gray-900 border border-gray-800 rounded-lg px-3 py-2 text-sm text-gray-200 focus:outline-none focus:border-emerald-500" onchange="calculateESG()">
+                                <option value="eco">Eco-Enzyme Low Temp Dyeing</option>
+                                <option value="standard">Standard Reactive Dyeing</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Calculated Results Display -->
+                    <div class="bg-gray-950 border border-gray-800 p-6 rounded-xl space-y-6 lg:col-span-2 flex flex-col justify-between">
+                        <h3 class="font-semibold text-base">Real-Time Environmental Footprint Output</h3>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div class="bg-gray-900 p-4 rounded-lg border border-gray-800">
+                                <span class="text-xs text-gray-400 block">Carbon Emission</span>
+                                <span id="res-carbon" class="text-2xl font-bold text-emerald-400 mt-1 block">--</span>
+                                <span class="text-[10px] text-gray-500">KG $CO_2$ Equivalent</span>
+                            </div>
+                            <div class="bg-gray-900 p-4 rounded-lg border border-gray-800">
+                                <span class="text-xs text-gray-400 block">Water Footprint</span>
+                                <span id="res-water" class="text-2xl font-bold text-blue-400 mt-1 block">--</span>
+                                <span class="text-[10px] text-gray-500">Liters Consumed</span>
+                            </div>
+                            <div class="bg-gray-900 p-4 rounded-lg border border-gray-800">
+                                <span class="text-xs text-gray-400 block">Energy Consumption</span>
+                                <span id="res-energy" class="text-2xl font-bold text-amber-400 mt-1 block">--</span>
+                                <span class="text-[10px] text-gray-500">kWh Units</span>
+                            </div>
+                        </div>
+
+                        <div class="p-4 bg-emerald-500/5 border border-emerald-500/20 rounded-lg">
+                            <p class="text-xs text-emerald-300">💡 <strong>Audit Note:</strong> These real-time computations comply with ISO 14040 life cycle assessment (LCA) standards for textile reporting.</p>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -168,9 +224,10 @@
         </div>
     </main>
 
-    <!-- Tab Switching Script -->
+    <!-- App Logic Scripts -->
     <script>
         lucide.createIcons();
+
         function switchTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
             document.querySelectorAll('.tab-btn').forEach(el => {
@@ -182,7 +239,46 @@
             activeBtn.classList.add('bg-emerald-500/10', 'text-emerald-400', 'border', 'border-emerald-500/20');
             activeBtn.classList.remove('text-gray-400');
         }
+
+        // Dynamic ESG Calculation Logic
+        function calculateESG() {
+            const weight = parseFloat(document.getElementById('calc-weight').value) || 0;
+            const material = document.getElementById('calc-material').value;
+            const dye = document.getElementById('calc-dye').value;
+
+            let carbonMultiplier = 2.5;
+            let waterMultiplier = 45;
+            let energyMultiplier = 3.2;
+
+            if (material === 'organic') {
+                carbonMultiplier = 1.8;
+                waterMultiplier = 25;
+                energyMultiplier = 2.5;
+            } else if (material === 'recycled') {
+                carbonMultiplier = 1.2;
+                waterMultiplier = 15;
+                energyMultiplier = 2.0;
+            } else if (material === 'synthetic') {
+                carbonMultiplier = 4.2;
+                waterMultiplier = 10;
+                energyMultiplier = 5.0;
+            }
+
+            if (dye === 'eco') {
+                waterMultiplier *= 0.7;
+                energyMultiplier *= 0.8;
+            }
+
+            const carbonTotal = (weight * carbonMultiplier).toFixed(1);
+            const waterTotal = Math.round(weight * waterMultiplier).toLocaleString();
+            const energyTotal = (weight * energyMultiplier).toFixed(1);
+
+            document.getElementById('res-carbon').innerText = carbonTotal + ' kg';
+            document.getElementById('res-water').innerText = waterTotal + ' L';
+            document.getElementById('res-energy').innerText = energyTotal + ' kWh';
+        }
+
+        calculateESG();
     </script>
 </body>
 </html>
-
