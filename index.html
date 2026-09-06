@@ -3,40 +3,131 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EcoTextile EU - Director Portal</title>
+    <title>EcoTextile EU - Director Portal & Authentication</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Supabase JS SDK CDN -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+      @keyframes float {
+        0%, 100% { transform: translateY(0px); }
+        50% { transform: translateY(-8px); }
+      }
+      @keyframes fadeIn {
+        from { opacity: 0; transform: scale(0.97); }
+        to { opacity: 1; transform: scale(1); }
+      }
+      .animate-float {
+        animation: float 4s ease-in-out infinite;
+      }
+      .animate-fade-in {
+        animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      }
+    </style>
 </head>
-<body class="bg-gray-950 text-white font-sans antialiased m-0 p-0 overflow-x-hidden">
+<body class="bg-gray-950 text-white font-sans antialiased m-0 p-0 overflow-x-hidden min-h-screen flex flex-col">
 
-    <!-- Mobile Backdrop Overlay -->
-    <div id="backdrop" onclick="toggleMobileMenu()" class="fixed inset-0 bg-black/70 z-40 hidden md:hidden transition-opacity"></div>
-
-    <div class="min-h-screen flex flex-col md:flex-row relative">
+    <!-- ================= AUTHENTICATION / LOGIN SCREEN ================= -->
+    <div id="auth-screen" class="fixed inset-0 z-50 flex items-center justify-center bg-gray-950 p-4 overflow-y-auto">
+      <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-emerald-900/20 via-gray-950 to-gray-950 pointer-events-none"></div>
       
+      <div class="relative w-full max-w-md bg-gray-900/80 border border-gray-800 rounded-2xl p-6 sm:p-8 shadow-2xl backdrop-blur-xl animate-fade-in">
+        
+        <!-- Animated Welcome Header -->
+        <div class="text-center mb-6">
+          <div class="inline-block mb-3 animate-float">
+            <span class="text-3xl">🌿</span>
+          </div>
+          <h1 id="auth-main-title" class="text-2xl font-bold text-white tracking-tight">Welcome to EcoTextile EU</h1>
+          <p id="auth-sub-title" class="text-xs text-emerald-400 mt-1 font-medium">Director Portal & Cloud Authentication</p>
+        </div>
+
+        <!-- Mode Toggle Tabs (Login / Register) -->
+        <div class="grid grid-cols-2 gap-1 bg-gray-950 p-1 rounded-xl mb-6 border border-gray-800">
+          <button type="button" id="tab-login-btn" onclick="switchAuthMode('login')" class="py-2 text-xs font-semibold rounded-lg transition-all bg-emerald-600 text-white shadow-sm">
+            Sign In
+          </button>
+          <button type="button" id="tab-reg-btn" onclick="switchAuthMode('register')" class="py-2 text-xs font-semibold rounded-lg transition-all text-gray-400 hover:text-white">
+            Register Account
+          </button>
+        </div>
+
+        <!-- Auth Form -->
+        <form id="auth-form" onsubmit="handleAuthSubmit(event)" class="space-y-4">
+          
+          <div id="name-field-container" class="hidden">
+            <label class="block text-[11px] font-medium text-gray-300 mb-1">Full Name</label>
+            <input type="text" id="auth-name" placeholder="Muhammad Meer" class="w-full bg-gray-950 border border-gray-800 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-emerald-500 transition-colors">
+          </div>
+
+          <div>
+            <label class="block text-[11px] font-medium text-gray-300 mb-1">Email Address</label>
+            <input type="email" id="auth-email" required placeholder="muhammadmeer2003@gmail.com" class="w-full bg-gray-950 border border-gray-800 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-emerald-500 transition-colors">
+          </div>
+
+          <div>
+            <label class="block text-[11px] font-medium text-gray-300 mb-1">Password</label>
+            <input type="password" id="auth-password" required placeholder="••••••••••••" class="w-full bg-gray-950 border border-gray-800 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-emerald-500 transition-colors">
+          </div>
+
+          <!-- I'm not a robot Captcha simulation -->
+          <div class="flex items-center justify-between bg-gray-950 border border-gray-800 rounded-xl p-3">
+            <label class="flex items-center gap-3 cursor-pointer select-none">
+              <input type="checkbox" id="robot-check" required class="w-4 h-4 rounded bg-gray-900 border-gray-700 text-emerald-600 focus:ring-emerald-500 accent-emerald-600">
+              <span class="text-xs text-gray-300 font-medium">I'm not a robot</span>
+            </label>
+            <span class="text-[10px] text-gray-500 font-mono tracking-wider">reCAPTCHA</span>
+          </div>
+
+          <div id="auth-error-msg" class="text-rose-400 text-xs text-center hidden"></div>
+
+          <button type="submit" id="auth-submit-btn" class="w-full py-3 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold rounded-xl shadow-lg shadow-emerald-900/30 transition-all active:scale-[0.98]">
+            Sign In to Portal
+          </button>
+        </form>
+
+        <!-- Forgot Password Option -->
+        <div class="mt-4 text-center">
+          <button type="button" onclick="handleForgotPassword()" class="text-[11px] text-emerald-400 hover:underline">
+            Forgot Password?
+          </button>
+        </div>
+
+        <div class="mt-6 pt-4 border-t border-gray-800 text-center text-[10px] text-gray-500">
+          Secure Supabase Cloud AES Encryption
+        </div>
+
+      </div>
+    </div>
+
+
+    <!-- ================= MAIN SOFTWARE DASHBOARD (Hidden initially) ================= -->
+    <div id="main-app" class="hidden min-h-screen flex flex-col md:flex-row relative flex-1 animate-fade-in">
+      
+      <!-- Mobile Backdrop Overlay -->
+      <div id="backdrop" onclick="toggleMobileMenu()" class="fixed inset-0 bg-black/70 z-40 hidden md:hidden transition-opacity"></div>
+
       <!-- Mobile Top Header Bar -->
       <div class="md:hidden bg-gray-900 border-b border-gray-800 p-4 flex items-center justify-between sticky top-0 z-30 shadow-md">
         <div>
           <h1 class="text-base font-bold text-emerald-400">EcoTextile EU</h1>
           <p class="text-xs text-gray-400">Director: Muhammad Meer</p>
         </div>
-        <button 
-          onclick="toggleMobileMenu()"
-          id="menu-btn"
-          class="px-3 py-1.5 rounded bg-gray-800 text-gray-200 text-sm font-medium focus:outline-none border border-gray-700 active:scale-95 transition-transform"
-        >
-          ☰ Menu
-        </button>
+        <div class="flex items-center gap-2">
+          <button onclick="logoutSession()" class="px-2.5 py-1 rounded bg-rose-950/60 text-rose-300 text-xs border border-rose-900/40">Logout</button>
+          <button onclick="toggleMobileMenu()" id="menu-btn" class="px-3 py-1.5 rounded bg-gray-800 text-gray-200 text-sm font-medium border border-gray-700">☰ Menu</button>
+        </div>
       </div>
 
       <!-- Sidebar Navigation -->
       <aside id="sidebar" class="fixed top-0 bottom-0 left-0 z-50 w-72 bg-gray-900 border-r border-gray-800 p-4 flex flex-col transition-transform duration-300 ease-in-out -translate-x-full md:translate-x-0 md:static md:inset-auto shadow-2xl md:shadow-none">
         
-        <div class="hidden md:block mb-6">
-          <h2 class="text-xl font-bold text-emerald-400">EcoTextile EU</h2>
-          <p class="text-xs text-emerald-300 font-medium mt-1">Director: Muhammad Meer</p>
+        <div class="hidden md:flex items-center justify-between mb-6">
+          <div>
+            <h2 class="text-xl font-bold text-emerald-400">EcoTextile EU</h2>
+            <p class="text-xs text-emerald-300 font-medium mt-1">Director: Muhammad Meer</p>
+          </div>
+          <button onclick="logoutSession()" title="Logout" class="text-gray-400 hover:text-rose-400 text-xs p-1.5 rounded bg-gray-950 border border-gray-800">🚪</button>
         </div>
 
         <div class="flex md:hidden items-center justify-between mb-4 pb-3 border-b border-gray-800">
@@ -90,9 +181,10 @@
 
     </div>
 
+
     <!-- JavaScript Application Logic -->
     <script>
-      // SUPABASE CONFIGURATION (Configured with Director Muhammad Meer's project)
+      // SUPABASE CONFIGURATION
       const SUPABASE_URL = 'https://muwsgfyanqctkvkogyay.supabase.co';
       const SUPABASE_KEY = 'sb_publishable_vVBcYHSUcdNGeuMxyhEnrQ_W7bBnGbh';
       
@@ -110,6 +202,107 @@
         dppRecords: [],
         supportTickets: []
       };
+
+      let authMode = 'login'; // 'login' or 'register'
+
+      function switchAuthMode(mode) {
+        authMode = mode;
+        const titleEl = document.getElementById('auth-main-title');
+        const subEl = document.getElementById('auth-sub-title');
+        const nameContainer = document.getElementById('name-field-container');
+        const submitBtn = document.getElementById('auth-submit-btn');
+        const loginBtn = document.getElementById('tab-login-btn');
+        const regBtn = document.getElementById('tab-reg-btn');
+        const errorEl = document.getElementById('auth-error-msg');
+        errorEl.classList.add('hidden');
+
+        if (mode === 'login') {
+          titleEl.innerText = 'Welcome Back, Director';
+          subEl.innerText = 'Sign in to access your cloud portal';
+          nameContainer.classList.add('hidden');
+          document.getElementById('auth-name').removeAttribute('required');
+          submitBtn.innerText = 'Sign In to Portal';
+          loginBtn.className = 'py-2 text-xs font-semibold rounded-lg transition-all bg-emerald-600 text-white shadow-sm';
+          regBtn.className = 'py-2 text-xs font-semibold rounded-lg transition-all text-gray-400 hover:text-white';
+        } else {
+          titleEl.innerText = 'Create New Account';
+          subEl.innerText = 'Register your credentials for portal access';
+          nameContainer.classList.remove('hidden');
+          document.getElementById('auth-name').setAttribute('required', 'true');
+          submitBtn.innerText = 'Register & Start Portal';
+          regBtn.className = 'py-2 text-xs font-semibold rounded-lg transition-all bg-emerald-600 text-white shadow-sm';
+          loginBtn.className = 'py-2 text-xs font-semibold rounded-lg transition-all text-gray-400 hover:text-white';
+        }
+      }
+
+      async function handleAuthSubmit(e) {
+        e.preventDefault();
+        const email = document.getElementById('auth-email').value;
+        const password = document.getElementById('auth-password').value;
+        const isRobotChecked = document.getElementById('robot-check').checked;
+        const errorEl = document.getElementById('auth-error-msg');
+
+        if (!isRobotChecked) {
+          errorEl.innerText = 'Please verify that you are not a robot.';
+          errorEl.classList.remove('hidden');
+          return;
+        }
+
+        if (_supabase) {
+          try {
+            if (authMode === 'register') {
+              const fullName = document.getElementById('auth-name').value;
+              const { data, error } = await _supabase.auth.signUp({
+                email,
+                password,
+                options: { data: { full_name: fullName } }
+              });
+              if (error) throw error;
+              alert('Registration successful! You can now log in.');
+              switchAuthMode('login');
+              return;
+            } else {
+              const { data, error } = await _supabase.auth.signInWithPassword({ email, password });
+              if (error) throw error;
+            }
+          } catch (err) {
+            errorEl.innerText = err.message || 'Authentication error occurred.';
+            errorEl.classList.remove('hidden');
+            return;
+          }
+        }
+
+        // Proceed to unlock main portal
+        document.getElementById('auth-screen').classList.add('hidden');
+        document.getElementById('main-app').classList.remove('hidden');
+        renderNav();
+        switchTab(0);
+        fetchCloudData();
+      }
+
+      function handleForgotPassword() {
+        const email = document.getElementById('auth-email').value;
+        if (!email) {
+          alert('Please enter your email address first, then click Forgot Password.');
+          return;
+        }
+        if (_supabase) {
+          _supabase.auth.resetPasswordForEmail(email).then(({ error }) => {
+            if (error) alert('Error: ' + error.message);
+            else alert('Password reset instructions sent to ' + email);
+          });
+        } else {
+          alert('Password reset link sent to ' + email);
+        }
+      }
+
+      function logoutSession() {
+        if (_supabase) _supabase.auth.signOut();
+        document.getElementById('main-app').classList.add('hidden');
+        document.getElementById('auth-screen').classList.remove('hidden');
+        document.getElementById('auth-form').reset();
+        switchAuthMode('login');
+      }
 
       const modules = [
         { id: 0, title: "1. Dashboard & Analytics", desc: "Real-time enterprise metrics and analytics monitored by Director Muhammad Meer." },
@@ -129,11 +322,6 @@
       let activeTab = 0;
       let mobileMenuOpen = false;
 
-      // Render Navigation immediately on startup
-      renderNav();
-      switchTab(0);
-
-      // Fetch Cloud Data asynchronously in background
       async function fetchCloudData() {
         if (!_supabase) return;
         try {
@@ -408,9 +596,6 @@
           menuBtn.innerText = '☰ Menu';
         }
       }
-
-      // Trigger cloud data fetch in background
-      fetchCloudData();
     </script>
 </body>
 </html>
