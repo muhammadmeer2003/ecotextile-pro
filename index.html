@@ -3,99 +3,173 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EcoTextile Pro - Full Supabase Cloud Portal</title>
+    <title>EcoTextile ESG Portal</title>
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Supabase JS SDK CDN -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
-<body class="bg-gray-900 text-gray-100 font-sans h-screen flex overflow-hidden">
+<body class="bg-gray-900 text-white min-h-screen flex items-center justify-center p-4">
 
-    <div id="auth-container" class="fixed inset-0 bg-gray-950 z-50 flex items-center justify-center p-4">
-        <div class="bg-gray-900 border border-gray-800 rounded-2xl w-full max-w-md p-8 shadow-2xl space-y-6">
-            <div class="text-center space-y-2">
-                <span class="text-2xl font-bold tracking-wider text-emerald-400">EcoTextile Pro</span>
-                <p id="auth-subtitle" class="text-xs text-gray-400">Cloud Enterprise Gateway &bull; Supabase Secured</p>
-            </div>
-
-            <div id="auth-tabs" class="flex bg-gray-950 p-1 rounded-xl border border-gray-800">
-                <button type="button" onclick="switchAuthMode('login')" id="auth-tab-login" class="flex-1 py-2 text-xs font-semibold rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 transition-all">Login</button>
-                <button type="button" onclick="switchAuthMode('register')" id="auth-tab-register" class="flex-1 py-2 text-xs font-semibold rounded-lg text-gray-400 hover:text-gray-200 transition-all">Create Account</button>
-            </div>
-
-            <form id="auth-form" onsubmit="handleAuthSubmit(event)" class="space-y-4">
-                <div id="name-field-wrapper" class="hidden space-y-1">
-                    <label class="block text-xs text-gray-400">Full Name</label>
-                    <input type="text" id="reg-name" placeholder="Michael Smith" class="w-full bg-gray-950 border border-gray-800 rounded-lg px-3 py-2 text-sm text-gray-200 focus:outline-none focus:border-emerald-500">
+    <!-- Auth View Container (Login / Register) -->
+    <div id="auth-container" class="w-full max-w-md bg-gray-800 rounded-lg p-6 shadow-lg border border-gray-700">
+        
+        <!-- Login View -->
+        <div id="login-view">
+            <h2 class="text-2xl font-bold mb-6 text-center text-green-400">Textile ESG Portal</h2>
+            <form id="loginForm" class="space-y-4">
+                <div>
+                    <label class="block text-sm mb-1 text-gray-300">Email Address</label>
+                    <input type="email" id="login-email" class="w-full p-3 rounded bg-gray-700 border border-gray-600 focus:outline-none focus:border-green-500 text-white" required>
                 </div>
-
-                <div class="space-y-1">
-                    <label class="block text-xs text-gray-400">Email Address</label>
-                    <input type="email" id="auth-email" required placeholder="michael@example.com" class="w-full bg-gray-950 border border-gray-800 rounded-lg px-3 py-2 text-sm text-gray-200 focus:outline-none focus:border-emerald-500">
+                <div>
+                    <label class="block text-sm mb-1 text-gray-300">Password</label>
+                    <input type="password" id="login-password" class="w-full p-3 rounded bg-gray-700 border border-gray-600 focus:outline-none focus:border-green-500 text-white" required>
                 </div>
-
-                <div class="space-y-1">
-                    <div class="flex justify-between items-center">
-                        <label class="block text-xs text-gray-400">Password</label>
-                        <button type="button" id="forgot-link" onclick="switchAuthMode('forgot')" class="text-[11px] text-emerald-400 hover:underline">Forgot Password?</button>
-                    </div>
-                    <input type="password" id="auth-password" required placeholder="••••••••" class="w-full bg-gray-950 border border-gray-800 rounded-lg px-3 py-2 text-sm text-gray-200 focus:outline-none focus:border-emerald-500">
-                </div>
-
-                <div id="auth-error" class="hidden text-xs text-rose-400 bg-rose-950/30 p-2.5 rounded-lg border border-rose-800/50"></div>
-                <div id="auth-success" class="hidden text-xs text-emerald-400 bg-emerald-950/30 p-2.5 rounded-lg border border-emerald-800/50"></div>
-
-                <button type="submit" id="auth-submit-btn" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white py-2.5 rounded-lg text-sm font-medium transition-colors shadow-lg shadow-emerald-600/20">
-                    Sign In to Cloud Portal
-                </button>
+                <button type="submit" class="w-full bg-green-600 hover:bg-green-700 p-3 rounded font-bold transition duration-200">Login</button>
             </form>
+            <p class="mt-4 text-center text-sm text-gray-400">Account nahi hai? <a href="#" onclick="switchView('register')" class="text-green-400 underline font-semibold">Create a new account</a></p>
         </div>
+
+        <!-- Register View (Hidden by default) -->
+        <div id="register-view" class="hidden">
+            <h2 class="text-2xl font-bold mb-6 text-center text-blue-400">Create ESG Account</h2>
+            <form id="registerForm" class="space-y-4">
+                <div>
+                    <label class="block text-sm mb-1 text-gray-300">Email Address</label>
+                    <input type="email" id="register-email" class="w-full p-3 rounded bg-gray-700 border border-gray-600 focus:outline-none focus:border-blue-500 text-white" required>
+                </div>
+                <div>
+                    <label class="block text-sm mb-1 text-gray-300">Password</label>
+                    <input type="password" id="register-password" class="w-full p-3 rounded bg-gray-700 border border-gray-600 focus:outline-none focus:border-blue-500 text-white" required>
+                </div>
+                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 p-3 rounded font-bold transition duration-200">Register</button>
+            </form>
+            <p class="mt-4 text-center text-sm text-gray-400">Pehle se account hai? <a href="#" onclick="switchView('login')" class="text-blue-400 underline font-semibold">Login karein</a></p>
+        </div>
+
     </div>
 
-    <div id="main-app-container" class="flex-1 flex overflow-hidden hidden w-full h-full">
+    <!-- Dashboard View Container (Hidden until logged in - ESG Form) -->
+    <div id="dashboard-container" class="hidden w-full max-w-xl bg-gray-800 rounded-lg p-6 shadow-lg border border-gray-700">
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-xl font-bold text-green-400">ESG Batch Data Entry</h2>
+            <button id="logoutBtn" class="bg-red-600 hover:bg-red-700 px-4 py-2 rounded text-sm font-bold transition">Logout</button>
+        </div>
 
-        <aside class="w-64 bg-gray-950 border-r border-gray-800 flex flex-col justify-between hidden md:flex">
+        <form id="esgForm" class="space-y-4">
             <div>
-                <div class="p-6 border-b border-gray-800">
-                    <span class="text-xl font-bold tracking-wider text-emerald-400">EcoTextile Pro</span>
-                    <span class="block text-xs text-gray-500 mt-1">Supabase Cloud Sync</span>
-                </div>
-                <nav class="p-4 space-y-1">
-                    <button onclick="switchTab('overview')" id="btn-overview" class="tab-btn flex items-center gap-3 w-full px-4 py-2.5 text-sm rounded-lg font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 transition-all">
-                        <i data-lucide="layout-dashboard" class="w-4 h-4"></i> Overview
-                    </button>
-                    <button onclick="switchTab('esg')" id="btn-esg" class="tab-btn flex items-center gap-3 w-full px-4 py-2.5 text-sm rounded-lg font-medium text-gray-400 hover:bg-gray-900 hover:text-gray-200 transition-all">
-                        <i data-lucide="leaf" class="w-4 h-4"></i> ESG Calculator & Save
-                    </button>
-                    <button onclick="switchTab('history')" id="btn-history" class="tab-btn flex items-center gap-3 w-full px-4 py-2.5 text-sm rounded-lg font-medium text-gray-400 hover:bg-gray-900 hover:text-gray-200 transition-all" onclick="loadCloudHistory()">
-                        <i data-lucide="database" class="w-4 h-4"></i> Cloud Database Records
-                    </button>
-                </nav>
+                <label class="block text-sm mb-1 text-gray-300">Weight (numeric)</label>
+                <input type="number" step="any" id="batch-weight" class="w-full p-3 rounded bg-gray-700 border border-gray-600 focus:outline-none focus:border-green-500 text-white" placeholder="e.g. 1500" required>
             </div>
-            <div class="p-4 border-t border-gray-800">
-                <button onclick="handleLogout()" class="flex items-center gap-3 w-full px-4 py-2 text-sm text-red-400 hover:bg-red-950/30 rounded-lg transition-colors">
-                    <i data-lucide="log-out" class="w-4 h-4"></i> Logout
-                </button>
+            <div>
+                <label class="block text-sm mb-1 text-gray-300">Carbon Emissions</label>
+                <input type="text" id="batch-carbon" class="w-full p-3 rounded bg-gray-700 border border-gray-600 focus:outline-none focus:border-green-500 text-white" placeholder="e.g. 120 kg" required>
             </div>
-        </aside>
+            <div>
+                <label class="block text-sm mb-1 text-gray-300">Water Usage</label>
+                <input type="text" id="batch-water" class="w-full p-3 rounded bg-gray-700 border border-gray-600 focus:outline-none focus:border-green-500 text-white" placeholder="e.g. 500 L" required>
+            </div>
+            <div>
+                <label class="block text-sm mb-1 text-gray-300">Energy Consumption</label>
+                <input type="text" id="batch-energy" class="w-full p-3 rounded bg-gray-700 border border-gray-600 focus:outline-none focus:border-green-500 text-white" placeholder="e.g. 300 kWh" required>
+            </div>
+            <button type="submit" class="w-full bg-green-600 hover:bg-green-700 p-3 rounded font-bold transition duration-200">Save Batch to Database</button>
+        </form>
+    </div>
 
-        <main class="flex-1 flex flex-col overflow-hidden">
-            <header class="h-16 bg-gray-950 border-b border-gray-800 flex items-center justify-between px-6">
-                <span class="text-sm font-semibold text-emerald-400">Supabase Cloud Connected</span>
-                <div class="flex items-center gap-3">
-                    <div class="w-8 h-8 rounded-full bg-emerald-600 flex items-center font-bold text-sm justify-center" id="user-avatar-initial">M</div>
-                    <span class="text-xs font-medium" id="user-display-name">User</span>
-                </div>
-            </header>
+    <script>
+        // Supabase Initialization
+        const SUPABASE_URL = 'YOUR_SUPABASE_URL'; 
+        const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-            <div class="flex-1 overflow-y-auto p-8 space-y-6">
-                
-                <div id="tab-overview" class="tab-content space-y-6">
-                    <h1 class="text-2xl font-bold">Cloud Command Center</h1>
-                    <p class="text-sm text-gray-400">Welcome! Your application is fully synced with Supabase cloud database.</p>
-                </div>
+        const authContainer = document.getElementById('auth-container');
+        const dashboardContainer = document.getElementById('dashboard-container');
+        const loginView = document.getElementById('login-view');
+        const registerView = document.getElementById('register-view');
 
-                <div id="tab-esg" class="tab-content space-y-6 hidden">
-                    <h1 class="text-2xl font-bold">ESG Calculator & Cloud Storage</h1>
-                    <div class="bg-gray-950 border border-gray-800 p-6 rounded-xl space-y-4 max-w-xl">
-                        <div>
-                            <label class="block text-xs text-gray
+        // Check Session
+        async function checkUserSession() {
+            const { data: { session } } = await supabase.auth.getSession();
+            if (session) {
+                authContainer.classList.add('hidden');
+                dashboardContainer.classList.remove('hidden');
+            } else {
+                authContainer.classList.remove('hidden');
+                dashboardContainer.classList.add('hidden');
+            }
+        }
+        checkUserSession();
+
+        // View Switching
+        function switchView(view) {
+            if (view === 'register') {
+                loginView.classList.add('hidden');
+                registerView.classList.remove('hidden');
+            } else {
+                registerView.classList.add('hidden');
+                loginView.classList.remove('hidden');
+            }
+        }
+
+        // Login Handler
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+
+            const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+
+            if (error) {
+                alert(error.message);
+            } else {
+                alert("Login Successful!");
+                checkUserSession();
+            }
+        });
+
+        // Register Handler
+        document.getElementById('registerForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('register-email').value;
+            const password = document.getElementById('register-password').value;
+
+            const { data, error } = await supabase.auth.signUp({ email, password });
+
+            if (error) {
+                alert(error.message);
+            } else {
+                alert("Account created successfully! Ab aap login kar sakte hain.");
+                switchView('login');
+            }
+        });
+
+        // Logout Handler
+        document.getElementById('logoutBtn').addEventListener('click', async () => {
+            await supabase.auth.signOut();
+            checkUserSession();
+        });
+
+        // ESG Data Form Submission Handler (`esg_batches` table)
+        document.getElementById('esgForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const weight = parseFloat(document.getElementById('batch-weight').value);
+            const carbon = document.getElementById('batch-carbon').value;
+            const water = document.getElementById('batch-water').value;
+            const energy = document.getElementById('batch-energy').value;
+
+            const { data, error } = await supabase.from('esg_batches').insert([
+                { weight: weight, carbon: carbon, water: water, energy: energy }
+            ]);
+
+            if (error) {
+                alert("Error: " + error.message);
+            } else {
+                alert("ESG Batch data successfully saved to database!");
+                document.getElementById('esgForm').reset();
+            }
+        });
+    </script>
+</body>
+</html>
