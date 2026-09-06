@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EcoTextile Pro - AI & Cloud ESG Platform</title>
+    <title>EcoTextile Enterprise &bull; Cloud Intelligence Suite</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Supabase UMD CDN -->
@@ -11,20 +11,39 @@
     <!-- SheetJS for Excel/CSV Import & Export -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
-        body { background-color: #030712; color: #f3f4f6; font-family: system-ui, -apple-system, sans-serif; margin: 0; min-height: 100vh; display: flex; flex-direction: column; }
+        :root {
+            --bg-main: #030712;
+            --bg-card: #0b0f19;
+            --bg-card-hover: #111827;
+            --border-color: #1f2937;
+            --accent-green: #10b981;
+            --accent-glow: rgba(16, 185, 129, 0.15);
+        }
+        body { background-color: var(--bg-main); color: #f3f4f6; font-family: system-ui, -apple-system, sans-serif; margin: 0; min-height: 100vh; display: flex; flex-direction: column; }
         .hidden { display: none !important; }
         @media (min-width: 768px) {
             .app-layout { flex-direction: row !important; }
-            .sidebar-width { width: 280px !important; }
+            .sidebar-width { width: 290px !important; }
         }
         ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: #030712; }
+        ::-webkit-scrollbar-track { background: var(--bg-main); }
         ::-webkit-scrollbar-thumb { background: #1f2937; border-radius: 3px; }
         ::-webkit-scrollbar-thumb:hover { background: #374151; }
-        @keyframes pulse-slow { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
-        .ai-pulse { animation: pulse-slow 3s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+        @keyframes pulse-slow { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+        .ai-pulse { animation: pulse-slow 2.5s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+        @keyframes slideIn { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .toast-animate { animation: slideIn 0.3s ease-out forwards; }
+        
+        /* Smooth Login Modal Animation */
+        @keyframes modalPop { 
+            0% { transform: scale(0.92); opacity: 0; } 
+            100% { transform: scale(1); opacity: 1; } 
+        }
+        .auth-card-animate { animation: modalPop 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+
+        .glass-card { background: linear-gradient(135deg, rgba(17, 24, 39, 0.75), rgba(3, 7, 18, 0.92)); backdrop-filter: blur(12px); border: 1px solid var(--border-color); }
         .hero-banner {
-            background: linear-gradient(rgba(3, 7, 18, 0.75), rgba(3, 7, 18, 0.9)), url('https://images.unsplash.com/photo-1558769132-cb1aea458c5e?auto=format&fit=crop&w=1600&q=80');
+            background: linear-gradient(to right, rgba(3, 7, 18, 0.92), rgba(3, 7, 18, 0.75)), url('https://images.unsplash.com/photo-1558769132-cb1aea458c5e?auto=format&fit=crop&w=1600&q=80');
             background-size: cover;
             background-position: center;
         }
@@ -32,45 +51,48 @@
 </head>
 <body>
 
-    <!-- AUTHENTICATION OVERLAY -->
-    <div id="auth-container" style="position: fixed; inset: 0; background: #030712; display: flex; align-items: center; justify-content: center; z-index: 50; padding: 1rem; overflow-y: auto;">
-        <div style="background: #111827; border: 1px solid #1f2937; border-radius: 1rem; width: 100%; max-width: 420px; padding: 2.5rem; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);">
+    <!-- TOAST NOTIFICATION CONTAINER -->
+    <div id="toast-container" style="position: fixed; top: 1.5rem; right: 1.5rem; z-index: 150; display: flex; flex-direction: column; gap: 0.75rem; pointer-events: none;"></div>
+
+    <!-- AUTHENTICATION OVERLAY WITH TRANSITION -->
+    <div id="auth-container" style="position: fixed; inset: 0; background: var(--bg-main); display: flex; align-items: center; justify-content: center; z-index: 50; padding: 1rem; overflow-y: auto;">
+        <div class="glass-card auth-card-animate" style="border-radius: 1.25rem; width: 100%; max-width: 440px; padding: 2.75rem; box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.8);">
             <div style="text-align: center; margin-bottom: 2rem;">
-                <div style="display: inline-flex; padding: 0.75rem; background: rgba(52, 211, 153, 0.1); border-radius: 1rem; border: 1px solid rgba(52, 211, 153, 0.2); margin-bottom: 1rem;">
-                    <svg style="width: 2rem; height: 2rem; color: #34d399;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
+                <div style="display: inline-flex; padding: 0.875rem; background: var(--accent-glow); border-radius: 1rem; border: 1px solid rgba(16, 185, 129, 0.3); margin-bottom: 1rem;">
+                    <svg style="width: 2.25rem; height: 2.25rem; color: var(--accent-green);" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
                 </div>
-                <h2 style="font-size: 1.75rem; font-weight: bold; color: #34d399; margin: 0 0 0.5rem 0;">EcoTextile Pro</h2>
-                <p id="auth-subtitle" style="font-size: 0.8125rem; color: #9ca3af; margin: 0;">AI-Powered Sustainable Supply Chain & Cloud Platform</p>
+                <h2 style="font-size: 1.875rem; font-weight: 800; color: #ffffff; margin: 0 0 0.35rem 0; letter-spacing: -0.025em;">EcoTextile Enterprise</h2>
+                <p id="auth-subtitle" style="font-size: 0.8125rem; color: #9ca3af; margin: 0;">Director Suite & Cloud Supply Chain Intelligence</p>
             </div>
 
-            <div id="auth-tabs" style="display: flex; background: #030712; padding: 0.25rem; border-radius: 0.75rem; border: 1px solid #1f2937; margin-bottom: 1.5rem;">
-                <button type="button" onclick="switchAuthMode('login')" id="auth-tab-login" style="flex: 1; padding: 0.625rem; font-size: 0.8125rem; font-weight: 600; border-radius: 0.5rem; background: rgba(52, 211, 153, 0.1); color: #34d399; border: 1px solid rgba(52, 211, 153, 0.2); cursor: pointer;">Sign In</button>
-                <button type="button" onclick="switchAuthMode('register')" id="auth-tab-register" style="flex: 1; padding: 0.625rem; font-size: 0.8125rem; font-weight: 600; border-radius: 0.5rem; background: transparent; color: #9ca3af; border: none; cursor: pointer;">Register</button>
+            <div id="auth-tabs" style="display: flex; background: var(--bg-main); padding: 0.3rem; border-radius: 0.75rem; border: 1px solid var(--border-color); margin-bottom: 1.5rem;">
+                <button type="button" onclick="switchAuthMode('login')" id="auth-tab-login" style="flex: 1; padding: 0.625rem; font-size: 0.8125rem; font-weight: 600; border-radius: 0.5rem; background: var(--accent-glow); color: var(--accent-green); border: 1px solid rgba(16, 185, 129, 0.3); cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);">Sign In</button>
+                <button type="button" onclick="switchAuthMode('register')" id="auth-tab-register" style="flex: 1; padding: 0.625rem; font-size: 0.8125rem; font-weight: 600; border-radius: 0.5rem; background: transparent; color: #9ca3af; border: none; cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);">Register</button>
             </div>
 
             <form id="auth-form" onsubmit="handleAuthSubmit(event)" style="display: flex; flex-direction: column; gap: 1.25rem;">
                 <div id="name-field-wrapper" class="hidden" style="flex-direction: column; gap: 0.35rem;">
                     <label style="font-size: 0.8125rem; color: #9ca3af; font-weight: 500;">Full Name</label>
-                    <input type="text" id="reg-name" placeholder="Muhammad Meer" style="width: 100%; background: #030712; border: 1px solid #1f2937; border-radius: 0.5rem; padding: 0.625rem 0.875rem; font-size: 0.875rem; color: #f3f4f6; outline: none; box-sizing: border-box;">
+                    <input type="text" id="reg-name" placeholder="Muhammad Meer" style="width: 100%; background: var(--bg-main); border: 1px solid var(--border-color); border-radius: 0.625rem; padding: 0.75rem 0.875rem; font-size: 0.875rem; color: #f3f4f6; outline: none; box-sizing: border-box;">
                 </div>
 
                 <div style="display: flex; flex-direction: column; gap: 0.35rem;">
                     <label style="font-size: 0.8125rem; color: #9ca3af; font-weight: 500;">Work Email Address</label>
-                    <input type="email" id="auth-email" required placeholder="name@company.com" style="width: 100%; background: #030712; border: 1px solid #1f2937; border-radius: 0.5rem; padding: 0.625rem 0.875rem; font-size: 0.875rem; color: #f3f4f6; outline: none; box-sizing: border-box;">
+                    <input type="email" id="auth-email" required placeholder="Muhammadmeer2003@gmail.com" style="width: 100%; background: var(--bg-main); border: 1px solid var(--border-color); border-radius: 0.625rem; padding: 0.75rem 0.875rem; font-size: 0.875rem; color: #f3f4f6; outline: none; box-sizing: border-box;">
                 </div>
 
                 <div style="display: flex; flex-direction: column; gap: 0.35rem;">
                     <div style="display: flex; justify-content: space-between; align-items: center;">
                         <label style="font-size: 0.8125rem; color: #9ca3af; font-weight: 500;">Password</label>
-                        <button type="button" id="forgot-link" onclick="switchAuthMode('forgot')" style="font-size: 0.75rem; color: #34d399; background: none; border: none; cursor: pointer;">Forgot Password?</button>
+                        <button type="button" id="forgot-link" onclick="switchAuthMode('forgot')" style="font-size: 0.75rem; color: var(--accent-green); background: none; border: none; cursor: pointer;">Forgot Password?</button>
                     </div>
-                    <input type="password" id="auth-password" required placeholder="••••••••" style="width: 100%; background: #030712; border: 1px solid #1f2937; border-radius: 0.5rem; padding: 0.625rem 0.875rem; font-size: 0.875rem; color: #f3f4f6; outline: none; box-sizing: border-box;">
+                    <input type="password" id="auth-password" required placeholder="••••••••" style="width: 100%; background: var(--bg-main); border: 1px solid var(--border-color); border-radius: 0.625rem; padding: 0.75rem 0.875rem; font-size: 0.875rem; color: #f3f4f6; outline: none; box-sizing: border-box;">
                 </div>
 
                 <div id="auth-error" class="hidden" style="font-size: 0.8125rem; color: #fb7185; background: rgba(159, 18, 57, 0.2); padding: 0.75rem; border-radius: 0.5rem; border: 1px solid rgba(225, 29, 72, 0.3);"></div>
-                <div id="auth-success" class="hidden" style="font-size: 0.8125rem; color: #34d399; background: rgba(6, 95, 70, 0.2); padding: 0.75rem; border-radius: 0.5rem; border: 1px solid rgba(5, 150, 105, 0.3);"></div>
+                <div id="auth-success" class="hidden" style="font-size: 0.8125rem; color: var(--accent-green); background: rgba(6, 95, 70, 0.2); padding: 0.75rem; border-radius: 0.5rem; border: 1px solid rgba(5, 150, 105, 0.3);"></div>
 
-                <button type="submit" id="auth-submit-btn" style="width: 100%; background: #059669; color: white; padding: 0.75rem; border-radius: 0.5rem; font-size: 0.875rem; font-weight: 600; border: none; cursor: pointer; margin-top: 0.5rem;">
+                <button type="submit" id="auth-submit-btn" style="width: 100%; background: #059669; color: white; padding: 0.75rem; border-radius: 0.625rem; font-size: 0.9375rem; font-weight: 600; border: none; cursor: pointer; margin-top: 0.5rem; box-shadow: 0 4px 12px rgba(5, 150, 105, 0.3); transition: background 0.2s;">
                     Sign In to Portal
                 </button>
             </form>
@@ -82,43 +104,43 @@
         <div class="app-layout" style="display: flex; flex-direction: column; width: 100%; min-height: 100vh;">
             
             <!-- SIDEBAR -->
-            <aside class="sidebar-width" style="width: 100%; background: #030712; border-right: 1px solid #1f2937; display: flex; flex-direction: column; justify-content: space-between;">
+            <aside class="sidebar-width" style="width: 100%; background: var(--bg-main); border-right: 1px solid var(--border-color); display: flex; flex-direction: column; justify-content: space-between;">
                 <div>
-                    <div style="padding: 1.5rem; border-bottom: 1px solid #1f2937; display: flex; align-items: center; gap: 0.75rem;">
-                        <div style="padding: 0.5rem; background: rgba(52, 211, 153, 0.1); border-radius: 0.5rem; border: 1px solid rgba(52, 211, 153, 0.2);">
-                            <svg style="width: 1.25rem; height: 1.25rem; color: #34d399;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
+                    <div style="padding: 1.5rem; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; gap: 0.875rem;">
+                        <div style="padding: 0.625rem; background: var(--accent-glow); border-radius: 0.75rem; border: 1px solid rgba(16, 185, 129, 0.3);">
+                            <svg style="width: 1.375rem; height: 1.375rem; color: var(--accent-green);" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
                         </div>
                         <div>
-                            <span style="font-size: 1rem; font-weight: bold; color: #34d399; display: block;">EcoTextile Pro</span>
-                            <span style="font-size: 0.6875rem; color: #6b7280; display: block;">Director: Muhammad Meer</span>
+                            <span style="font-size: 1.05rem; font-weight: 800; color: #ffffff; display: block; letter-spacing: -0.02em;">EcoTextile Pro</span>
+                            <span style="font-size: 0.75rem; color: var(--accent-green); font-weight: 600; display: block;">Director: Muhammad Meer</span>
                         </div>
                     </div>
                     
                     <nav style="padding: 1.25rem 1rem; display: flex; flex-direction: column; gap: 0.5rem;">
-                        <button onclick="switchTab('overview')" id="btn-overview" style="display: flex; align-items: center; gap: 0.75rem; width: 100%; padding: 0.75rem 1rem; font-size: 0.875rem; border-radius: 0.5rem; font-weight: 500; background: rgba(52, 211, 153, 0.1); color: #34d399; border: 1px solid rgba(52, 211, 153, 0.2); text-align: left; cursor: pointer;">
+                        <button onclick="switchTab('overview')" id="btn-overview" style="display: flex; align-items: center; gap: 0.75rem; width: 100%; padding: 0.75rem 1rem; font-size: 0.875rem; border-radius: 0.625rem; font-weight: 500; background: var(--accent-glow); color: var(--accent-green); border: 1px solid rgba(16, 185, 129, 0.3); text-align: left; cursor: pointer; transition: all 0.2s;">
                             <svg style="width: 1.125rem; height: 1.125rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
                             Dashboard Overview
                         </button>
-                        <button onclick="switchTab('inventory')" id="btn-inventory" style="display: flex; align-items: center; gap: 0.75rem; width: 100%; padding: 0.75rem 1rem; font-size: 0.875rem; border-radius: 0.5rem; font-weight: 500; background: transparent; color: #9ca3af; border: none; text-align: left; cursor: pointer;">
+                        <button onclick="switchTab('inventory')" id="btn-inventory" style="display: flex; align-items: center; gap: 0.75rem; width: 100%; padding: 0.75rem 1rem; font-size: 0.875rem; border-radius: 0.625rem; font-weight: 500; background: transparent; color: #9ca3af; border: none; text-align: left; cursor: pointer; transition: all 0.2s;">
                             <svg style="width: 1.125rem; height: 1.125rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
                             Inventory & Excel Sheets
                         </button>
-                        <button onclick="switchTab('esg')" id="btn-esg" style="display: flex; align-items: center; gap: 0.75rem; width: 100%; padding: 0.75rem 1rem; font-size: 0.875rem; border-radius: 0.5rem; font-weight: 500; background: transparent; color: #9ca3af; border: none; text-align: left; cursor: pointer;">
+                        <button onclick="switchTab('esg')" id="btn-esg" style="display: flex; align-items: center; gap: 0.75rem; width: 100%; padding: 0.75rem 1rem; font-size: 0.875rem; border-radius: 0.625rem; font-weight: 500; background: transparent; color: #9ca3af; border: none; text-align: left; cursor: pointer; transition: all 0.2s;">
                             <svg style="width: 1.125rem; height: 1.125rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
-                            ESG Impact Calculator
+                            Advanced ESG Calculator
                         </button>
-                        <button onclick="switchTab('ai')" id="btn-ai" style="display: flex; align-items: center; gap: 0.75rem; width: 100%; padding: 0.75rem 1rem; font-size: 0.875rem; border-radius: 0.5rem; font-weight: 500; background: transparent; color: #9ca3af; border: none; text-align: left; cursor: pointer;">
+                        <button onclick="switchTab('ai')" id="btn-ai" style="display: flex; align-items: center; gap: 0.75rem; width: 100%; padding: 0.75rem 1rem; font-size: 0.875rem; border-radius: 0.625rem; font-weight: 500; background: transparent; color: #9ca3af; border: none; text-align: left; cursor: pointer; transition: all 0.2s;">
                             <svg style="width: 1.125rem; height: 1.125rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
                             AI Sustainability Advisor
                         </button>
-                        <button onclick="switchTab('history')" id="btn-history" style="display: flex; align-items: center; gap: 0.75rem; width: 100%; padding: 0.75rem 1rem; font-size: 0.875rem; border-radius: 0.5rem; font-weight: 500; background: transparent; color: #9ca3af; border: none; text-align: left; cursor: pointer;">
+                        <button onclick="switchTab('history')" id="btn-history" style="display: flex; align-items: center; gap: 0.75rem; width: 100%; padding: 0.75rem 1rem; font-size: 0.875rem; border-radius: 0.625rem; font-weight: 500; background: transparent; color: #9ca3af; border: none; text-align: left; cursor: pointer; transition: all 0.2s;">
                             <svg style="width: 1.125rem; height: 1.125rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"></path></svg>
                             Supabase Cloud Records
                         </button>
                     </nav>
                 </div>
-                <div style="padding: 1.25rem 1rem; border-top: 1px solid #1f2937;">
-                    <button onclick="handleLogout()" style="display: flex; align-items: center; gap: 0.75rem; width: 100%; padding: 0.625rem 1rem; font-size: 0.875rem; color: #f87171; background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.2); border-radius: 0.5rem; cursor: pointer; font-weight: 500;">
+                <div style="padding: 1.25rem 1rem; border-top: 1px solid var(--border-color);">
+                    <button onclick="handleLogout()" style="display: flex; align-items: center; gap: 0.75rem; width: 100%; padding: 0.625rem 1rem; font-size: 0.875rem; color: #f87171; background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.2); border-radius: 0.625rem; cursor: pointer; font-weight: 500; transition: all 0.2s;">
                         <svg style="width: 1.125rem; height: 1.125rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
                         Sign Out
                     </button>
@@ -126,14 +148,14 @@
             </aside>
 
             <!-- MAIN CONTENT AREA -->
-            <main style="flex: 1; display: flex; flex-direction: column; background: #111827; min-width: 0; position: relative;">
-                <header style="height: 4.5rem; background: #030712; border-bottom: 1px solid #1f2937; display: flex; align-items: center; justify-content: space-between; padding: 0 2rem;">
+            <main style="flex: 1; display: flex; flex-direction: column; background: var(--bg-card); min-width: 0; position: relative;">
+                <header style="height: 4.5rem; background: var(--bg-main); border-bottom: 1px solid var(--border-color); display: flex; align-items: center; justify-content: space-between; padding: 0 2rem;">
                     <div style="display: flex; align-items: center; gap: 0.75rem;">
-                        <div style="width: 0.5rem; height: 0.5rem; background: #34d399; border-radius: 9999px; box-shadow: 0 0 10px #34d399;"></div>
-                        <span style="font-size: 0.875rem; font-weight: 600; color: #e5e7eb;">Overview by Director &bull; Muhammad Meer</span>
+                        <div style="width: 0.5rem; height: 0.5rem; background: var(--accent-green); border-radius: 9999px; box-shadow: 0 0 10px var(--accent-green);"></div>
+                        <span style="font-size: 0.875rem; font-weight: 600; color: #e5e7eb;">Director Suite &bull; <span style="color: var(--accent-green);">Muhammad Meer</span></span>
                     </div>
                     <div style="display: flex; align-items: center; gap: 1rem;">
-                        <div id="user-avatar-initial" style="width: 2.25rem; height: 2.25rem; border-radius: 9999px; background: #059669; display: flex; align-items: center; font-weight: bold; font-size: 0.875rem; justify-content: center; color: white; border: 2px solid rgba(52, 211, 153, 0.3);">M</div>
+                        <div id="user-avatar-initial" style="width: 2.375rem; height: 2.375rem; border-radius: 9999px; background: #059669; display: flex; align-items: center; font-weight: bold; font-size: 0.875rem; justify-content: center; color: white; border: 2px solid rgba(16, 185, 129, 0.4);">M</div>
                         <span id="user-display-name" style="font-size: 0.875rem; font-weight: 600; color: #f3f4f6;">User</span>
                     </div>
                 </header>
@@ -142,52 +164,51 @@
                     
                     <!-- TAB OVERVIEW -->
                     <div id="tab-overview" class="tab-content" style="display: flex; flex-direction: column; gap: 1.5rem;">
-                        <!-- Director Notice Banner -->
-                        <div style="background: rgba(52, 211, 153, 0.05); border: 1px solid rgba(52, 211, 153, 0.2); padding: 1rem 1.25rem; border-radius: 0.75rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
+                        <div style="background: var(--accent-glow); border: 1px solid rgba(16, 185, 129, 0.3); padding: 1rem 1.25rem; border-radius: 0.75rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
                             <div style="display: flex; align-items: center; gap: 0.75rem;">
-                                <svg style="width: 1.25rem; height: 1.25rem; color: #34d399;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                                <span style="font-size: 0.875rem; color: #d1d5db;">Dashboard Managed & Supervised by Director: <strong style="color: #34d399;">Muhammad Meer</strong></span>
+                                <svg style="width: 1.25rem; height: 1.25rem; color: var(--accent-green);" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                <span style="font-size: 0.875rem; color: #d1d5db;">Executive Dashboard Supervised & Directed by: <strong style="color: var(--accent-green);">Muhammad Meer</strong></span>
                             </div>
-                            <a href="mailto:Muhammadmeer2003@gmail.com" style="font-size: 0.8125rem; color: #34d399; font-weight: 600; text-decoration: none;">Contact Support &rarr;</a>
+                            <a href="mailto:Muhammadmeer2003@gmail.com" style="font-size: 0.8125rem; color: var(--accent-green); font-weight: 600; text-decoration: none;">Direct Contact Support &rarr;</a>
                         </div>
 
-                        <!-- Hero Banner with Picture -->
-                        <div class="hero-banner" style="border: 1px solid #1f2937; border-radius: 1rem; padding: 2.5rem; display: flex; flex-direction: column; gap: 1rem; position: relative; overflow: hidden;">
-                            <div style="max-width: 600px; z-index: 10;">
-                                <span style="background: rgba(52, 211, 153, 0.2); color: #34d399; font-size: 0.75rem; font-weight: bold; padding: 0.25rem 0.75rem; border-radius: 9999px; border: 1px solid rgba(52, 211, 153, 0.3);">Enterprise Dashboard</span>
-                                <h1 style="font-size: 2.25rem; font-weight: bold; color: #f3f4f6; margin: 0.75rem 0 0.5rem 0;">Sustainable Textile Supply Chain & AI Intelligence</h1>
-                                <p style="font-size: 0.9375rem; color: #9ca3af; margin: 0; line-height: 1.5;">Manage raw fabric inventories, upload Excel batch records, track carbon footprints, and run real-time AI compliance audits seamlessly.</p>
+                        <!-- Hero Banner -->
+                        <div class="hero-banner glass-card" style="border-radius: 1rem; padding: 3rem 2.5rem; display: flex; flex-direction: column; gap: 1rem; position: relative; overflow: hidden;">
+                            <div style="max-width: 650px; z-index: 10;">
+                                <span style="background: var(--accent-glow); color: var(--accent-green); font-size: 0.75rem; font-weight: 700; padding: 0.35rem 0.875rem; border-radius: 9999px; border: 1px solid rgba(16, 185, 129, 0.4); text-transform: uppercase; letter-spacing: 0.05em;">Enterprise Cloud Suite</span>
+                                <h1 style="font-size: 2.5rem; font-weight: 800; color: #ffffff; margin: 1rem 0 0.75rem 0; letter-spacing: -0.03em; line-height: 1.2;">Sustainable Textile Supply Chain & AI Analytics</h1>
+                                <p style="font-size: 0.9375rem; color: #9ca3af; margin: 0; line-height: 1.6;">Seamlessly manage fabric inventories, upload Excel production sheets, calculate Advanced ESG metrics, and run AI compliance audits.</p>
                             </div>
-                            <div style="display: flex; gap: 1rem; z-index: 10; margin-top: 0.5rem;">
-                                <button onclick="switchTab('inventory')" style="background: #059669; color: white; padding: 0.625rem 1.25rem; border-radius: 0.5rem; font-size: 0.875rem; font-weight: 600; border: none; cursor: pointer;">Manage Inventory & Excel</button>
-                                <button onclick="switchTab('esg')" style="background: #1f2937; color: #f3f4f6; padding: 0.625rem 1.25rem; border-radius: 0.5rem; font-size: 0.875rem; font-weight: 600; border: 1px solid #374151; cursor: pointer;">Open ESG Calculator</button>
+                            <div style="display: flex; gap: 1rem; z-index: 10; margin-top: 0.75rem; flex-wrap: wrap;">
+                                <button onclick="switchTab('inventory')" style="background: #059669; color: white; padding: 0.75rem 1.5rem; border-radius: 0.625rem; font-size: 0.875rem; font-weight: 600; border: none; cursor: pointer; box-shadow: 0 4px 14px rgba(5, 150, 105, 0.4);">Manage Inventory & Excel</button>
+                                <button onclick="switchTab('esg')" style="background: rgba(31, 41, 55, 0.8); color: #f3f4f6; padding: 0.75rem 1.5rem; border-radius: 0.625rem; font-size: 0.875rem; font-weight: 600; border: 1px solid #374151; cursor: pointer;">Open Advanced ESG Calculator</button>
                             </div>
                         </div>
 
-                        <!-- Visual Grid Cards with Images/Icons -->
+                        <!-- Grid Cards -->
                         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem;">
-                            <div style="background: #030712; border: 1px solid #1f2937; border-radius: 0.875rem; overflow: hidden; display: flex; flex-direction: column;">
-                                <img src="https://images.unsplash.com/photo-1605518216938-7c31b7b14ad0?auto=format&fit=crop&w=600&q=80" alt="Textile production" style="width: 100%; height: 140px; object-fit: cover; opacity: 0.8;">
+                            <div class="glass-card" style="border-radius: 0.875rem; overflow: hidden; display: flex; flex-direction: column;">
+                                <img src="https://images.unsplash.com/photo-1605518216938-7c31b7b14ad0?auto=format&fit=crop&w=600&q=80" alt="Textile production" style="width: 100%; height: 150px; object-fit: cover; opacity: 0.75;">
                                 <div style="padding: 1.25rem; display: flex; flex-direction: column; gap: 0.35rem;">
-                                    <span style="font-size: 0.75rem; font-weight: 600; color: #34d399; text-transform: uppercase;">Cloud Database</span>
+                                    <span style="font-size: 0.75rem; font-weight: 700; color: var(--accent-green); text-transform: uppercase;">Cloud Database</span>
                                     <h3 style="font-size: 1.125rem; font-weight: bold; color: #f3f4f6; margin: 0;">PostgreSQL Synced</h3>
-                                    <p style="font-size: 0.8125rem; color: #9ca3af; margin: 0;">All batches and inventory metrics are safely stored in Supabase cloud tables.</p>
+                                    <p style="font-size: 0.8125rem; color: #9ca3af; margin: 0;">Batches and inventory metrics securely backed up via Supabase cloud.</p>
                                 </div>
                             </div>
-                            <div style="background: #030712; border: 1px solid #1f2937; border-radius: 0.875rem; overflow: hidden; display: flex; flex-direction: column;">
-                                <img src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=600&q=80" alt="AI Analysis" style="width: 100%; height: 140px; object-fit: cover; opacity: 0.8;">
+                            <div class="glass-card" style="border-radius: 0.875rem; overflow: hidden; display: flex; flex-direction: column;">
+                                <img src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=600&q=80" alt="AI Analysis" style="width: 100%; height: 150px; object-fit: cover; opacity: 0.75;">
                                 <div style="padding: 1.25rem; display: flex; flex-direction: column; gap: 0.35rem;">
-                                    <span style="font-size: 0.75rem; font-weight: 600; color: #60a5fa; text-transform: uppercase;">Machine Learning</span>
+                                    <span style="font-size: 0.75rem; font-weight: 700; color: #60a5fa; text-transform: uppercase;">Machine Learning</span>
                                     <h3 style="font-size: 1.125rem; font-weight: bold; color: #f3f4f6; margin: 0;">AI Audit Engine</h3>
-                                    <p style="font-size: 0.8125rem; color: #9ca3af; margin: 0;">Automated recommendations for water saving and carbon emission cuts.</p>
+                                    <p style="font-size: 0.8125rem; color: #9ca3af; margin: 0;">Automated recommendations for water saving and carbon cuts.</p>
                                 </div>
                             </div>
-                            <div style="background: #030712; border: 1px solid #1f2937; border-radius: 0.875rem; overflow: hidden; display: flex; flex-direction: column;">
-                                <img src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=600&q=80" alt="Excel Sheets" style="width: 100%; height: 140px; object-fit: cover; opacity: 0.8;">
+                            <div class="glass-card" style="border-radius: 0.875rem; overflow: hidden; display: flex; flex-direction: column;">
+                                <img src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=600&q=80" alt="Excel Sheets" style="width: 100%; height: 150px; object-fit: cover; opacity: 0.75;">
                                 <div style="padding: 1.25rem; display: flex; flex-direction: column; gap: 0.35rem;">
-                                    <span style="font-size: 0.75rem; font-weight: 600; color: #fbbf24; text-transform: uppercase;">Excel & CSV</span>
+                                    <span style="font-size: 0.75rem; font-weight: 700; color: #fbbf24; text-transform: uppercase;">Excel & CSV</span>
                                     <h3 style="font-size: 1.125rem; font-weight: bold; color: #f3f4f6; margin: 0;">Sheet Import / Export</h3>
-                                    <p style="font-size: 0.8125rem; color: #9ca3af; margin: 0;">Easily upload spreadsheet batches or export complete inventory lists.</p>
+                                    <p style="font-size: 0.8125rem; color: #9ca3af; margin: 0;">Quickly upload spreadsheet batches or export full inventory sheets.</p>
                                 </div>
                             </div>
                         </div>
@@ -197,16 +218,16 @@
                     <div id="tab-inventory" class="tab-content hidden" style="display: none; flex-direction: column; gap: 1.5rem;">
                         <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
                             <div>
-                                <h1 style="font-size: 1.875rem; font-weight: bold; color: #f3f4f6; margin: 0 0 0.5rem 0;">Textile Inventory & Excel Management</h1>
+                                <h1 style="font-size: 1.875rem; font-weight: bold; color: #f3f4f6; margin: 0 0 0.35rem 0;">Textile Inventory & Excel Management</h1>
                                 <p style="font-size: 0.9375rem; color: #9ca3af; margin: 0;">Upload Excel/CSV sheets (.xlsx, .csv), manage fabric lots, and export updated records instantly.</p>
                             </div>
-                            <div style="display: flex; gap: 0.75rem;">
-                                <label style="background: #059669; color: white; padding: 0.625rem 1rem; border-radius: 0.5rem; font-size: 0.8125rem; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 0.5rem;">
+                            <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+                                <label style="background: #059669; color: white; padding: 0.625rem 1.125rem; border-radius: 0.625rem; font-size: 0.8125rem; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 0.5rem; box-shadow: 0 2px 8px rgba(5, 150, 105, 0.3);">
                                     <svg style="width: 1rem; height: 1rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
                                     Upload Excel Sheet
                                     <input type="file" id="excel-file-input" accept=".xlsx, .xls, .csv" onchange="handleExcelUpload(event)" style="display: none;">
                                 </label>
-                                <button onclick="exportInventoryToExcel()" style="background: #2563eb; color: white; padding: 0.625rem 1rem; border-radius: 0.5rem; font-size: 0.8125rem; font-weight: 600; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 0.5rem;">
+                                <button onclick="exportInventoryToExcel()" style="background: #2563eb; color: white; padding: 0.625rem 1.125rem; border-radius: 0.625rem; font-size: 0.8125rem; font-weight: 600; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 0.5rem; box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3);">
                                     <svg style="width: 1rem; height: 1rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
                                     Export Excel
                                 </button>
@@ -214,28 +235,28 @@
                         </div>
 
                         <!-- Add Manual Batch Card -->
-                        <div style="background: #030712; border: 1px solid #1f2937; padding: 1.5rem; border-radius: 0.875rem; display: flex; gap: 1rem; flex-wrap: wrap; align-items: flex-end;">
-                            <div style="flex: 1; min-width: 200px;">
-                                <label style="display: block; font-size: 0.75rem; color: #9ca3af; font-weight: 500; margin-bottom: 0.35rem;">Fabric Batch Name / Type</label>
-                                <input type="text" id="inv-name" placeholder="e.g., Organic Cotton Lot A" style="width: 100%; background: #111827; border: 1px solid #1f2937; border-radius: 0.5rem; padding: 0.625rem 0.875rem; font-size: 0.875rem; color: #f3f4f6; outline: none; box-sizing: border-box;">
+                        <div class="glass-card" style="padding: 1.5rem; border-radius: 0.875rem; display: flex; gap: 1rem; flex-wrap: wrap; align-items: flex-end;">
+                            <div style="flex: 1; min-width: 220px;">
+                                <label style="display: block; font-size: 0.75rem; color: #9ca3af; font-weight: 600; margin-bottom: 0.35rem; text-transform: uppercase;">Fabric Batch Name</label>
+                                <input type="text" id="inv-name" placeholder="e.g., Organic Cotton Lot A" style="width: 100%; background: var(--bg-main); border: 1px solid var(--border-color); border-radius: 0.625rem; padding: 0.625rem 0.875rem; font-size: 0.875rem; color: #f3f4f6; outline: none; box-sizing: border-box;">
                             </div>
                             <div style="width: 160px;">
-                                <label style="display: block; font-size: 0.75rem; color: #9ca3af; font-weight: 500; margin-bottom: 0.35rem;">Weight (KG)</label>
-                                <input type="number" id="inv-weight" value="500" style="width: 100%; background: #111827; border: 1px solid #1f2937; border-radius: 0.5rem; padding: 0.625rem 0.875rem; font-size: 0.875rem; color: #f3f4f6; outline: none; box-sizing: border-box;">
+                                <label style="display: block; font-size: 0.75rem; color: #9ca3af; font-weight: 600; margin-bottom: 0.35rem; text-transform: uppercase;">Weight (KG)</label>
+                                <input type="number" id="inv-weight" value="500" style="width: 100%; background: var(--bg-main); border: 1px solid var(--border-color); border-radius: 0.625rem; padding: 0.625rem 0.875rem; font-size: 0.875rem; color: #f3f4f6; outline: none; box-sizing: border-box;">
                             </div>
-                            <div style="width: 160px;">
-                                <label style="display: block; font-size: 0.75rem; color: #9ca3af; font-weight: 500; margin-bottom: 0.35rem;">Supplier</label>
-                                <input type="text" id="inv-supplier" placeholder="Textile Mills Ltd" style="width: 100%; background: #111827; border: 1px solid #1f2937; border-radius: 0.5rem; padding: 0.625rem 0.875rem; font-size: 0.875rem; color: #f3f4f6; outline: none; box-sizing: border-box;">
+                            <div style="width: 180px;">
+                                <label style="display: block; font-size: 0.75rem; color: #9ca3af; font-weight: 600; margin-bottom: 0.35rem; text-transform: uppercase;">Supplier</label>
+                                <input type="text" id="inv-supplier" placeholder="Textile Mills Ltd" style="width: 100%; background: var(--bg-main); border: 1px solid var(--border-color); border-radius: 0.625rem; padding: 0.625rem 0.875rem; font-size: 0.875rem; color: #f3f4f6; outline: none; box-sizing: border-box;">
                             </div>
-                            <button onclick="addInventoryItem()" style="background: #059669; color: white; padding: 0.625rem 1.25rem; border-radius: 0.5rem; font-size: 0.875rem; font-weight: 600; border: none; cursor: pointer; height: 38px;">
+                            <button onclick="addInventoryItem()" style="background: #059669; color: white; padding: 0.625rem 1.25rem; border-radius: 0.625rem; font-size: 0.875rem; font-weight: 600; border: none; cursor: pointer; height: 38px;">
                                 Add Batch
                             </button>
                         </div>
 
                         <!-- Inventory Table -->
-                        <div style="background: #030712; border: 1px solid #1f2937; border-radius: 0.875rem; overflow-x: auto;">
+                        <div class="glass-card" style="border-radius: 0.875rem; overflow-x: auto;">
                             <table style="width: 100%; text-align: left; font-size: 0.875rem; border-collapse: collapse; min-width: 650px;">
-                                <thead style="background: #111827; color: #9ca3af; border-bottom: 1px solid #1f2937; font-size: 0.75rem; text-transform: uppercase;">
+                                <thead style="background: var(--bg-main); color: #9ca3af; border-bottom: 1px solid var(--border-color); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em;">
                                     <tr>
                                         <th style="padding: 1rem;">Batch ID</th>
                                         <th style="padding: 1rem;">Fabric Type / Name</th>
@@ -245,61 +266,130 @@
                                         <th style="padding: 1rem; text-align: right;">Action</th>
                                     </tr>
                                 </thead>
-                                <tbody id="inventory-table-body">
-                                    <!-- Populated via JS -->
-                                </tbody>
+                                <tbody id="inventory-table-body"></tbody>
                             </table>
                         </div>
                     </div>
 
-                    <!-- TAB ESG CALCULATOR -->
+                    <!-- TAB ADVANCED ESG CALCULATOR (ENHANCED SECTION) -->
                     <div id="tab-esg" class="tab-content hidden" style="display: none; flex-direction: column; gap: 1.5rem;">
-                        <div>
-                            <h1 style="font-size: 1.875rem; font-weight: bold; color: #f3f4f6; margin: 0 0 0.5rem 0;">ESG Fabric Calculator & Cloud Storage</h1>
-                            <p style="font-size: 0.9375rem; color: #9ca3af; margin: 0;">Calculate estimated carbon emissions, water consumption, and energy use per batch weight.</p>
+                        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+                            <div>
+                                <h1 style="font-size: 1.875rem; font-weight: bold; color: #f3f4f6; margin: 0 0 0.35rem 0;">Advanced ESG Life Cycle Assessment (LCA)</h1>
+                                <p style="font-size: 0.9375rem; color: #9ca3af; margin: 0;">Calculate precise carbon footprint, water intensity, circularity index, and sustainability grades per production run.</p>
+                            </div>
+                            <div style="background: var(--accent-glow); border: 1px solid rgba(16, 185, 129, 0.3); padding: 0.5rem 1rem; border-radius: 0.625rem; display: flex; align-items: center; gap: 0.5rem;">
+                                <span style="font-size: 0.75rem; color: #9ca3af; text-transform: uppercase;">Live Eco Rating:</span>
+                                <span id="esg-grade-badge" style="font-size: 0.95rem; font-weight: 800; color: var(--accent-green);">A+</span>
+                            </div>
                         </div>
 
-                        <div style="background: #030712; border: 1px solid #1f2937; padding: 2rem; border-radius: 0.875rem; display: flex; flex-direction: column; gap: 1.25rem; max-width: 560px;">
-                            <div>
-                                <label style="display: block; font-size: 0.8125rem; color: #9ca3af; font-weight: 500; margin-bottom: 0.5rem;">Total Fabric Weight (KG)</label>
-                                <input type="number" id="calc-weight" value="1000" style="width: 100%; background: #111827; border: 1px solid #1f2937; border-radius: 0.5rem; padding: 0.75rem 1rem; font-size: 1rem; color: #f3f4f6; outline: none; box-sizing: border-box;" oninput="calculateESG()">
-                            </div>
-                            
-                            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem;">
-                                <div style="background: #111827; padding: 1rem; border-radius: 0.625rem; border: 1px solid #1f2937; display: flex; flex-direction: column; gap: 0.25rem;">
-                                    <span style="font-size: 0.75rem; color: #9ca3af;">Carbon Output</span>
-                                    <span id="res-carbon" style="font-size: 1.125rem; font-weight: bold; color: #34d399;">--</span>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem;">
+                            <!-- Calculator Form Card -->
+                            <div class="glass-card" style="padding: 2rem; border-radius: 0.875rem; display: flex; flex-direction: column; gap: 1.25rem;">
+                                <h3 style="font-size: 1.125rem; font-weight: bold; color: #ffffff; margin: 0 0 0.25rem 0; display: flex; align-items: center; gap: 0.5rem;">
+                                    <svg style="width: 1.25rem; height: 1.25rem; color: var(--accent-green);" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                                    Production Parameters
+                                </h3>
+
+                                <div>
+                                    <label style="display: block; font-size: 0.75rem; color: #9ca3af; font-weight: 600; margin-bottom: 0.4rem; text-transform: uppercase;">Select Fabric Material Type</label>
+                                    <select id="calc-material" onchange="calculateESG()" style="width: 100%; background: var(--bg-main); border: 1px solid var(--border-color); border-radius: 0.625rem; padding: 0.75rem 1rem; font-size: 0.875rem; color: #f3f4f6; outline: none;">
+                                        <option value="organic_cotton">Organic Cotton (Low impact, eco-certified)</option>
+                                        <option value="conventional_cotton" selected>Conventional Cotton (Standard baseline)</option>
+                                        <option value="recycled_poly">Recycled Polyester (RPET - Circular economy)</option>
+                                        <option value="virgin_nylon">Virgin Nylon (High energy intensive)</option>
+                                        <option value="raw_silk">Raw Mulberry Silk (Delicate artisan process)</option>
+                                    </select>
                                 </div>
-                                <div style="background: #111827; padding: 1rem; border-radius: 0.625rem; border: 1px solid #1f2937; display: flex; flex-direction: column; gap: 0.25rem;">
-                                    <span style="font-size: 0.75rem; color: #9ca3af;">Water Usage</span>
-                                    <span id="res-water" style="font-size: 1.125rem; font-weight: bold; color: #60a5fa;">--</span>
+
+                                <div>
+                                    <label style="display: block; font-size: 0.75rem; color: #9ca3af; font-weight: 600; margin-bottom: 0.4rem; text-transform: uppercase;">Total Fabric Batch Weight (KG)</label>
+                                    <input type="number" id="calc-weight" value="1200" style="width: 100%; background: var(--bg-main); border: 1px solid var(--border-color); border-radius: 0.625rem; padding: 0.75rem 1rem; font-size: 0.9375rem; color: #f3f4f6; outline: none; box-sizing: border-box;" oninput="calculateESG()">
                                 </div>
-                                <div style="background: #111827; padding: 1rem; border-radius: 0.625rem; border: 1px solid #1f2937; display: flex; flex-direction: column; gap: 0.25rem;">
-                                    <span style="font-size: 0.75rem; color: #9ca3af;">Energy Req.</span>
-                                    <span id="res-energy" style="font-size: 1.125rem; font-weight: bold; color: #fbbf24;">--</span>
+
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                                    <div>
+                                        <label style="display: block; font-size: 0.75rem; color: #9ca3af; font-weight: 600; margin-bottom: 0.4rem; text-transform: uppercase;">Energy Source</label>
+                                        <select id="calc-energy-source" onchange="calculateESG()" style="width: 100%; background: var(--bg-main); border: 1px solid var(--border-color); border-radius: 0.625rem; padding: 0.75rem 0.8rem; font-size: 0.8125rem; color: #f3f4f6; outline: none;">
+                                            <option value="grid">Standard Grid Power</option>
+                                            <option value="solar" selected>100% Solar / Renewable</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label style="display: block; font-size: 0.75rem; color: #9ca3af; font-weight: 600; margin-bottom: 0.4rem; text-transform: uppercase;">Transport Dist. (KM)</label>
+                                        <input type="number" id="calc-distance" value="350" style="width: 100%; background: var(--bg-main); border: 1px solid var(--border-color); border-radius: 0.625rem; padding: 0.75rem 0.8rem; font-size: 0.875rem; color: #f3f4f6; outline: none; box-sizing: border-box;" oninput="calculateESG()">
+                                    </div>
                                 </div>
+
+                                <button onclick="saveCloudBatchRecord()" style="width: 100%; background: #059669; color: white; padding: 0.75rem; border-radius: 0.625rem; font-size: 0.9375rem; font-weight: 600; border: none; cursor: pointer; margin-top: 0.5rem; box-shadow: 0 4px 12px rgba(5, 150, 105, 0.3);">
+                                    Sync Advanced ESG Record to Cloud
+                                </button>
                             </div>
 
-                            <button onclick="saveCloudBatchRecord()" style="width: 100%; background: #059669; color: white; padding: 0.75rem; border-radius: 0.5rem; font-size: 0.9375rem; font-weight: 600; border: none; cursor: pointer; margin-top: 0.5rem;">
-                                Save Batch Record to Supabase Cloud
-                            </button>
+                            <!-- Real-time Analysis Results Dashboard -->
+                            <div class="glass-card" style="padding: 2rem; border-radius: 0.875rem; display: flex; flex-direction: column; justify-content: space-between; gap: 1.25rem;">
+                                <div>
+                                    <h3 style="font-size: 1.125rem; font-weight: bold; color: #ffffff; margin: 0 0 1rem 0; display: flex; align-items: center; gap: 0.5rem;">
+                                        <svg style="width: 1.25rem; height: 1.25rem; color: #60a5fa;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
+                                        Calculated LCA Impact Metrics
+                                    </h3>
+                                    
+                                    <div style="display: flex; flex-direction: column; gap: 0.875rem;">
+                                        <div style="background: var(--bg-main); padding: 1rem; border-radius: 0.625rem; border: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+                                            <div>
+                                                <span style="font-size: 0.75rem; color: #9ca3af; text-transform: uppercase; display: block;">Total Carbon Footprint</span>
+                                                <span style="font-size: 0.75rem; color: #6b7280;">Scope 1, 2 & 3 Emissions</span>
+                                            </div>
+                                            <span id="res-carbon" style="font-size: 1.25rem; font-weight: bold; color: var(--accent-green);">--</span>
+                                        </div>
+
+                                        <div style="background: var(--bg-main); padding: 1rem; border-radius: 0.625rem; border: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+                                            <div>
+                                                <span style="font-size: 0.75rem; color: #9ca3af; text-transform: uppercase; display: block;">Water Consumption</span>
+                                                <span style="font-size: 0.75rem; color: #6b7280;">Irrigation & Processing</span>
+                                            </div>
+                                            <span id="res-water" style="font-size: 1.25rem; font-weight: bold; color: #60a5fa;">--</span>
+                                        </div>
+
+                                        <div style="background: var(--bg-main); padding: 1rem; border-radius: 0.625rem; border: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+                                            <div>
+                                                <span style="font-size: 0.75rem; color: #9ca3af; text-transform: uppercase; display: block;">Energy Demand</span>
+                                                <span style="font-size: 0.75rem; color: #6b7280;">Mill Processing & Looming</span>
+                                            </div>
+                                            <span id="res-energy" style="font-size: 1.25rem; font-weight: bold; color: #fbbf24;">--</span>
+                                        </div>
+
+                                        <div style="background: var(--bg-main); padding: 1rem; border-radius: 0.625rem; border: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+                                            <div>
+                                                <span style="font-size: 0.75rem; color: #9ca3af; text-transform: uppercase; display: block;">Circularity Index</span>
+                                                <span style="font-size: 0.75rem; color: #6b7280;">Recyclability Potential</span>
+                                            </div>
+                                            <span id="res-circularity" style="font-size: 1.25rem; font-weight: bold; color: #c084fc;">--</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div style="font-size: 0.75rem; color: #9ca3af; border-top: 1px solid var(--border-color); padding-top: 0.75rem; text-align: right;">
+                                    Calculated under ISO 14040/44 Environmental Standards
+                                </div>
+                            </div>
                         </div>
                     </div>
 
                     <!-- TAB AI SUSTAINABILITY ADVISOR -->
                     <div id="tab-ai" class="tab-content hidden" style="display: none; flex-direction: column; gap: 1.5rem;">
                         <div>
-                            <h1 style="font-size: 1.875rem; font-weight: bold; color: #f3f4f6; margin: 0 0 0.5rem 0;">AI Sustainability & Optimization Advisor</h1>
+                            <h1 style="font-size: 1.875rem; font-weight: bold; color: #f3f4f6; margin: 0 0 0.35rem 0;">AI Sustainability & Optimization Advisor</h1>
                             <p style="font-size: 0.9375rem; color: #9ca3af; margin: 0;">Get automated machine learning recommendations and carbon reduction strategies for your textile operations.</p>
                         </div>
 
-                        <div style="background: #030712; border: 1px solid #1f2937; padding: 2rem; border-radius: 0.875rem; display: flex; flex-direction: column; gap: 1.25rem; max-width: 700px;">
-                            <div style="display: flex; align-items: center; justify-content: space-between;">
-                                <span style="font-size: 0.875rem; font-weight: 600; color: #34d399;">Active Intelligence Model: EcoAI v3.2</span>
-                                <button onclick="runAIAudit()" style="background: #2563eb; color: white; font-size: 0.8125rem; padding: 0.5rem 1rem; border-radius: 0.5rem; border: none; cursor: pointer; font-weight: 600;">Generate AI Audit Report</button>
+                        <div class="glass-card" style="padding: 2rem; border-radius: 0.875rem; display: flex; flex-direction: column; gap: 1.25rem; max-width: 720px;">
+                            <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
+                                <span style="font-size: 0.875rem; font-weight: 700; color: var(--accent-green);">Active Intelligence Model: EcoAI Enterprise v3.8</span>
+                                <button onclick="runAIAudit()" style="background: #2563eb; color: white; font-size: 0.8125rem; padding: 0.625rem 1.125rem; border-radius: 0.625rem; border: none; cursor: pointer; font-weight: 600; box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3);">Generate AI Audit Report</button>
                             </div>
                             
-                            <div id="ai-output-box" style="background: #111827; border: 1px solid #1f2937; padding: 1.25rem; border-radius: 0.625rem; font-size: 0.875rem; color: #9ca3af; line-height: 1.6;">
+                            <div id="ai-output-box" style="background: var(--bg-main); border: 1px solid var(--border-color); padding: 1.5rem; border-radius: 0.75rem; font-size: 0.875rem; color: #9ca3af; line-height: 1.7;">
                                 Click <strong style="color: #60a5fa;">"Generate AI Audit Report"</strong> to analyze inventory stock, water footprint reduction potentials, and supply chain efficiency improvements.
                             </div>
                         </div>
@@ -309,17 +399,17 @@
                     <div id="tab-history" class="tab-content hidden" style="display: none; flex-direction: column; gap: 1.5rem;">
                         <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
                             <div>
-                                <h1 style="font-size: 1.875rem; font-weight: bold; color: #f3f4f6; margin: 0 0 0.5rem 0;">Supabase Cloud Records</h1>
+                                <h1 style="font-size: 1.875rem; font-weight: bold; color: #f3f4f6; margin: 0 0 0.35rem 0;">Supabase Cloud Records</h1>
                                 <p style="font-size: 0.9375rem; color: #9ca3af; margin: 0;">Live records fetched directly from your Supabase PostgreSQL database.</p>
                             </div>
-                            <button onclick="loadCloudHistory()" style="background: #1f2937; color: white; font-size: 0.8125rem; padding: 0.625rem 1rem; border-radius: 0.5rem; border: 1px solid #374151; cursor: pointer; font-weight: 500;">
+                            <button onclick="loadCloudHistory()" style="background: rgba(31, 41, 55, 0.8); color: white; font-size: 0.8125rem; padding: 0.625rem 1.125rem; border-radius: 0.625rem; border: 1px solid #374151; cursor: pointer; font-weight: 500;">
                                 Refresh Records
                             </button>
                         </div>
                         
-                        <div style="background: #030712; border: 1px solid #1f2937; border-radius: 0.875rem; overflow-x: auto;">
+                        <div class="glass-card" style="border-radius: 0.875rem; overflow-x: auto;">
                             <table style="width: 100%; text-align: left; font-size: 0.875rem; border-collapse: collapse; min-width: 650px;">
-                                <thead style="background: #111827; color: #9ca3af; border-bottom: 1px solid #1f2937; font-size: 0.75rem; text-transform: uppercase;">
+                                <thead style="background: var(--bg-main); color: #9ca3af; border-bottom: 1px solid var(--border-color); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em;">
                                     <tr>
                                         <th style="padding: 1rem;">Record ID</th>
                                         <th style="padding: 1rem;">Weight (KG)</th>
@@ -341,39 +431,35 @@
         </div>
     </div>
 
-    <!-- BOTTOM-RIGHT DIRECTOR & CUSTOMER SUPPORT POPUP WIDGET -->
-    <div id="support-widget" style="position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 100; background: #111827; border: 1px solid rgba(52, 211, 153, 0.4); border-radius: 1rem; padding: 1.25rem; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.7); max-width: 300px; display: flex; flex-direction: column; gap: 0.625rem;">
+    <!-- SUPPORT WIDGET -->
+    <div id="support-widget" class="glass-card toast-animate" style="position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 100; border: 1px solid rgba(16, 185, 129, 0.4); border-radius: 1rem; padding: 1.25rem; box-shadow: 0 20px 30px -10px rgba(0, 0, 0, 0.8); max-width: 310px; display: flex; flex-direction: column; gap: 0.625rem;">
         <div style="display: flex; align-items: center; justify-content: space-between;">
             <div style="display: flex; align-items: center; gap: 0.5rem;">
-                <div style="width: 0.5rem; height: 0.5rem; background: #34d399; border-radius: 9999px;"></div>
-                <span style="font-size: 0.75rem; font-weight: bold; color: #34d399; text-transform: uppercase;">Customer Care & Support</span>
+                <div style="width: 0.5rem; height: 0.5rem; background: var(--accent-green); border-radius: 9999px; box-shadow: 0 0 8px var(--accent-green);"></div>
+                <span style="font-size: 0.75rem; font-weight: bold; color: var(--accent-green); text-transform: uppercase; letter-spacing: 0.05em;">Customer Support</span>
             </div>
-            <button onclick="document.getElementById('support-widget').style.display='none'" style="background: none; border: none; color: #9ca3af; cursor: pointer; font-size: 1.125rem; line-height: 1;">&times;</button>
+            <button onclick="document.getElementById('support-widget').style.display='none'" style="background: none; border: none; color: #9ca3af; cursor: pointer; font-size: 1.25rem; line-height: 1;">&times;</button>
         </div>
         <p style="font-size: 0.8125rem; color: #d1d5db; margin: 0; line-height: 1.4;">
-            For queries, website updates, or feature enhancements, contact Director <strong style="color: #f3f4f6;">Muhammad Meer</strong>.
+            For queries and feature enhancements, contact Director <strong style="color: #ffffff;">Muhammad Meer</strong>.
         </p>
-        <a href="mailto:Muhammadmeer2003@gmail.com" style="font-size: 0.8125rem; color: #34d399; text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 0.35rem; margin-top: 0.25rem;">
+        <a href="mailto:Muhammadmeer2003@gmail.com" style="font-size: 0.8125rem; color: var(--accent-green); text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 0.35rem; margin-top: 0.25rem;">
             <svg style="width: 0.875rem; height: 0.875rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
             Muhammadmeer2003@gmail.com
         </a>
     </div>
 
     <script>
-        // ==========================================
-        // SUPABASE CONFIGURATION
-        // ==========================================
         const SUPABASE_URL = 'https://muwsgfyanqctkvkogyay.supabase.co';
         const SUPABASE_ANON_KEY = 'sb_publishable_vVBcYHSUcdNGeuMxyhEnrQ_W7bBnGbh';
         
         const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         let authMode = 'login';
 
-        // Local Inventory Data State
         let inventoryList = [
-            { id: 101, name: 'Organic Cotton Twill', weight: 1200, supplier: 'Al-Karam Fibers', carbon: '3,000.0 kg' },
-            { id: 102, name: 'Recycled Polyester Blend', weight: 850, supplier: 'Global Synthetics', carbon: '2,125.0 kg' },
-            { id: 103, name: 'Raw Denim Indigo', weight: 1500, supplier: 'Indigo Craft PK', carbon: '3,750.0 kg' }
+            { id: 101, name: 'Organic Cotton Twill', weight: 1200, supplier: 'Al-Karam Fibers', carbon: '1,800.0 kg' },
+            { id: 102, name: 'Recycled Polyester Blend', weight: 850, supplier: 'Global Synthetics', carbon: '1,275.0 kg' },
+            { id: 103, name: 'Raw Denim Indigo', weight: 1500, supplier: 'Indigo Craft PK', carbon: '4,500.0 kg' }
         ];
 
         window.addEventListener('DOMContentLoaded', async () => {
@@ -382,7 +468,27 @@
                 applyUserSession(session.user);
             }
             renderInventoryTable();
+            calculateESG();
         });
+
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = 'toast-animate';
+            const bgCol = type === 'success' ? 'rgba(6, 95, 70, 0.9)' : 'rgba(159, 18, 57, 0.9)';
+            const borderCol = type === 'success' ? '#10b981' : '#e11d48';
+            const textCol = type === 'success' ? '#34d399' : '#fb7185';
+
+            toast.style.cssText = `background: ${bgCol}; backdrop-filter: blur(10px); border: 1px solid ${borderCol}; color: ${textCol}; padding: 0.875rem 1.25rem; border-radius: 0.75rem; font-size: 0.875rem; font-weight: 600; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.5); pointer-events: auto; display: flex; align-items: center; gap: 0.5rem;`;
+            toast.innerHTML = `<span>${message}</span>`;
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transition = 'opacity 0.3s ease';
+                setTimeout(() => toast.remove(), 300);
+            }, 3500);
+        }
 
         function switchAuthMode(mode) {
             authMode = mode;
@@ -397,25 +503,25 @@
 
             if (mode === 'login') {
                 tabsContainer.style.display = 'flex';
-                loginTab.style.background = 'rgba(52, 211, 153, 0.1)';
-                loginTab.style.color = '#34d399';
-                loginTab.style.border = '1px solid rgba(52, 211, 153, 0.2)';
+                loginTab.style.background = 'var(--accent-glow)';
+                loginTab.style.color = 'var(--accent-green)';
+                loginTab.style.border = '1px solid rgba(16, 185, 129, 0.3)';
                 regTab.style.background = 'transparent';
                 regTab.style.color = '#9ca3af';
                 regTab.style.border = 'none';
                 nameWrapper.style.display = 'none';
-                subtitle.innerText = "AI-Powered Sustainable Supply Chain & Cloud Platform";
+                subtitle.innerText = "Director Suite & Cloud Supply Chain Intelligence";
                 submitBtn.innerText = "Sign In to Portal";
             } else if (mode === 'register') {
                 tabsContainer.style.display = 'flex';
-                regTab.style.background = 'rgba(52, 211, 153, 0.1)';
-                regTab.style.color = '#34d399';
-                regTab.style.border = '1px solid rgba(52, 211, 153, 0.2)';
+                regTab.style.background = 'var(--accent-glow)';
+                regTab.style.color = 'var(--accent-green)';
+                regTab.style.border = '1px solid rgba(16, 185, 129, 0.3)';
                 loginTab.style.background = 'transparent';
                 loginTab.style.color = '#9ca3af';
                 loginTab.style.border = 'none';
                 nameWrapper.style.display = 'flex';
-                subtitle.innerText = "Create new enterprise account profile";
+                subtitle.innerText = "Create new enterprise director profile";
                 submitBtn.innerText = "Register & Enter Portal";
             } else if (mode === 'forgot') {
                 tabsContainer.style.display = 'none';
@@ -436,30 +542,34 @@
             if (authMode === 'forgot') {
                 const { error } = await supabaseClient.auth.resetPasswordForEmail(email);
                 if (error) { errorBox.innerText = error.message; errorBox.classList.remove('hidden'); }
-                else { successBox.innerText = `Recovery instructions sent to ${email}.`; successBox.classList.remove('hidden'); }
+                else { successBox.innerText = `Recovery instructions sent to ${email}.`; successBox.classList.remove('hidden'); showToast('Recovery email sent!'); }
                 return;
             }
 
             const password = document.getElementById('auth-password').value.trim();
 
             if (authMode === 'register') {
-                const name = document.getElementById('reg-name').value.trim() || "User";
+                const name = document.getElementById('reg-name').value.trim() || "Muhammad Meer";
                 const { data, error } = await supabaseClient.auth.signUp({ email, password, options: { data: { full_name: name } } });
                 if (error) { errorBox.innerText = error.message; errorBox.classList.remove('hidden'); }
                 else {
                     successBox.innerText = "Registration successful! Logging in...";
                     successBox.classList.remove('hidden');
+                    showToast('Account created successfully!');
                     setTimeout(() => applyUserSession(data.user || { email, user_metadata: { full_name: name } }), 1000);
                 }
             } else {
                 const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
                 if (error) { errorBox.innerText = error.message; errorBox.classList.remove('hidden'); }
-                else { applyUserSession(data.user); }
+                else { 
+                    showToast('Successfully signed in!');
+                    applyUserSession(data.user); 
+                }
             }
         }
 
         function applyUserSession(user) {
-            const fullName = user.user_metadata?.full_name || user.email.split('@')[0] || "User";
+            const fullName = user.user_metadata?.full_name || user.email.split('@')[0] || "Muhammad Meer";
             document.getElementById('user-display-name').innerText = fullName;
             document.getElementById('user-avatar-initial').innerText = fullName.charAt(0).toUpperCase();
             document.getElementById('auth-container').style.display = 'none';
@@ -479,6 +589,7 @@
             document.getElementById('auth-container').style.display = 'flex';
             document.getElementById('auth-password').value = '';
             switchAuthMode('login');
+            showToast('Signed out securely.', 'error');
         }
 
         function switchTab(tabId) {
@@ -493,9 +604,9 @@
             ['overview', 'inventory', 'esg', 'ai', 'history'].forEach(id => {
                 const btn = document.getElementById('btn-' + id);
                 if (id === tabId) {
-                    btn.style.background = 'rgba(52, 211, 153, 0.1)';
-                    btn.style.color = '#34d399';
-                    btn.style.border = '1px solid rgba(52, 211, 153, 0.2)';
+                    btn.style.background = 'var(--accent-glow)';
+                    btn.style.color = 'var(--accent-green)';
+                    btn.style.border = '1px solid rgba(16, 185, 129, 0.3)';
                 } else {
                     btn.style.background = 'transparent';
                     btn.style.color = '#9ca3af';
@@ -508,9 +619,6 @@
             }
         }
 
-        // ==========================================
-        // INVENTORY & EXCEL SHEET LOGIC
-        // ==========================================
         function renderInventoryTable() {
             const tbody = document.getElementById('inventory-table-body');
             if (!inventoryList.length) {
@@ -520,12 +628,12 @@
             tbody.innerHTML = '';
             inventoryList.forEach((item, index) => {
                 tbody.innerHTML += `
-                    <tr style="border-bottom: 1px solid #1f2937;">
-                        <td style="padding: 1rem; font-family: monospace; color: #34d399; font-weight: 600;">#${item.id || (100 + index)}</td>
+                    <tr style="border-bottom: 1px solid var(--border-color);">
+                        <td style="padding: 1rem; font-family: monospace; color: var(--accent-green); font-weight: 600;">#${item.id || (100 + index)}</td>
                         <td style="padding: 1rem; font-weight: 600; color: #f3f4f6;">${item.name}</td>
                         <td style="padding: 1rem; color: #60a5fa;">${item.weight} KG</td>
                         <td style="padding: 1rem; color: #9ca3af;">${item.supplier || 'Internal Mill'}</td>
-                        <td style="padding: 1rem; color: #34d399;">${item.carbon || (item.weight * 2.5).toFixed(1) + ' kg'}</td>
+                        <td style="padding: 1rem; color: var(--accent-green);">${item.carbon || (item.weight * 2.0).toFixed(1) + ' kg'}</td>
                         <td style="padding: 1rem; text-align: right;">
                             <button onclick="deleteInventoryItem(${index})" style="background: rgba(239, 68, 68, 0.1); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.2); padding: 0.35rem 0.75rem; border-radius: 0.375rem; font-size: 0.75rem; cursor: pointer;">Delete</button>
                         </td>
@@ -549,21 +657,21 @@
                 name,
                 weight,
                 supplier,
-                carbon: (weight * 2.5).toFixed(1) + ' kg'
+                carbon: (weight * 2.0).toFixed(1) + ' kg'
             });
 
             document.getElementById('inv-name').value = '';
             document.getElementById('inv-supplier').value = '';
             renderInventoryTable();
-            alert('Inventory batch added successfully!');
+            showToast('Inventory batch added successfully!');
         }
 
         function deleteInventoryItem(index) {
             inventoryList.splice(index, 1);
             renderInventoryTable();
+            showToast('Batch removed.', 'error');
         }
 
-        // Excel File Upload using SheetJS
         function handleExcelUpload(event) {
             const file = event.target.files[0];
             if (!file) return;
@@ -588,13 +696,13 @@
                                 name,
                                 weight,
                                 supplier,
-                                carbon: (weight * 2.5).toFixed(1) + ' kg'
+                                carbon: (weight * 2.0).toFixed(1) + ' kg'
                             });
                         });
                         renderInventoryTable();
-                        alert(`Successfully imported ${jsonRows.length} records from Excel sheet!`);
+                        showToast(`Imported ${jsonRows.length} records from Excel!`);
                     } else {
-                        alert('The uploaded Excel file appears to be empty or formatted incorrectly.');
+                        alert('The uploaded Excel file appears to be empty.');
                     }
                 } catch (err) {
                     alert('Error parsing Excel file: ' + err.message);
@@ -604,7 +712,6 @@
             reader.readAsArrayBuffer(file);
         }
 
-        // Export Inventory to Excel
         function exportInventoryToExcel() {
             if (!inventoryList.length) {
                 alert('No inventory data available to export.');
@@ -614,31 +721,94 @@
             const workbook = XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(workbook, worksheet, "EcoTextile_Inventory");
             XLSX.writeFile(workbook, "EcoTextile_Inventory_Export.xlsx");
+            showToast('Inventory exported to Excel successfully!');
         }
 
+        // ADVANCED ESG CALCULATOR LOGIC
         function calculateESG() {
+            const material = document.getElementById('calc-material').value;
             const weight = parseFloat(document.getElementById('calc-weight').value) || 0;
-            document.getElementById('res-carbon').innerText = (weight * 2.5).toFixed(1) + ' kg';
-            document.getElementById('res-water').innerText = Math.round(weight * 45).toLocaleString() + ' L';
-            document.getElementById('res-energy').innerText = (weight * 3.2).toFixed(1) + ' kWh';
+            const energySource = document.getElementById('calc-energy-source').value;
+            const distance = parseFloat(document.getElementById('calc-distance').value) || 0;
+
+            // Multipliers based on material science LCA
+            let carbonMultiplier = 2.2;
+            let waterMultiplier = 45; // Liters per KG
+            let energyMultiplier = 3.0; // kWh per KG
+            let circularityBase = 75; // %
+
+            if (material === 'organic_cotton') {
+                carbonMultiplier = 1.5;
+                waterMultiplier = 25;
+                energyMultiplier = 2.2;
+                circularityBase = 90;
+            } else if (material === 'conventional_cotton') {
+                carbonMultiplier = 2.8;
+                waterMultiplier = 85;
+                energyMultiplier = 3.5;
+                circularityBase = 65;
+            } else if (material === 'recycled_poly') {
+                carbonMultiplier = 1.2;
+                waterMultiplier = 10;
+                energyMultiplier = 1.8;
+                circularityBase = 95;
+            } else if (material === 'virgin_nylon') {
+                carbonMultiplier = 4.5;
+                waterMultiplier = 50;
+                energyMultiplier = 5.5;
+                circularityBase = 45;
+            } else if (material === 'raw_silk') {
+                carbonMultiplier = 3.2;
+                waterMultiplier = 110;
+                energyMultiplier = 4.0;
+                circularityBase = 60;
+            }
+
+            // Adjust for energy source
+            if (energySource === 'solar') {
+                carbonMultiplier *= 0.65; // 35% reduction in carbon due to solar
+                energyMultiplier *= 0.8;
+            }
+
+            // Transport carbon contribution (approx 0.0001 kg CO2 per kg per km)
+            const transportCarbon = distance * weight * 0.00012;
+
+            const totalCarbon = (weight * carbonMultiplier) + transportCarbon;
+            const totalWater = weight * waterMultiplier;
+            const totalEnergy = weight * energyMultiplier;
+            
+            // Calculate Grade & Circularity
+            let grade = 'A+';
+            if (totalCarbon / weight > 3.5) grade = 'C';
+            else if (totalCarbon / weight > 2.5) grade = 'B';
+            else if (totalCarbon / weight > 1.8) grade = 'A';
+
+            document.getElementById('res-carbon').innerText = totalCarbon.toLocaleString(undefined, {maximumFractionDigits: 1}) + ' kg';
+            document.getElementById('res-water').innerText = totalWater.toLocaleString() + ' L';
+            document.getElementById('res-energy').innerText = totalEnergy.toLocaleString(undefined, {maximumFractionDigits: 1}) + ' kWh';
+            document.getElementById('res-circularity').innerText = circularityBase + '% Index';
+            
+            const badge = document.getElementById('esg-grade-badge');
+            badge.innerText = grade;
+            badge.style.color = grade.startsWith('A') ? '#10b981' : (grade === 'B' ? '#fbbf24' : '#ef4444');
         }
 
         function runAIAudit() {
             const weight = parseFloat(document.getElementById('calc-weight').value) || 1000;
             const outputBox = document.getElementById('ai-output-box');
-            outputBox.innerHTML = `<span style="color: #60a5fa;" class="ai-pulse">Analyzing inventory and batch parameters with EcoAI model... Please wait...</span>`;
+            outputBox.innerHTML = `<span style="color: #60a5fa;" class="ai-pulse">Analyzing advanced LCA parameters with EcoAI Enterprise v3.8... Please wait...</span>`;
             
             setTimeout(() => {
-                const carbon = (weight * 2.5).toFixed(1);
                 outputBox.innerHTML = `
-                    <p style="color: #34d399; font-weight: 600; margin-bottom: 0.5rem;">✓ AI Sustainability Audit Completed Successfully</p>
-                    <p style="color: #f3f4f6; margin-bottom: 0.5rem;">Based on your current active inventory items and batch size:</p>
-                    <ul style="padding-left: 1.25rem; margin: 0.5rem 0; display: flex; flex-direction: column; gap: 0.35rem;">
-                        <li><strong>Carbon Optimization:</strong> Switching to closed-loop dyeing saves up to <strong>18.4%</strong> carbon emissions (${(carbon * 0.18).toFixed(1)} kg saved).</li>
-                        <li><strong>Water Recycling:</strong> Integrating greywater filtration systems will save approx. <strong>${Math.round(weight * 12).toLocaleString()} Liters</strong> per production cycle.</li>
-                        <li><strong>Energy Efficiency:</strong> Shifting processing hours to off-peak solar windows lowers grid energy dependency by <strong>22.5%</strong>.</li>
+                    <p style="color: var(--accent-green); font-weight: 700; margin-bottom: 0.5rem;">✓ Advanced AI LCA Audit Completed Successfully</p>
+                    <p style="color: #f3f4f6; margin-bottom: 0.5rem;">Based on your current material selection and transport metrics:</p>
+                    <ul style="padding-left: 1.25rem; margin: 0.5rem 0; display: flex; flex-direction: column; gap: 0.4rem;">
+                        <li><strong>Supply Chain Routing:</strong> Optimizing local supplier radius can cut transit emissions by <strong>31.4%</strong>.</li>
+                        <li><strong>Water Conservation:</strong> Closed-loop dyeing integration will reduce water extraction by approx. <strong>${Math.round(weight * 18).toLocaleString()} Liters</strong>.</li>
+                        <li><strong>Renewable Shift:</strong> Transitioning remaining grid operations to solar storage secures your <strong>A+ ISO Compliance Rating</strong>.</li>
                     </ul>
                 `;
+                showToast('AI LCA Audit generated successfully!');
             }, 1000);
         }
 
@@ -655,7 +825,7 @@
             if (error) {
                 alert(`Error saving to cloud: ${error.message}`);
             } else {
-                alert("Batch data successfully saved and synced to Supabase database!");
+                showToast('Advanced ESG batch record synced to Supabase database!');
                 loadCloudHistory();
             }
         }
@@ -679,10 +849,10 @@
             tbody.innerHTML = '';
             data.forEach(row => {
                 tbody.innerHTML += `
-                    <tr style="border-bottom: 1px solid #1f2937;">
-                        <td style="padding: 1rem; font-family: monospace; color: #34d399; font-weight: 600;">#${row.id}</td>
+                    <tr style="border-bottom: 1px solid var(--border-color);">
+                        <td style="padding: 1rem; font-family: monospace; color: var(--accent-green); font-weight: 600;">#${row.id}</td>
                         <td style="padding: 1rem; font-weight: 600; color: #f3f4f6;">${row.weight} KG</td>
-                        <td style="padding: 1rem; color: #34d399;">${row.carbon}</td>
+                        <td style="padding: 1rem; color: var(--accent-green);">${row.carbon}</td>
                         <td style="padding: 1rem; color: #60a5fa;">${row.water}</td>
                         <td style="padding: 1rem; color: #fbbf24;">${row.energy}</td>
                         <td style="padding: 1rem; color: #9ca3af; font-size: 0.8125rem;">${new Date(row.created_at).toLocaleString()}</td>
