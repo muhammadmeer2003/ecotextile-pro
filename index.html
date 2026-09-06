@@ -93,23 +93,13 @@
 
     </div>
 
-    <!-- JavaScript Application Logic with Expanded Inventory, Calculators & Support Desk -->
+    <!-- JavaScript Application Logic with Clean Empty States -->
     <script>
-      // Global Live Data State with Multiple Inventory Items
+      // Completely empty state data - ready for real user inputs
       let appState = {
-        inventory: [
-          { id: "MAT-001", name: "Organic Cotton Bales", qty: "3200", status: "Verified EU" },
-          { id: "MAT-002", name: "Recycled Polyester Yarn", qty: "1500", status: "Certified GRS" },
-          { id: "MAT-003", name: "European Flax Linen", qty: "950", status: "Verified EU" },
-          { id: "MAT-004", name: "Eco-Tencel Fibers", qty: "2100", status: "FSC Certified" },
-          { id: "MAT-005", name: "Recycled Wool Blend", qty: "800", status: "Verified EU" }
-        ],
-        dppRecords: [
-          { hash: "#EU-8812-TX", batchName: "Autumn Sustainable Line", status: "Active & Traceable" }
-        ],
-        supportTickets: [
-          { id: "TKT-101", user: "Consumer Jane", query: "Where can I scan the QR code for batch #48?", status: "Resolved" }
-        ]
+        inventory: [],
+        dppRecords: [],
+        supportTickets: []
       };
 
       const modules = [
@@ -177,25 +167,25 @@
             </div>
             <div class="p-5 bg-gray-950/60 rounded-lg border border-gray-800">
               <h4 class="text-sm font-semibold text-emerald-300 mb-2">Live System Status</h4>
-              <p class="text-xs text-gray-400">System is fully synchronized under Director Muhammad Meer. All user and consumer inputs update in real-time.</p>
+              <p class="text-xs text-gray-400">System is fully synchronized under Director Muhammad Meer. All records will update dynamically as you add them.</p>
             </div>`;
         } 
         // Tab 1: Inventory & Excel Sheets
         else if (id === 1) {
-          let rowsHtml = appState.inventory.map(item => `
+          let rowsHtml = appState.inventory.length > 0 ? appState.inventory.map(item => `
             <tr>
               <td class="p-3 font-medium text-white">${item.id}</td>
               <td class="p-3">${item.name}</td>
               <td class="p-3">${item.qty} Kg</td>
               <td class="p-3 text-emerald-400">${item.status}</td>
             </tr>
-          `).join('');
+          `).join('') : `<tr><td colspan="4" class="p-6 text-center text-gray-500 text-xs">No inventory records added yet. Use the form above to add items.</td></tr>`;
 
           contentDiv.innerHTML = `
             <div class="mb-6 p-4 bg-gray-950 rounded-lg border border-gray-800">
               <h4 class="text-sm font-semibold text-emerald-300 mb-3">Add New Inventory Item</h4>
               <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-3">
-                <input type="text" id="inv-id" placeholder="Material ID (e.g. MAT-006)" class="bg-gray-900 border border-gray-800 p-2 rounded text-xs text-white focus:outline-none focus:border-emerald-500">
+                <input type="text" id="inv-id" placeholder="Material ID (e.g. MAT-001)" class="bg-gray-900 border border-gray-800 p-2 rounded text-xs text-white focus:outline-none focus:border-emerald-500">
                 <input type="text" id="inv-name" placeholder="Material Name" class="bg-gray-900 border border-gray-800 p-2 rounded text-xs text-white focus:outline-none focus:border-emerald-500">
                 <input type="text" id="inv-qty" placeholder="Quantity (Kg)" class="bg-gray-900 border border-gray-800 p-2 rounded text-xs text-white focus:outline-none focus:border-emerald-500">
               </div>
@@ -222,19 +212,19 @@
         } 
         // Tab 2: EU Digital Product Passport
         else if (id === 2) {
-          let dppHtml = appState.dppRecords.map(dpp => `
+          let dppHtml = appState.dppRecords.length > 0 ? appState.dppRecords.map(dpp => `
             <div class="p-4 bg-gray-950 rounded-lg border border-gray-800 mb-3">
               <span class="text-xs text-emerald-400 font-mono">DPP Hash: ${dpp.hash}</span>
               <h4 class="text-base font-bold text-white mt-1">${dpp.batchName}</h4>
               <p class="text-xs text-gray-400 mt-1">Status: ${dpp.status}</p>
             </div>
-          `).join('');
+          `).join('') : `<p class="text-xs text-gray-500 text-center py-4">No DPP passports generated yet.</p>`;
 
           contentDiv.innerHTML = `
             <div class="mb-6 p-4 bg-gray-950 rounded-lg border border-gray-800">
               <h4 class="text-sm font-semibold text-emerald-300 mb-3">Issue New Digital Product Passport</h4>
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
-                <input type="text" id="dpp-hash" placeholder="DPP Hash (e.g. #EU-9911-TX)" class="bg-gray-900 border border-gray-800 p-2 rounded text-xs text-white focus:outline-none focus:border-emerald-500">
+                <input type="text" id="dpp-hash" placeholder="DPP Hash (e.g. #EU-001-TX)" class="bg-gray-900 border border-gray-800 p-2 rounded text-xs text-white focus:outline-none focus:border-emerald-500">
                 <input type="text" id="dpp-name" placeholder="Batch / Product Name" class="bg-gray-900 border border-gray-800 p-2 rounded text-xs text-white focus:outline-none focus:border-emerald-500">
               </div>
               <button onclick="addDppRecord()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold rounded transition-colors">
@@ -299,13 +289,13 @@
         }
         // Tab 11: AI Operations Advisor & Customer Support Desk
         else if (id === 11) {
-          let ticketsHtml = appState.supportTickets.map(t => `
+          let ticketsHtml = appState.supportTickets.length > 0 ? appState.supportTickets.map(t => `
             <div class="p-3 bg-gray-950 rounded border border-gray-800 mb-2">
               <span class="text-[10px] text-emerald-400 font-mono">${t.id} • User: ${t.user}</span>
               <p class="text-xs text-white mt-1">"${t.query}"</p>
               <span class="text-[10px] text-emerald-500 mt-1 block">Status: ${t.status}</span>
             </div>
-          `).join('');
+          `).join('') : `<p class="text-xs text-gray-500 text-center py-4">No support tickets submitted yet.</p>`;
 
           contentDiv.innerHTML = `
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -332,7 +322,7 @@
           contentDiv.innerHTML = `
             <div class="p-8 text-center border border-dashed border-gray-800 rounded-lg bg-gray-950/30">
               <p class="text-gray-400 text-sm">
-                Active workspace for <span class="text-emerald-300 font-medium">${mod.title}</span> under Director <span class="text-white font-semibold">Muhammad Meer</span> is active and ready for input.
+                Active workspace for <span class="text-emerald-300 font-medium">${mod.title}</span> under Director <span class="text-white font-semibold">Muhammad Meer</span> is active and ready for your live inputs.
               </p>
             </div>`;
         }
