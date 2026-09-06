@@ -18,7 +18,7 @@
       <div class="md:hidden bg-gray-900 border-b border-gray-800 p-4 flex items-center justify-between sticky top-0 z-30 shadow-md">
         <div>
           <h1 class="text-base font-bold text-emerald-400">EcoTextile EU</h1>
-          <p class="text-xs text-gray-400">Director Portal</p>
+          <p class="text-xs text-gray-400">Director: Muhammad Meer</p>
         </div>
         <button 
           onclick="toggleMobileMenu()"
@@ -35,14 +35,14 @@
         <!-- Sidebar Header (Desktop) -->
         <div class="hidden md:block mb-6">
           <h2 class="text-xl font-bold text-emerald-400">EcoTextile EU</h2>
-          <p class="text-xs text-gray-400">Director Portal</p>
+          <p class="text-xs text-emerald-300 font-medium mt-1">Director: Muhammad Meer</p>
         </div>
 
         <!-- Mobile Header inside Sidebar -->
         <div class="flex md:hidden items-center justify-between mb-4 pb-3 border-b border-gray-800">
           <div>
             <h2 class="text-lg font-bold text-emerald-400">Navigation Menu</h2>
-            <p class="text-[11px] text-gray-400">Select a module below</p>
+            <p class="text-[11px] text-gray-400">Director: Muhammad Meer</p>
           </div>
           <button onclick="toggleMobileMenu()" class="text-gray-400 hover:text-white p-1 text-sm font-bold">✕</button>
         </div>
@@ -80,11 +80,11 @@
 
           <!-- Module Card Content -->
           <div class="bg-gray-900/60 border border-gray-800/80 rounded-xl p-5 md:p-6 shadow-xl backdrop-blur-sm">
-            <h3 class="text-lg font-semibold text-gray-200 mb-1">Module Overview</h3>
-            <p id="module-desc" class="text-gray-400 text-sm mb-6">Overview of KPIs, carbon footprint, and production metrics.</p>
+            <h3 class="text-lg font-semibold text-gray-200 mb-1">Module Workspace</h3>
+            <p id="module-desc" class="text-gray-400 text-sm mb-6">Overview of KPIs, real-time metrics, and live inputs.</p>
 
             <div id="module-content">
-              <!-- Default Content -->
+              <!-- Dynamic Content -->
             </div>
           </div>
 
@@ -93,69 +93,31 @@
 
     </div>
 
-    <!-- JavaScript Application Logic -->
+    <!-- JavaScript Application Logic with Real-time State -->
     <script>
+      // Global Live Data State
+      let appState = {
+        inventory: [
+          { id: "MAT-001", name: "Organic Cotton Bales", qty: "3200", status: "Verified EU" }
+        ],
+        dppRecords: [
+          { hash: "#EU-8812-TX", batchName: "Autumn Sustainable Line", status: "Active & Traceable" }
+        ]
+      };
+
       const modules = [
-        { 
-          id: 0, 
-          title: "1. Dashboard & Analytics", 
-          desc: "Overview of KPIs, carbon footprint, and production metrics under EU Green Deal guidelines." 
-        },
-        { 
-          id: 1, 
-          title: "2. Inventory & Excel Sheets", 
-          desc: "Manage raw materials, organic cotton bales, and warehouse stock inventories." 
-        },
-        { 
-          id: 2, 
-          title: "3. EU Digital Product Passport", 
-          desc: "Generate and track DPP compliance records, QR hashes, and circularity metrics." 
-        },
-        { 
-          id: 3, 
-          title: "4. Multi-Tier Supply Traceability", 
-          desc: "Track supply chain transparency from Tier 3 (Farms) to Tier 1 (Stitching units)." 
-        },
-        { 
-          id: 4, 
-          title: "5. Advanced ESG & CSRD Report", 
-          desc: "Sustainability metrics, carbon reporting, and European Union compliance audits." 
-        },
-        { 
-          id: 5, 
-          title: "6. Supabase Cloud Records", 
-          desc: "Real-time cloud database synchronization, secure tokens, and immutable audit logs." 
-        },
-        { 
-          id: 6, 
-          title: "7. Production WIP Stages", 
-          desc: "Work-in-progress tracking across spinning, weaving, wet processing, and dyeing." 
-        },
-        { 
-          id: 7, 
-          title: "8. Quality Control & Inspection", 
-          desc: "4-point inspection system, fabric defect logs, and pass/fail QA thresholds." 
-        },
-        { 
-          id: 8, 
-          title: "9. BOM & Costing Sheet", 
-          desc: "Bill of materials, chemical inputs breakdown, and financial cost modeling." 
-        },
-        { 
-          id: 9, 
-          title: "10. Warehouse Location Management", 
-          desc: "Inventory warehouse storage bins, sector racks, and zone mapping." 
-        },
-        { 
-          id: 10, 
-          title: "11. Buyers Order & Dispatch", 
-          desc: "European buyer export orders, container shipping status, and logistics tracking." 
-        },
-        { 
-          id: 11, 
-          title: "12. AI Operations Advisor", 
-          desc: "AI-powered recommendations for textile energy efficiency and penalty risk mitigation." 
-        }
+        { id: 0, title: "1. Dashboard & Analytics", desc: "Real-time enterprise metrics and analytics monitored by Director Muhammad Meer." },
+        { id: 1, title: "2. Inventory & Excel Sheets", desc: "Add and manage real-time raw materials and warehouse stock records." },
+        { id: 2, title: "3. EU Digital Product Passport", desc: "Issue and track real-time DPP compliance records and hashes." },
+        { id: 3, title: "4. Multi-Tier Supply Traceability", desc: "Track supply chain transparency from Tier 3 to Tier 1." },
+        { id: 4, title: "5. Advanced ESG & CSRD Report", desc: "Sustainability metrics and European Union compliance reports." },
+        { id: 5, title: "6. Supabase Cloud Records", desc: "Real-time cloud database synchronization and audit logs." },
+        { id: 6, title: "7. Production WIP Stages", desc: "Work in progress tracking across spinning, weaving, and dyeing." },
+        { id: 7, title: "8. Quality Control & Inspection", desc: "4-point inspection system and defect logging." },
+        { id: 8, title: "9. BOM & Costing Sheet", desc: "Bill of materials and financial cost breakdown." },
+        { id: 9, title: "10. Warehouse Location Management", desc: "Inventory warehouse bins, racks, and zone mapping." },
+        { id: 10, title: "11. Buyers Order & Dispatch", desc: "Export orders, shipping status, and logistics tracking." },
+        { id: 11, title: "12. AI Operations Advisor", desc: "AI-powered recommendations for textile efficiency." }
       ];
 
       let activeTab = 0;
@@ -189,66 +151,128 @@
 
         const contentDiv = document.getElementById('module-content');
         
-        // Render custom detailed UI based on selected tab index
+        // Tab 0: Dashboard & Analytics (Real-time summary based on inputs)
         if (id === 0) {
           contentDiv.innerHTML = `
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
               <div class="bg-gray-950 p-4 rounded-lg border border-gray-800">
-                <p class="text-xs text-gray-400">Total Carbon Emission</p>
-                <h4 class="text-xl font-bold text-emerald-400 mt-1">1,240 tCO2e</h4>
+                <p class="text-xs text-gray-400">Director Portal</p>
+                <h4 class="text-lg font-bold text-emerald-400 mt-1">Muhammad Meer</h4>
               </div>
               <div class="bg-gray-950 p-4 rounded-lg border border-gray-800">
-                <p class="text-xs text-gray-400">Active DPP Batches</p>
-                <h4 class="text-xl font-bold text-emerald-400 mt-1">48 Units</h4>
+                <p class="text-xs text-gray-400">Active Inventory Entries</p>
+                <h4 class="text-xl font-bold text-emerald-400 mt-1">${appState.inventory.length} Items</h4>
               </div>
               <div class="bg-gray-950 p-4 rounded-lg border border-gray-800">
-                <p class="text-xs text-gray-400">ESG Compliance Score</p>
-                <h4 class="text-xl font-bold text-emerald-400 mt-1">94.8%</h4>
+                <p class="text-xs text-gray-400">Issued DPP Passports</p>
+                <h4 class="text-xl font-bold text-emerald-400 mt-1">${appState.dppRecords.length} Records</h4>
               </div>
             </div>
-            <div class="p-6 bg-gray-950/60 rounded-lg border border-gray-800">
-              <h4 class="text-sm font-semibold text-emerald-300 mb-2">Executive Summary</h4>
-              <p class="text-xs text-gray-400 leading-relaxed">System metrics indicate optimal compliance with ESPR guidelines. Real-time telemetry is active across all 3 production tiers in Karachi facility.</p>
+            <div class="p-5 bg-gray-950/60 rounded-lg border border-gray-800">
+              <h4 class="text-sm font-semibold text-emerald-300 mb-2">Live System Status</h4>
+              <p class="text-xs text-gray-400">System is fully synchronized. All user and consumer inputs are updated in real-time across database sessions.</p>
             </div>`;
-        } else if (id === 1) {
+        } 
+        // Tab 1: Inventory & Excel Sheets (Real-time user input)
+        else if (id === 1) {
+          let rowsHtml = appState.inventory.map(item => `
+            <tr>
+              <td class="p-3 font-medium text-white">${item.id}</td>
+              <td class="p-3">${item.name}</td>
+              <td class="p-3">${item.qty} Kg</td>
+              <td class="p-3 text-emerald-400">${item.status}</td>
+            </tr>
+          `).join('');
+
           contentDiv.innerHTML = `
+            <div class="mb-6 p-4 bg-gray-950 rounded-lg border border-gray-800">
+              <h4 class="text-sm font-semibold text-emerald-300 mb-3">Add New Inventory Item (Real-Time Input)</h4>
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-3">
+                <input type="text" id="inv-id" placeholder="Material ID (e.g. MAT-002)" class="bg-gray-900 border border-gray-800 p-2 rounded text-xs text-white focus:outline-none focus:border-emerald-500">
+                <input type="text" id="inv-name" placeholder="Material Name" class="bg-gray-900 border border-gray-800 p-2 rounded text-xs text-white focus:outline-none focus:border-emerald-500">
+                <input type="text" id="inv-qty" placeholder="Quantity (Kg)" class="bg-gray-900 border border-gray-800 p-2 rounded text-xs text-white focus:outline-none focus:border-emerald-500">
+              </div>
+              <button onclick="addInventoryItem()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold rounded transition-colors">
+                + Add Record
+              </button>
+            </div>
+
             <div class="overflow-x-auto">
               <table class="w-full text-left text-xs text-gray-300">
                 <thead class="bg-gray-950 text-gray-400 uppercase border-b border-gray-800">
                   <tr>
                     <th class="p-3">Material ID</th>
-                    <th class="p-3">Type</th>
-                    <th class="p-3">Quantity (Kg)</th>
+                    <th class="p-3">Name</th>
+                    <th class="p-3">Quantity</th>
                     <th class="p-3">Status</th>
                   </tr>
                 </thead>
-                <tbody class="divide-y divide-gray-800">
-                  <tr><td class="p-3 font-medium text-white">MAT-101</td><td class="p-3">Organic Cotton</td><td class="p-3">4,500</td><td class="p-3 text-emerald-400">Verified EU</td></tr>
-                  <tr><td class="p-3 font-medium text-white">MAT-102</td><td class="p-3">Recycled Polyester</td><td class="p-3">2,800</td><td class="p-3 text-emerald-400">Verified GRS</td></tr>
+                <tbody class="divide-y divide-gray-800" id="inv-table-body">
+                  ${rowsHtml}
                 </tbody>
               </table>
             </div>`;
-        } else if (id === 2) {
+        } 
+        // Tab 2: EU Digital Product Passport (Real-time user/consumer input)
+        else if (id === 2) {
+          let dppHtml = appState.dppRecords.map(dpp => `
+            <div class="p-4 bg-gray-950 rounded-lg border border-gray-800 mb-3">
+              <span class="text-xs text-emerald-400 font-mono">DPP Hash: ${dpp.hash}</span>
+              <h4 class="text-base font-bold text-white mt-1">${dpp.batchName}</h4>
+              <p class="text-xs text-gray-400 mt-1">Status: ${dpp.status}</p>
+            </div>
+          `).join('');
+
           contentDiv.innerHTML = `
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div class="p-4 bg-gray-950 rounded-lg border border-gray-800">
-                <span class="text-xs text-emerald-400 font-mono">DPP Hash: #EU-9942-TX</span>
-                <h4 class="text-base font-bold text-white mt-1">Batch #48 - Summer Organic Line</h4>
-                <p class="text-xs text-gray-400 mt-2">Circularity Index: 92% • Recyclability: High</p>
+            <div class="mb-6 p-4 bg-gray-950 rounded-lg border border-gray-800">
+              <h4 class="text-sm font-semibold text-emerald-300 mb-3">Issue New Digital Product Passport</h4>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
+                <input type="text" id="dpp-hash" placeholder="DPP Hash (e.g. #EU-9911-TX)" class="bg-gray-900 border border-gray-800 p-2 rounded text-xs text-white focus:outline-none focus:border-emerald-500">
+                <input type="text" id="dpp-name" placeholder="Batch / Product Name" class="bg-gray-900 border border-gray-800 p-2 rounded text-xs text-white focus:outline-none focus:border-emerald-500">
               </div>
-              <div class="p-4 bg-gray-950 rounded-lg border border-gray-800 flex items-center justify-center">
-                <span class="text-xs text-gray-400">[ QR Code Verification Active ]</span>
-              </div>
+              <button onclick="addDppRecord()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold rounded transition-colors">
+                + Generate Passport
+              </button>
+            </div>
+
+            <div id="dpp-list">
+              ${dppHtml}
             </div>`;
-        } else {
+        } 
+        // Other Modules
+        else {
           contentDiv.innerHTML = `
             <div class="p-8 text-center border border-dashed border-gray-800 rounded-lg bg-gray-950/30">
               <p class="text-gray-400 text-sm">
-                Active enterprise workspace for <span class="text-emerald-300 font-medium">${mod.title}</span> is online and synchronized with live cloud records.
+                Active workspace for <span class="text-emerald-300 font-medium">${mod.title}</span> under Director <span class="text-white font-semibold">Muhammad Meer</span> is active and ready for input.
               </p>
             </div>`;
         }
         renderNav();
+      }
+
+      // Real-time functions to add data dynamically
+      function addInventoryItem() {
+        const id = document.getElementById('inv-id').value;
+        const name = document.getElementById('inv-name').value;
+        const qty = document.getElementById('inv-qty').value;
+        if (!id || !name || !qty) {
+          alert('Please fill all fields');
+          return;
+        }
+        appState.inventory.push({ id, name, qty, status: "User Verified" });
+        switchTab(1);
+      }
+
+      function addDppRecord() {
+        const hash = document.getElementById('dpp-hash').value;
+        const batchName = document.getElementById('dpp-name').value;
+        if (!hash || !batchName) {
+          alert('Please fill all fields');
+          return;
+        }
+        appState.dppRecords.push({ hash, batchName, status: "Active & Traceable" });
+        switchTab(2);
       }
 
       function toggleMobileMenu() {
