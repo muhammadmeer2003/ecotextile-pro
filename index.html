@@ -28,12 +28,12 @@
             <form id="auth-form" onsubmit="handleAuthSubmit(event)" class="space-y-4">
                 <div id="name-field-wrapper" class="hidden space-y-1">
                     <label class="block text-xs text-gray-400">Full Name</label>
-                    <input type="text" id="reg-name" placeholder="Muhammad Meer" class="w-full bg-gray-950 border border-gray-800 rounded-lg px-3 py-2 text-sm text-gray-200 focus:outline-none focus:border-emerald-500">
+                    <input type="text" id="reg-name" placeholder="Michael Smith" class="w-full bg-gray-950 border border-gray-800 rounded-lg px-3 py-2 text-sm text-gray-200 focus:outline-none focus:border-emerald-500">
                 </div>
 
                 <div class="space-y-1">
                     <label class="block text-xs text-gray-400">Email Address</label>
-                    <input type="email" id="auth-email" required placeholder="muhammadmeer2003@gmail.com" class="w-full bg-gray-950 border border-gray-800 rounded-lg px-3 py-2 text-sm text-gray-200 focus:outline-none focus:border-emerald-500">
+                    <input type="email" id="auth-email" required placeholder="michael@example.com" class="w-full bg-gray-950 border border-gray-800 rounded-lg px-3 py-2 text-sm text-gray-200 focus:outline-none focus:border-emerald-500">
                 </div>
 
                 <div class="space-y-1">
@@ -44,7 +44,7 @@
                     <input type="password" id="auth-password" required placeholder="••••••••" oninput="checkPasswordStrength(this.value)" class="w-full bg-gray-950 border border-gray-800 rounded-lg px-3 py-2 text-sm text-gray-200 focus:outline-none focus:border-emerald-500">
                 </div>
 
-                <!-- Password Strength Meter (Visible only on register or when typing) -->
+                <!-- Password Strength Meter -->
                 <div id="password-strength-container" class="hidden space-y-1 pt-1">
                     <div class="flex justify-between text-[10px] text-gray-400">
                         <span>Password Strength:</span>
@@ -130,7 +130,7 @@
                     <div class="flex items-center gap-3 border-l border-gray-800 pl-4">
                         <div class="w-8 h-8 rounded-full bg-emerald-600 flex items-center font-bold text-sm justify-center" id="user-avatar-initial">M</div>
                         <div class="hidden sm:block text-left">
-                            <p class="text-xs font-medium" id="user-display-name">Muhammad Meer</p>
+                            <p class="text-xs font-medium" id="user-display-name">Michael Smith</p>
                             <p class="text-[10px] text-emerald-400">Verified Pro Tier &bull; Secured</p>
                         </div>
                     </div>
@@ -144,7 +144,7 @@
                 <div id="tab-overview" class="tab-content space-y-6">
                     <div>
                         <h1 class="text-2xl font-bold tracking-tight">Production & ESG Command Center</h1>
-                        <p class="text-sm text-gray-400">Welcome back, <span class="text-emerald-400 font-medium">Meer</span>. Real-time oversight of mill sustainability metrics and output.</p>
+                        <p class="text-sm text-gray-400">Welcome back, <span class="text-emerald-400 font-medium" id="welcome-name">Michael</span>. Real-time oversight of mill sustainability metrics and output.</p>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
@@ -307,7 +307,7 @@
 
                             <div id="chat-messages" class="flex-1 overflow-y-auto space-y-3 py-4 text-xs">
                                 <div class="bg-gray-900 p-3 rounded-lg border border-gray-800 max-w-[85%]">
-                                    <p class="text-gray-300">Hello Meer! Ask me anything regarding GOTS audit requirements, carbon offset calculations, or your mill batch records.</p>
+                                    <p class="text-gray-300">Hello Michael! Ask me anything regarding GOTS audit requirements, carbon offset calculations, or your mill batch records.</p>
                                 </div>
                             </div>
 
@@ -372,7 +372,7 @@
                                 
                                 <div class="p-3 bg-gray-900 border border-gray-800 rounded-lg mb-4">
                                     <span class="text-[11px] text-gray-400 block mb-1">Official Support Desk:</span>
-                                    <a href="mailto:muhammadmeer2003@gmail.com" class="text-sm font-semibold text-emerald-400 hover:underline break-all">muhammadmeer2003@gmail.com</a>
+                                    <a href="mailto:michael@example.com" class="text-sm font-semibold text-emerald-400 hover:underline break-all">michael@example.com</a>
                                 </div>
 
                                 <p class="text-xs text-gray-400 leading-relaxed">
@@ -380,7 +380,7 @@
                                 </p>
                             </div>
 
-                            <a href="mailto:muhammadmeer2003@gmail.com?subject=EcoTextile%20Portal%20Support%20Request" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white py-2.5 rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2 text-center">
+                            <a href="mailto:michael@example.com?subject=EcoTextile%20Portal%20Support%20Request" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white py-2.5 rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2 text-center">
                                 <i data-lucide="send" class="w-4 h-4"></i> Send Email to Support
                             </a>
                         </div>
@@ -419,7 +419,7 @@
                                         <i data-lucide="zap" class="w-4 h-4 text-amber-400 shrink-0 mt-0.5"></i>
                                         <div>
                                             <span class="font-medium text-gray-200 block mb-0.5">If the portal feels slow or unresponsive:</span>
-                                            Clear your browser cache, ensure your VPN is disabled if connecting locally, or email <strong class="text-emerald-400">muhammadmeer2003@gmail.com</strong> for immediate administrative assistance.
+                                            Clear your browser cache, ensure your VPN is disabled if connecting locally, or email <strong class="text-emerald-400">michael@example.com</strong> for immediate administrative assistance.
                                         </div>
                                     </div>
                                 </div>
@@ -439,11 +439,10 @@
         </main>
     </div>
 
-    <!-- App Logic Scripts with Advanced Security, Password Strength, Forgot Password & Report Export -->
+    <!-- App Logic Scripts -->
     <script>
         lucide.createIcons();
 
-        // Authentication State Logic
         let authMode = 'login'; // 'login', 'register', or 'forgot'
 
         function switchAuthMode(mode) {
@@ -489,11 +488,9 @@
             }
         }
 
-        // Live Password Strength Checker
         function checkPasswordStrength(password) {
             const strengthBar = document.getElementById('strength-bar');
             const strengthLabel = document.getElementById('strength-label');
-            const container = document.getElementById('password-strength-container');
             if (!password) {
                 strengthBar.style.width = '25%';
                 strengthBar.className = 'h-full bg-rose-500 transition-all duration-300';
@@ -526,7 +523,6 @@
             }
         }
 
-        // High Security SHA-256 Hashing Helper using Web Crypto API
         async function hashPassword(plainText) {
             const encoder = new TextEncoder();
             const data = encoder.encode(plainText);
@@ -545,7 +541,7 @@
             successBox.classList.add('hidden');
 
             if (authMode === 'forgot') {
-                successBox.innerText = `Password reset instructions have been dispatched to ${email || 'muhammadmeer2003@gmail.com'} via support desk.`;
+                successBox.innerText = `Password reset instructions have been dispatched to ${email || 'michael@example.com'} via support desk.`;
                 successBox.classList.remove('hidden');
                 setTimeout(() => switchAuthMode('login'), 3000);
                 return;
@@ -561,15 +557,14 @@
             const passwordHash = await hashPassword(password);
 
             if (authMode === 'register') {
-                const name = document.getElementById('reg-name').value.trim() || "Muhammad Meer";
+                const name = document.getElementById('reg-name').value.trim() || "Michael Smith";
                 localStorage.setItem('eco_user_name', name);
                 localStorage.setItem('eco_user_email', email);
                 localStorage.setItem('eco_user_pass_hash', passwordHash);
-                localStorage.setItem('eco_session_token', 'SECURE-TOKEN-' + Math.random().toString(36.substring(2)));
+                localStorage.setItem('eco_session_token', 'SECURE-TOKEN-' + Math.random().toString(36).substring(2));
             } else {
-                // Login Verification against Stored Hash or Default
+                const storedEmail = localStorage.getItem('eco_user_email') || "michael@example.com";
                 const storedHash = localStorage.getItem('eco_user_pass_hash');
-                const storedEmail = localStorage.getItem('eco_user_email') || "muhammadmeer2003@gmail.com";
                 
                 if (storedHash && storedHash !== passwordHash && email === storedEmail) {
                     errorBox.innerText = "Invalid password. High security verification failed.";
@@ -579,11 +574,11 @@
                 localStorage.setItem('eco_session_token', 'SECURE-TOKEN-' + Math.random().toString(36).substring(2));
             }
 
-            const savedName = localStorage.getItem('eco_user_name') || "Muhammad Meer";
+            const savedName = localStorage.getItem('eco_user_name') || "Michael Smith";
             document.getElementById('user-display-name').innerText = savedName;
+            document.getElementById('welcome-name').innerText = savedName.split(' ')[0];
             document.getElementById('user-avatar-initial').innerText = savedName.charAt(0).toUpperCase();
 
-            // Hide auth container and show main app
             document.getElementById('auth-container').classList.add('hidden');
             document.getElementById('main-app-container').classList.remove('hidden');
             
@@ -613,7 +608,6 @@
             }
         }
 
-        // Dynamic ESG Calculation Logic
         function calculateESG() {
             const weightInput = document.getElementById('calc-weight');
             if (!weightInput) return;
@@ -653,13 +647,12 @@
             document.getElementById('res-energy').innerText = energyTotal + ' kWh';
         }
 
-        // Export ESG Reports to PDF or CSV
         function exportReport(format) {
             const weight = document.getElementById('calc-weight').value;
             const carbon = document.getElementById('res-carbon').innerText;
             const water = document.getElementById('res-water').innerText;
             const energy = document.getElementById('res-energy').innerText;
-            const currentName = localStorage.getItem('eco_user_name') || "Muhammad Meer";
+            const currentName = localStorage.getItem('eco_user_name') || "Michael Smith";
 
             if (format === 'csv') {
                 const csvContent = "data:text/csv;charset=utf-8," 
@@ -681,18 +674,16 @@
             }
         }
 
-        // Simulate AI File Upload & Parsing
         function simulateAIUpload() {
             const statusBox = document.getElementById('ai-upload-status');
             statusBox.classList.remove('hidden');
             statusBox.innerHTML = `✨ AI processing file with AES-256 encryption... extracting badge numbers and dye-lots...`;
             setTimeout(() => {
-                const currentName = localStorage.getItem('eco_user_name') || "Meer";
+                const currentName = localStorage.getItem('eco_user_name') || "Michael";
                 statusBox.innerHTML = `✅ AI successfully parsed <strong>48 batch rows</strong> and registered all traceability records for ${currentName}!`;
             }, 1500);
         }
 
-        // AI Chat Assistant Logic
         function handleChatKey(event) {
             if (event.key === 'Enter') {
                 sendChatMessage();
@@ -705,7 +696,7 @@
             if (!message) return;
 
             const chatMessages = document.getElementById('chat-messages');
-            const currentName = localStorage.getItem('eco_user_name') || "Meer";
+            const currentName = localStorage.getItem('eco_user_name') || "Michael";
 
             chatMessages.innerHTML += `
                 <div class="flex justify-end">
@@ -727,7 +718,7 @@
                 } else if (lowerMsg.includes('batch')) {
                     aiReply = "You can upload bulk CSV files via the AI Batch Parser on the left to automatically generate verifiable QR badges.";
                 } else if (lowerMsg.includes('slow') || lowerMsg.includes('support') || lowerMsg.includes('email')) {
-                    aiReply = "If you encounter any slowness or issues, you can directly reach out via email at muhammadmeer2003@gmail.com!";
+                    aiReply = "If you encounter any slowness or issues, you can directly reach out via email at michael@example.com!";
                 }
 
                 chatMessages.innerHTML += `
@@ -739,7 +730,6 @@
             }, 800);
         }
 
-        // Run Diagnostics Simulation
         function runDiagnostics() {
             const latEl = document.getElementById('diag-latency');
             latEl.innerText = "Testing...";
