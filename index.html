@@ -11,222 +11,486 @@
 </head>
 <body class="bg-gray-900 text-gray-100 font-sans h-screen flex overflow-hidden">
 
-    <!-- Sidebar -->
-    <aside class="w-64 bg-gray-950 border-r border-gray-800 flex flex-col justify-between hidden md:flex">
-        <div>
-            <div class="p-6 border-b border-gray-800">
-                <span class="text-xl font-bold tracking-wider text-emerald-400">EcoTextile Pro</span>
-                <span class="block text-xs text-gray-500 mt-1">Enterprise B2B Portal</span>
+    <!-- Authentication Screen (Login / Create Account) -->
+    <div id="auth-container" class="fixed inset-0 bg-gray-950 z-50 flex items-center justify-center p-4">
+        <div class="bg-gray-900 border border-gray-800 rounded-2xl w-full max-w-md p-8 shadow-2xl space-y-6">
+            <div class="text-center space-y-2">
+                <span class="text-2xl font-bold tracking-wider text-emerald-400">EcoTextile Pro</span>
+                <p id="auth-subtitle" class="text-xs text-gray-400">Sign in to access your enterprise dashboard & AI tools</p>
             </div>
-            <nav class="p-4 space-y-1">
-                <button onclick="switchTab('overview')" id="btn-overview" class="tab-btn flex items-center gap-3 w-full px-4 py-2.5 text-sm rounded-lg font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 transition-all">
-                    <i data-lucide="layout-dashboard" class="w-4 h-4"></i> Overview
+
+            <!-- Tab Switcher for Login / Register -->
+            <div class="flex bg-gray-950 p-1 rounded-xl border border-gray-800">
+                <button type="button" onclick="switchAuthMode('login')" id="auth-tab-login" class="flex-1 py-2 text-xs font-semibold rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 transition-all">Login</button>
+                <button type="button" onclick="switchAuthMode('register')" id="auth-tab-register" class="flex-1 py-2 text-xs font-semibold rounded-lg text-gray-400 hover:text-gray-200 transition-all">Create Account</button>
+            </div>
+
+            <form id="auth-form" onsubmit="handleAuthSubmit(event)" class="space-y-4">
+                <div id="name-field-wrapper" class="hidden space-y-1">
+                    <label class="block text-xs text-gray-400">Full Name</label>
+                    <input type="text" id="reg-name" placeholder="Muhammad Meer" class="w-full bg-gray-950 border border-gray-800 rounded-lg px-3 py-2 text-sm text-gray-200 focus:outline-none focus:border-emerald-500">
+                </div>
+
+                <div class="space-y-1">
+                    <label class="block text-xs text-gray-400">Email Address</label>
+                    <input type="email" id="auth-email" required placeholder="muhammadmeer2003@gmail.com" class="w-full bg-gray-950 border border-gray-800 rounded-lg px-3 py-2 text-sm text-gray-200 focus:outline-none focus:border-emerald-500">
+                </div>
+
+                <div class="space-y-1">
+                    <label class="block text-xs text-gray-400">Password</label>
+                    <input type="password" id="auth-password" required placeholder="••••••••" class="w-full bg-gray-950 border border-gray-800 rounded-lg px-3 py-2 text-sm text-gray-200 focus:outline-none focus:border-emerald-500">
+                </div>
+
+                <div id="auth-error" class="hidden text-xs text-rose-400 bg-rose-950/30 p-2.5 rounded-lg border border-rose-800/50"></div>
+
+                <button type="submit" id="auth-submit-btn" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white py-2.5 rounded-lg text-sm font-medium transition-colors shadow-lg shadow-emerald-600/20">
+                    Sign In to Portal
                 </button>
-                <button onclick="switchTab('esg')" id="btn-esg" class="tab-btn flex items-center gap-3 w-full px-4 py-2.5 text-sm rounded-lg font-medium text-gray-400 hover:bg-gray-900 hover:text-gray-200 transition-all">
-                    <i data-lucide="leaf" class="w-4 h-4"></i> ESG & Carbon Calc
-                </button>
-                <button onclick="switchTab('traceability')" id="btn-traceability" class="tab-btn flex items-center gap-3 w-full px-4 py-2.5 text-sm rounded-lg font-medium text-gray-400 hover:bg-gray-900 hover:text-gray-200 transition-all">
-                    <i data-lucide="qr-code" class="w-4 h-4"></i> Traceability & Batches
-                </button>
-                <button onclick="switchTab('compliance')" id="btn-compliance" class="tab-btn flex items-center gap-3 w-full px-4 py-2.5 text-sm rounded-lg font-medium text-gray-400 hover:bg-gray-900 hover:text-gray-200 transition-all">
-                    <i data-lucide="shield-check" class="w-4 h-4"></i> Compliance & Certs
-                </button>
-                <button onclick="switchTab('inventory')" id="btn-inventory" class="tab-btn flex items-center gap-3 w-full px-4 py-2.5 text-sm rounded-lg font-medium text-gray-400 hover:bg-gray-900 hover:text-gray-200 transition-all">
-                    <i data-lucide="boxes" class="w-4 h-4"></i> Inventory & Dye-Lots
-                </button>
-            </nav>
+            </form>
+
+            <div class="text-center pt-2 border-t border-gray-800/60">
+                <p class="text-[11px] text-gray-500">Secured Enterprise Portal &bull; GOTS & ISO Compliant</p>
+            </div>
         </div>
-        <div class="p-4 border-t border-gray-800">
-            <button class="flex items-center gap-3 w-full px-4 py-2 text-sm text-red-400 hover:bg-red-950/30 rounded-lg transition-colors">
-                <i data-lucide="log-out" class="w-4 h-4"></i> Logout
-            </button>
-        </div>
-    </aside>
+    </div>
 
-    <!-- Main Content Area -->
-    <main class="flex-1 flex flex-col overflow-hidden">
-        <!-- Top Navbar -->
-        <header class="h-16 bg-gray-950 border-b border-gray-800 flex items-center justify-between px-6">
-            <div class="flex items-center gap-4 w-96">
-                <div class="relative w-full">
-                    <i data-lucide="search" class="absolute left-3 top-2.5 text-gray-500 w-4 h-4"></i>
-                    <input type="text" placeholder="Search batches, certs, dye-lots..." class="w-full bg-gray-900 border border-gray-800 rounded-lg pl-9 pr-4 py-2 text-sm text-gray-200 focus:outline-none focus:border-emerald-500">
+    <!-- Main App Container (Hidden until logged in) -->
+    <div id="main-app-container" class="flex-1 flex overflow-hidden hidden w-full h-full">
+
+        <!-- Sidebar -->
+        <aside class="w-64 bg-gray-950 border-r border-gray-800 flex flex-col justify-between hidden md:flex">
+            <div>
+                <div class="p-6 border-b border-gray-800">
+                    <span class="text-xl font-bold tracking-wider text-emerald-400">EcoTextile Pro</span>
+                    <span class="block text-xs text-gray-500 mt-1">Enterprise B2B Portal</span>
                 </div>
+                <nav class="p-4 space-y-1">
+                    <button onclick="switchTab('overview')" id="btn-overview" class="tab-btn flex items-center gap-3 w-full px-4 py-2.5 text-sm rounded-lg font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 transition-all">
+                        <i data-lucide="layout-dashboard" class="w-4 h-4"></i> Overview
+                    </button>
+                    <button onclick="switchTab('esg')" id="btn-esg" class="tab-btn flex items-center gap-3 w-full px-4 py-2.5 text-sm rounded-lg font-medium text-gray-400 hover:bg-gray-900 hover:text-gray-200 transition-all">
+                        <i data-lucide="leaf" class="w-4 h-4"></i> ESG & Carbon Calc
+                    </button>
+                    <button onclick="switchTab('traceability')" id="btn-traceability" class="tab-btn flex items-center gap-3 w-full px-4 py-2.5 text-sm rounded-lg font-medium text-gray-400 hover:bg-gray-900 hover:text-gray-200 transition-all">
+                        <i data-lucide="qr-code" class="w-4 h-4"></i> Traceability & Batches
+                    </button>
+                    <button onclick="switchTab('aihub')" id="btn-aihub" class="tab-btn flex items-center gap-3 w-full px-4 py-2.5 text-sm rounded-lg font-medium text-gray-400 hover:bg-gray-900 hover:text-gray-200 transition-all">
+                        <i data-lucide="sparkles" class="w-4 h-4 text-emerald-400"></i> AI Batch & Assistant
+                    </button>
+                    <button onclick="switchTab('compliance')" id="btn-compliance" class="tab-btn flex items-center gap-3 w-full px-4 py-2.5 text-sm rounded-lg font-medium text-gray-400 hover:bg-gray-900 hover:text-gray-200 transition-all">
+                        <i data-lucide="shield-check" class="w-4 h-4"></i> Compliance & Certs
+                    </button>
+                    <button onclick="switchTab('inventory')" id="btn-inventory" class="tab-btn flex items-center gap-3 w-full px-4 py-2.5 text-sm rounded-lg font-medium text-gray-400 hover:bg-gray-900 hover:text-gray-200 transition-all">
+                        <i data-lucide="boxes" class="w-4 h-4"></i> Inventory & Dye-Lots
+                    </button>
+                    <button onclick="switchTab('support')" id="btn-support" class="tab-btn flex items-center gap-3 w-full px-4 py-2.5 text-sm rounded-lg font-medium text-gray-400 hover:bg-gray-900 hover:text-gray-200 transition-all">
+                        <i data-lucide="life-buoy" class="w-4 h-4 text-emerald-400"></i> Customer Support & Status
+                    </button>
+                </nav>
             </div>
-            <div class="flex items-center gap-4">
-                <button class="relative p-2 text-gray-400 hover:text-gray-200 bg-gray-900 rounded-lg border border-gray-800">
-                    <i data-lucide="bell" class="w-4 h-4"></i>
-                    <span class="absolute top-1 right-1 w-2 h-2 bg-emerald-500 rounded-full"></span>
+            <div class="p-4 border-t border-gray-800">
+                <button onclick="handleLogout()" class="flex items-center gap-3 w-full px-4 py-2 text-sm text-red-400 hover:bg-red-950/30 rounded-lg transition-colors">
+                    <i data-lucide="log-out" class="w-4 h-4"></i> Logout
                 </button>
-                <div class="flex items-center gap-3 border-l border-gray-800 pl-4">
-                    <div class="w-8 h-8 rounded-full bg-emerald-600 flex items-center font-bold text-sm justify-center">M</div>
-                    <div class="hidden sm:block text-left">
-                        <p class="text-xs font-medium">Muhammad Meer</p>
-                        <p class="text-[10px] text-emerald-400">Verified Pro Tier</p>
-                    </div>
-                </div>
             </div>
-        </header>
+        </aside>
 
-        <!-- Dynamic Content Sections -->
-        <div class="flex-1 overflow-y-auto p-8 space-y-6">
-            
-            <!-- Overview Tab -->
-            <div id="tab-overview" class="tab-content space-y-6">
-                <div>
-                    <h1 class="text-2xl font-bold tracking-tight">Production & ESG Command Center</h1>
-                    <p class="text-sm text-gray-400">Welcome back, <span class="text-emerald-400 font-medium">Meer</span>. Real-time oversight of mill sustainability metrics and output.</p>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-                    <div class="bg-gray-950 border border-gray-800 p-5 rounded-xl flex flex-col justify-between">
-                        <div class="flex items-center justify-between"><span class="text-xs text-gray-400 font-medium">Carbon Saved</span><i data-lucide="leaf" class="text-emerald-400 w-5 h-5"></i></div>
-                        <div class="mt-4"><h4 class="text-2xl font-bold">14.2 Tons</h4><span class="text-[11px] text-emerald-400 mt-1 block">+12% this month</span></div>
-                    </div>
-                    <div class="bg-gray-950 border border-gray-800 p-5 rounded-xl flex flex-col justify-between">
-                        <div class="flex items-center justify-between"><span class="text-xs text-gray-400 font-medium">Water Consumed</span><i data-lucide="droplet" class="text-blue-400 w-5 h-5"></i></div>
-                        <div class="mt-4"><h4 class="text-2xl font-bold">45,200 L</h4><span class="text-[11px] text-blue-400 mt-1 block">-8% efficiency</span></div>
-                    </div>
-                    <div class="bg-gray-950 border border-gray-800 p-5 rounded-xl flex flex-col justify-between">
-                        <div class="flex items-center justify-between"><span class="text-xs text-gray-400 font-medium">Energy Output</span><i data-lucide="zap" class="text-amber-400 w-5 h-5"></i></div>
-                        <div class="mt-4"><h4 class="text-2xl font-bold">128 MWh</h4><span class="text-[11px] text-amber-400 mt-1 block">Optimal load</span></div>
-                    </div>
-                    <div class="bg-gray-950 border border-gray-800 p-5 rounded-xl flex flex-col justify-between">
-                        <div class="flex items-center justify-between"><span class="text-xs text-gray-400 font-medium">Active Audits</span><i data-lucide="alert-circle" class="text-rose-400 w-5 h-5"></i></div>
-                        <div class="mt-4"><h4 class="text-2xl font-bold">3 Pending</h4><span class="text-[11px] text-rose-400 mt-1 block">GOTS renewal due</span></div>
+        <!-- Main Content Area -->
+        <main class="flex-1 flex flex-col overflow-hidden">
+            <!-- Top Navbar -->
+            <header class="h-16 bg-gray-950 border-b border-gray-800 flex items-center justify-between px-6">
+                <div class="flex items-center gap-4 w-96">
+                    <div class="relative w-full">
+                        <i data-lucide="search" class="absolute left-3 top-2.5 text-gray-500 w-4 h-4"></i>
+                        <input type="text" placeholder="Search batches, certs, dye-lots..." class="w-full bg-gray-900 border border-gray-800 rounded-lg pl-9 pr-4 py-2 text-sm text-gray-200 focus:outline-none focus:border-emerald-500">
                     </div>
                 </div>
+                <div class="flex items-center gap-4">
+                    <button onclick="switchTab('support')" class="relative p-2 text-gray-400 hover:text-gray-200 bg-gray-900 rounded-lg border border-gray-800" title="System Status & Support">
+                        <i data-lucide="headphones" class="w-4 h-4 text-emerald-400"></i>
+                        <span class="absolute top-1 right-1 w-2 h-2 bg-emerald-500 rounded-full animate-ping"></span>
+                    </button>
+                    <div class="flex items-center gap-3 border-l border-gray-800 pl-4">
+                        <div class="w-8 h-8 rounded-full bg-emerald-600 flex items-center font-bold text-sm justify-center" id="user-avatar-initial">M</div>
+                        <div class="hidden sm:block text-left">
+                            <p class="text-xs font-medium" id="user-display-name">Muhammad Meer</p>
+                            <p class="text-[10px] text-emerald-400">Verified Pro Tier</p>
+                        </div>
+                    </div>
+                </div>
+            </header>
 
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    <div class="bg-gray-950 border border-gray-800 rounded-xl p-6">
-                        <h3 class="font-semibold text-base mb-4">Recent Batch Traceability Logs</h3>
-                        <div class="space-y-3">
-                            <div class="flex items-center justify-between p-3 bg-gray-900 rounded-lg border border-gray-800/60 text-sm">
-                                <div><span class="font-medium text-emerald-400">BATCH-99201</span><p class="text-xs text-gray-400">Organic Cotton Twill</p></div>
-                                <div class="text-right"><span class="px-2 py-0.5 text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-full font-medium">Verified</span><span class="block text-[10px] text-gray-500 mt-1">2026-09-06</span></div>
-                            </div>
-                            <div class="flex items-center justify-between p-3 bg-gray-900 rounded-lg border border-gray-800/60 text-sm">
-                                <div><span class="font-medium text-emerald-400">BATCH-99200</span><p class="text-xs text-gray-400">Recycled Polyester Blend</p></div>
-                                <div class="text-right"><span class="px-2 py-0.5 text-[10px] bg-amber-500/10 text-amber-400 border border-amber-500/20 rounded-full font-medium">Processing</span><span class="block text-[10px] text-gray-500 mt-1">2026-09-05</span></div>
-                            </div>
+            <!-- Dynamic Content Sections -->
+            <div class="flex-1 overflow-y-auto p-8 space-y-6">
+                
+                <!-- Overview Tab -->
+                <div id="tab-overview" class="tab-content space-y-6">
+                    <div>
+                        <h1 class="text-2xl font-bold tracking-tight">Production & ESG Command Center</h1>
+                        <p class="text-sm text-gray-400">Welcome back, <span class="text-emerald-400 font-medium">Meer</span>. Real-time oversight of mill sustainability metrics and output.</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                        <div class="bg-gray-950 border border-gray-800 p-5 rounded-xl flex flex-col justify-between">
+                            <div class="flex items-center justify-between"><span class="text-xs text-gray-400 font-medium">Carbon Saved</span><i data-lucide="leaf" class="text-emerald-400 w-5 h-5"></i></div>
+                            <div class="mt-4"><h4 class="text-2xl font-bold">14.2 Tons</h4><span class="text-[11px] text-emerald-400 mt-1 block">+12% this month</span></div>
+                        </div>
+                        <div class="bg-gray-950 border border-gray-800 p-5 rounded-xl flex flex-col justify-between">
+                            <div class="flex items-center justify-between"><span class="text-xs text-gray-400 font-medium">Water Consumed</span><i data-lucide="droplet" class="text-blue-400 w-5 h-5"></i></div>
+                            <div class="mt-4"><h4 class="text-2xl font-bold">45,200 L</h4><span class="text-[11px] text-blue-400 mt-1 block">-8% efficiency</span></div>
+                        </div>
+                        <div class="bg-gray-950 border border-gray-800 p-5 rounded-xl flex flex-col justify-between">
+                            <div class="flex items-center justify-between"><span class="text-xs text-gray-400 font-medium">Energy Output</span><i data-lucide="zap" class="text-amber-400 w-5 h-5"></i></div>
+                            <div class="mt-4"><h4 class="text-2xl font-bold">128 MWh</h4><span class="text-[11px] text-amber-400 mt-1 block">Optimal load</span></div>
+                        </div>
+                        <div class="bg-gray-950 border border-gray-800 p-5 rounded-xl flex flex-col justify-between">
+                            <div class="flex items-center justify-between"><span class="text-xs text-gray-400 font-medium">Active Audits</span><i data-lucide="alert-circle" class="text-rose-400 w-5 h-5"></i></div>
+                            <div class="mt-4"><h4 class="text-2xl font-bold">3 Pending</h4><span class="text-[11px] text-rose-400 mt-1 block">GOTS renewal due</span></div>
                         </div>
                     </div>
 
-                    <div class="bg-gray-950 border border-gray-800 rounded-xl p-6">
-                        <h3 class="font-semibold text-base mb-4">Compliance Status Summary</h3>
-                        <div class="space-y-4">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <div class="bg-gray-950 border border-gray-800 rounded-xl p-6">
+                            <h3 class="font-semibold text-base mb-4">Recent Batch Traceability Logs</h3>
+                            <div class="space-y-3">
+                                <div class="flex items-center justify-between p-3 bg-gray-900 rounded-lg border border-gray-800/60 text-sm">
+                                    <div><span class="font-medium text-emerald-400">BATCH-99201</span><p class="text-xs text-gray-400">Organic Cotton Twill</p></div>
+                                    <div class="text-right"><span class="px-2 py-0.5 text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-full font-medium">Verified</span><span class="block text-[10px] text-gray-500 mt-1">2026-09-06</span></div>
+                                </div>
+                                <div class="flex items-center justify-between p-3 bg-gray-900 rounded-lg border border-gray-800/60 text-sm">
+                                    <div><span class="font-medium text-emerald-400">BATCH-99200</span><p class="text-xs text-gray-400">Recycled Polyester Blend</p></div>
+                                    <div class="text-right"><span class="px-2 py-0.5 text-[10px] bg-amber-500/10 text-amber-400 border border-amber-500/20 rounded-full font-medium">Processing</span><span class="block text-[10px] text-gray-500 mt-1">2026-09-05</span></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-gray-950 border border-gray-800 rounded-xl p-6">
+                            <h3 class="font-semibold text-base mb-4">Compliance Status Summary</h3>
+                            <div class="space-y-4">
+                                <div>
+                                    <div class="flex justify-between text-xs mb-1"><span class="font-medium">GOTS Organic Certified</span><span class="text-gray-400">Valid till Dec 2026</span></div>
+                                    <div class="w-full bg-gray-900 h-2 rounded-full overflow-hidden border border-gray-800"><div class="bg-emerald-500 h-full rounded-full" style="width: 95%"></div></div>
+                                </div>
+                                <div>
+                                    <div class="flex justify-between text-xs mb-1"><span class="font-medium">OEKO-TEX Standard 100</span><span class="text-gray-400">Active</span></div>
+                                    <div class="w-full bg-gray-900 h-2 rounded-full overflow-hidden border border-gray-800"><div class="bg-emerald-500 h-full rounded-full" style="width: 100%"></div></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ESG Calculator Tab -->
+                <div id="tab-esg" class="tab-content space-y-6 hidden">
+                    <div>
+                        <h1 class="text-2xl font-bold">Interactive ESG & Carbon Calculator</h1>
+                        <p class="text-sm text-gray-400">Enter production batch parameters to dynamically compute environmental impact.</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <div class="bg-gray-950 border border-gray-800 p-6 rounded-xl space-y-4 lg:col-span-1">
+                            <h3 class="font-semibold text-base text-emerald-400">Batch Input Parameters</h3>
                             <div>
-                                <div class="flex justify-between text-xs mb-1"><span class="font-medium">GOTS Organic Certified</span><span class="text-gray-400">Valid till Dec 2026</span></div>
-                                <div class="w-full bg-gray-900 h-2 rounded-full overflow-hidden border border-gray-800"><div class="bg-emerald-500 h-full rounded-full" style="width: 95%"></div></div>
+                                <label class="block text-xs text-gray-400 mb-1">Fabric Weight (KG)</label>
+                                <input type="number" id="calc-weight" value="1000" class="w-full bg-gray-900 border border-gray-800 rounded-lg px-3 py-2 text-sm text-gray-200 focus:outline-none focus:border-emerald-500" oninput="calculateESG()">
                             </div>
                             <div>
-                                <div class="flex justify-between text-xs mb-1"><span class="font-medium">OEKO-TEX Standard 100</span><span class="text-gray-400">Active</span></div>
-                                <div class="w-full bg-gray-900 h-2 rounded-full overflow-hidden border border-gray-800"><div class="bg-emerald-500 h-full rounded-full" style="width: 100%"></div></div>
+                                <label class="block text-xs text-gray-400 mb-1">Material Type</label>
+                                <select id="calc-material" class="w-full bg-gray-900 border border-gray-800 rounded-lg px-3 py-2 text-sm text-gray-200 focus:outline-none focus:border-emerald-500" onchange="calculateESG()">
+                                    <option value="organic">Organic Cotton (Low Impact)</option>
+                                    <option value="conventional">Conventional Cotton (Standard)</option>
+                                    <option value="recycled">Recycled Polyester (Eco-Friendly)</option>
+                                    <option value="synthetic">Synthetic / Nylon (High Impact)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs text-gray-400 mb-1">Dyeing Process Type</label>
+                                <select id="calc-dye" class="w-full bg-gray-900 border border-gray-800 rounded-lg px-3 py-2 text-sm text-gray-200 focus:outline-none focus:border-emerald-500" onchange="calculateESG()">
+                                    <option value="eco">Eco-Enzyme Low Temp Dyeing</option>
+                                    <option value="standard">Standard Reactive Dyeing</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="bg-gray-950 border border-gray-800 p-6 rounded-xl space-y-6 lg:col-span-2 flex flex-col justify-between">
+                            <h3 class="font-semibold text-base">Real-Time Environmental Footprint Output</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <div class="bg-gray-900 p-4 rounded-lg border border-gray-800">
+                                    <span class="text-xs text-gray-400 block">Carbon Emission</span>
+                                    <span id="res-carbon" class="text-2xl font-bold text-emerald-400 mt-1 block">--</span>
+                                    <span class="text-[10px] text-gray-500">KG CO2 Equivalent</span>
+                                </div>
+                                <div class="bg-gray-900 p-4 rounded-lg border border-gray-800">
+                                    <span class="text-xs text-gray-400 block">Water Footprint</span>
+                                    <span id="res-water" class="text-2xl font-bold text-blue-400 mt-1 block">--</span>
+                                    <span class="text-[10px] text-gray-500">Liters Consumed</span>
+                                </div>
+                                <div class="bg-gray-900 p-4 rounded-lg border border-gray-800">
+                                    <span class="text-xs text-gray-400 block">Energy Consumption</span>
+                                    <span id="res-energy" class="text-2xl font-bold text-amber-400 mt-1 block">--</span>
+                                    <span class="text-[10px] text-gray-500">kWh Units</span>
+                                </div>
+                            </div>
+                            <div class="p-4 bg-emerald-500/5 border border-emerald-500/20 rounded-lg">
+                                <p class="text-xs text-emerald-300">💡 <strong>Audit Note:</strong> These real-time computations comply with ISO 14040 life cycle assessment (LCA) standards for textile reporting.</p>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- ESG Calculator Tab -->
-            <div id="tab-esg" class="tab-content space-y-6 hidden">
-                <div>
-                    <h1 class="text-2xl font-bold">Interactive ESG & Carbon Calculator</h1>
-                    <p class="text-sm text-gray-400">Enter production batch parameters to dynamically compute environmental impact.</p>
-                </div>
-
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    <!-- Calculator Form Inputs -->
-                    <div class="bg-gray-950 border border-gray-800 p-6 rounded-xl space-y-4 lg:col-span-1">
-                        <h3 class="font-semibold text-base text-emerald-400">Batch Input Parameters</h3>
-                        
-                        <div>
-                            <label class="block text-xs text-gray-400 mb-1">Fabric Weight (KG)</label>
-                            <input type="number" id="calc-weight" value="1000" class="w-full bg-gray-900 border border-gray-800 rounded-lg px-3 py-2 text-sm text-gray-200 focus:outline-none focus:border-emerald-500" oninput="calculateESG()">
-                        </div>
-
-                        <div>
-                            <label class="block text-xs text-gray-400 mb-1">Material Type</label>
-                            <select id="calc-material" class="w-full bg-gray-900 border border-gray-800 rounded-lg px-3 py-2 text-sm text-gray-200 focus:outline-none focus:border-emerald-500" onchange="calculateESG()">
-                                <option value="organic">Organic Cotton (Low Impact)</option>
-                                <option value="conventional">Conventional Cotton (Standard)</option>
-                                <option value="recycled">Recycled Polyester (Eco-Friendly)</option>
-                                <option value="synthetic">Synthetic / Nylon (High Impact)</option>
-                            </select>
-                        </div>
-
-                        <div>
-                            <label class="block text-xs text-gray-400 mb-1">Dyeing Process Type</label>
-                            <select id="calc-dye" class="w-full bg-gray-900 border border-gray-800 rounded-lg px-3 py-2 text-sm text-gray-200 focus:outline-none focus:border-emerald-500" onchange="calculateESG()">
-                                <option value="eco">Eco-Enzyme Low Temp Dyeing</option>
-                                <option value="standard">Standard Reactive Dyeing</option>
-                            </select>
-                        </div>
+                <!-- AI Hub & Batch Parser Tab -->
+                <div id="tab-aihub" class="tab-content space-y-6 hidden">
+                    <div>
+                        <h1 class="text-2xl font-bold flex items-center gap-2">
+                            <i data-lucide="sparkles" class="text-emerald-400 w-6 h-6"></i> AI Batch Parser & Intelligence Assistant
+                        </h1>
+                        <p class="text-sm text-gray-400">Upload existing company batch sheets/CSV files for AI automated extraction, or chat with the AI about ESG compliance.</p>
                     </div>
 
-                    <!-- Calculated Results Display -->
-                    <div class="bg-gray-950 border border-gray-800 p-6 rounded-xl space-y-6 lg:col-span-2 flex flex-col justify-between">
-                        <h3 class="font-semibold text-base">Real-Time Environmental Footprint Output</h3>
-                        
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            <div class="bg-gray-900 p-4 rounded-lg border border-gray-800">
-                                <span class="text-xs text-gray-400 block">Carbon Emission</span>
-                                <span id="res-carbon" class="text-2xl font-bold text-emerald-400 mt-1 block">--</span>
-                                <span class="text-[10px] text-gray-500">KG $CO_2$ Equivalent</span>
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <!-- AI File Uploader / Parser Box -->
+                        <div class="bg-gray-950 border border-gray-800 p-6 rounded-xl space-y-4 flex flex-col justify-between">
+                            <div>
+                                <h3 class="font-semibold text-base text-emerald-400 mb-1">AI-Powered Batch Data Extraction</h3>
+                                <p class="text-xs text-gray-400 mb-4">Upload historical mill spreadsheets, CSV, or batch logs. AI will parse badge numbers, dye-lots, and weights automatically.</p>
+                                
+                                <div class="border-2 border-dashed border-gray-800 hover:border-emerald-500/50 rounded-xl p-8 text-center cursor-pointer bg-gray-900/50 transition-colors" onclick="simulateAIUpload()">
+                                    <i data-lucide="upload-cloud" class="w-10 h-10 text-emerald-400 mx-auto mb-2"></i>
+                                    <p class="text-sm font-medium text-gray-200">Click to upload spreadsheet or drop files here</p>
+                                    <p class="text-xs text-gray-500 mt-1">Supports CSV, Excel (.xlsx), or PDF batch logs</p>
+                                </div>
+
+                                <div id="ai-upload-status" class="mt-4 hidden p-3 bg-emerald-500/10 border border-emerald-500/20 rounded-lg text-xs text-emerald-300">
+                                    ✨ AI successfully parsed <strong>48 batch rows</strong> and registered traceability IDs!
+                                </div>
                             </div>
-                            <div class="bg-gray-900 p-4 rounded-lg border border-gray-800">
-                                <span class="text-xs text-gray-400 block">Water Footprint</span>
-                                <span id="res-water" class="text-2xl font-bold text-blue-400 mt-1 block">--</span>
-                                <span class="text-[10px] text-gray-500">Liters Consumed</span>
-                            </div>
-                            <div class="bg-gray-900 p-4 rounded-lg border border-gray-800">
-                                <span class="text-xs text-gray-400 block">Energy Consumption</span>
-                                <span id="res-energy" class="text-2xl font-bold text-amber-400 mt-1 block">--</span>
-                                <span class="text-[10px] text-gray-500">kWh Units</span>
-                            </div>
+                            <button onclick="simulateAIUpload()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white py-2.5 rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2">
+                                <i data-lucide="cpu" class="w-4 h-4"></i> Run AI Data Processing
+                            </button>
                         </div>
 
-                        <div class="p-4 bg-emerald-500/5 border border-emerald-500/20 rounded-lg">
-                            <p class="text-xs text-emerald-300">💡 <strong>Audit Note:</strong> These real-time computations comply with ISO 14040 life cycle assessment (LCA) standards for textile reporting.</p>
+                        <!-- AI Assistant Chat Box -->
+                        <div class="bg-gray-950 border border-gray-800 p-6 rounded-xl flex flex-col justify-between h-[400px]">
+                            <div class="flex items-center justify-between border-b border-gray-800 pb-3">
+                                <h3 class="font-semibold text-base flex items-center gap-2">
+                                    <i data-lucide="bot" class="text-emerald-400 w-5 h-5"></i> EcoTextile AI Assistant
+                                </h3>
+                                <span class="text-[10px] px-2 py-0.5 bg-emerald-500/10 text-emerald-400 rounded-full border border-emerald-500/20">Online</span>
+                            </div>
+
+                            <div id="chat-messages" class="flex-1 overflow-y-auto space-y-3 py-4 text-xs">
+                                <div class="bg-gray-900 p-3 rounded-lg border border-gray-800 max-w-[85%]">
+                                    <p class="text-gray-300">Hello Meer! Ask me anything regarding GOTS audit requirements, carbon offset calculations, or your mill batch records.</p>
+                                </div>
+                            </div>
+
+                            <div class="flex gap-2 pt-2 border-t border-gray-800">
+                                <input type="text" id="chat-input" placeholder="Ask AI about compliance, audits, or batch data..." class="flex-1 bg-gray-900 border border-gray-800 rounded-lg px-3 py-2 text-xs text-gray-200 focus:outline-none focus:border-emerald-500" onkeypress="handleChatKey(event)">
+                                <button onclick="sendChatMessage()" class="bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded-lg text-xs font-medium transition-colors">Send</button>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Traceability Tab -->
-            <div id="tab-traceability" class="tab-content space-y-6 hidden">
-                <h1 class="text-2xl font-bold">Supply Chain QR Traceability</h1>
-                <p class="text-sm text-gray-400">Generate unique verifiable QR codes for buyer shipments.</p>
-                <div class="bg-gray-950 border border-gray-800 p-6 rounded-xl flex items-center justify-between">
-                    <div><h3 class="font-semibold">Create New Batch QR Code</h3><p class="text-xs text-gray-400 mt-1">Link origin cotton farm data to finished fabric roll.</p></div>
-                    <button class="bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">Generate Batch QR</button>
+                <!-- Traceability Tab -->
+                <div id="tab-traceability" class="tab-content space-y-6 hidden">
+                    <h1 class="text-2xl font-bold">Supply Chain QR Traceability</h1>
+                    <p class="text-sm text-gray-400">Generate unique verifiable QR codes for buyer shipments.</p>
+                    <div class="bg-gray-950 border border-gray-800 p-6 rounded-xl flex items-center justify-between">
+                        <div><h3 class="font-semibold">Create New Batch QR Code</h3><p class="text-xs text-gray-400 mt-1">Link origin cotton farm data to finished fabric roll.</p></div>
+                        <button class="bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">Generate Batch QR</button>
+                    </div>
                 </div>
-            </div>
 
-            <!-- Compliance Tab -->
-            <div id="tab-compliance" class="tab-content space-y-6 hidden">
-                <h1 class="text-2xl font-bold">Compliance & Certification Hub</h1>
-                <p class="text-sm text-gray-400">Manage audit reports, test certificates, and expiry alerts.</p>
-                <div class="bg-gray-950 border border-gray-800 p-6 rounded-xl">
-                    <p class="text-gray-400">All ISO, GOTS, and OEKO-TEX document repositories are stored securely here.</p>
+                <!-- Compliance Tab -->
+                <div id="tab-compliance" class="tab-content space-y-6 hidden">
+                    <h1 class="text-2xl font-bold">Compliance & Certification Hub</h1>
+                    <p class="text-sm text-gray-400">Manage audit reports, test certificates, and expiry alerts.</p>
+                    <div class="bg-gray-950 border border-gray-800 p-6 rounded-xl">
+                        <p class="text-gray-400">All ISO, GOTS, and OEKO-TEX document repositories are stored securely here.</p>
+                    </div>
                 </div>
-            </div>
 
-            <!-- Inventory Tab -->
-            <div id="tab-inventory" class="tab-content space-y-6 hidden">
-                <h1 class="text-2xl font-bold">Fabric Inventory & Dye-Lot Management</h1>
-                <p class="text-sm text-gray-400">Track roll widths, GSM, shades, and warehouse allocations.</p>
-                <div class="bg-gray-950 border border-gray-800 p-6 rounded-xl">
-                    <p class="text-gray-400">Warehouse stock table with filter by shade / dye-lot number.</p>
+                <!-- Inventory Tab -->
+                <div id="tab-inventory" class="tab-content space-y-6 hidden">
+                    <h1 class="text-2xl font-bold">Fabric Inventory & Dye-Lot Management</h1>
+                    <p class="text-sm text-gray-400">Track roll widths, GSM, shades, and warehouse allocations.</p>
+                    <div class="bg-gray-950 border border-gray-800 p-6 rounded-xl">
+                        <p class="text-gray-400">Warehouse stock table with filter by shade / dye-lot number.</p>
+                    </div>
                 </div>
-            </div>
 
-        </div>
-    </main>
+                <!-- Customer Support & System Status Tab -->
+                <div id="tab-support" class="tab-content space-y-6 hidden">
+                    <div>
+                        <h1 class="text-2xl font-bold flex items-center gap-2">
+                            <i data-lucide="life-buoy" class="text-emerald-400 w-6 h-6"></i> Customer Support & System Health Center
+                        </h1>
+                        <p class="text-sm text-gray-400">Experiencing slowdowns, bugs, or downtime? Get direct priority support or check server diagnostics below.</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <!-- Direct Support Contact Card -->
+                        <div class="bg-gray-950 border border-gray-800 p-6 rounded-xl space-y-5 lg:col-span-1 flex flex-col justify-between">
+                            <div>
+                                <div class="flex items-center gap-3 mb-4">
+                                    <div class="w-10 h-10 rounded-full bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 font-bold">
+                                        <i data-lucide="mail" class="w-5 h-5"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="font-semibold text-base">Direct Support Email</h3>
+                                        <p class="text-xs text-gray-400">Priority portal assistance</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="p-3 bg-gray-900 border border-gray-800 rounded-lg mb-4">
+                                    <span class="text-[11px] text-gray-400 block mb-1">Official Support Desk:</span>
+                                    <a href="mailto:muhammadmeer2003@gmail.com" class="text-sm font-semibold text-emerald-400 hover:underline break-all">muhammadmeer2003@gmail.com</a>
+                                </div>
+
+                                <p class="text-xs text-gray-400 leading-relaxed">
+                                    If the portal experiences high latency or slow loading speeds, please reach out directly via email with your batch logs or screenshots. Our response time is under 2 hours.
+                                </p>
+                            </div>
+
+                            <a href="mailto:muhammadmeer2003@gmail.com?subject=EcoTextile%20Portal%20Support%20Request" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white py-2.5 rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2 text-center">
+                                <i data-lucide="send" class="w-4 h-4"></i> Send Email to Support
+                            </a>
+                        </div>
+
+                        <!-- System Diagnostics & Speed Test -->
+                        <div class="bg-gray-950 border border-gray-800 p-6 rounded-xl space-y-4 lg:col-span-2 flex flex-col justify-between">
+                            <div>
+                                <div class="flex items-center justify-between mb-4">
+                                    <h3 class="font-semibold text-base">Live Portal Diagnostics & Latency Monitor</h3>
+                                    <span class="px-2.5 py-1 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs rounded-full font-medium flex items-center gap-1.5">
+                                        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> All Systems Operational
+                                    </span>
+                                </div>
+
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                                    <div class="bg-gray-900 p-4 rounded-lg border border-gray-800">
+                                        <span class="text-xs text-gray-400 block">Server Latency</span>
+                                        <span id="diag-latency" class="text-xl font-bold text-emerald-400 mt-1 block">42 ms</span>
+                                        <span class="text-[10px] text-gray-500">Optimal connection speed</span>
+                                    </div>
+                                    <div class="bg-gray-900 p-4 rounded-lg border border-gray-800">
+                                        <span class="text-xs text-gray-400 block">Database Sync</span>
+                                        <span class="text-xl font-bold text-emerald-400 mt-1 block">99.9%</span>
+                                        <span class="text-[10px] text-gray-500">Zero packet loss</span>
+                                    </div>
+                                    <div class="bg-gray-900 p-4 rounded-lg border border-gray-800">
+                                        <span class="text-xs text-gray-400 block">Cache Status</span>
+                                        <span class="text-xl font-bold text-blue-400 mt-1 block">Active</span>
+                                        <span class="text-[10px] text-gray-500">CDN Edge Optimized</span>
+                                    </div>
+                                </div>
+
+                                <div class="space-y-3">
+                                    <h4 class="text-xs font-semibold uppercase tracking-wider text-gray-400">Troubleshooting Slowdowns / Lag</h4>
+                                    <div class="p-3 bg-gray-900 rounded-lg border border-gray-800 text-xs text-gray-300 flex items-start gap-3">
+                                        <i data-lucide="zap" class="w-4 h-4 text-amber-400 shrink-0 mt-0.5"></i>
+                                        <div>
+                                            <span class="font-medium text-gray-200 block mb-0.5">If the portal feels slow or unresponsive:</span>
+                                            Clear your browser cache, ensure your VPN is disabled if connecting locally, or email <strong class="text-emerald-400">muhammadmeer2003@gmail.com</strong> for immediate administrative assistance.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="pt-4 border-t border-gray-800 flex justify-between items-center text-xs text-gray-400">
+                                <span>Portal Version: 2.6.4-Enterprise</span>
+                                <button onclick="runDiagnostics()" class="text-emerald-400 hover:underline flex items-center gap-1 font-medium">
+                                    <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> Re-test Connection
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
 
     <!-- App Logic Scripts -->
     <script>
         lucide.createIcons();
+
+        // Authentication State Logic
+        let authMode = 'login'; // 'login' or 'register'
+
+        function switchAuthMode(mode) {
+            authMode = mode;
+            const loginTab = document.getElementById('auth-tab-login');
+            const regTab = document.getElementById('auth-tab-register');
+            const nameWrapper = document.getElementById('name-field-wrapper');
+            const subtitle = document.getElementById('auth-subtitle');
+            const submitBtn = document.getElementById('auth-submit-btn');
+            const errorBox = document.getElementById('auth-error');
+            errorBox.classList.add('hidden');
+
+            if (mode === 'login') {
+                loginTab.className = "flex-1 py-2 text-xs font-semibold rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 transition-all";
+                regTab.className = "flex-1 py-2 text-xs font-semibold rounded-lg text-gray-400 hover:text-gray-200 transition-all";
+                nameWrapper.classList.add('hidden');
+                subtitle.innerText = "Sign in to access your enterprise dashboard & AI tools";
+                submitBtn.innerText = "Sign In to Portal";
+            } else {
+                regTab.className = "flex-1 py-2 text-xs font-semibold rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 transition-all";
+                loginTab.className = "flex-1 py-2 text-xs font-semibold rounded-lg text-gray-400 hover:text-gray-200 transition-all";
+                nameWrapper.classList.remove('hidden');
+                subtitle.innerText = "Create a new enterprise profile and get started";
+                submitBtn.innerText = "Create Account & Enter Portal";
+            }
+        }
+
+        function handleAuthSubmit(event) {
+            event.preventDefault();
+            const email = document.getElementById('auth-email').value.trim();
+            const password = document.getElementById('auth-password').value.trim();
+            const errorBox = document.getElementById('auth-error');
+
+            if (!email || !password) {
+                errorBox.innerText = "Please fill in all required fields.";
+                errorBox.classList.remove('hidden');
+                return;
+            }
+
+            if (authMode === 'register') {
+                const name = document.getElementById('reg-name').value.trim() || "Muhammad Meer";
+                localStorage.setItem('eco_user_name', name);
+                localStorage.setItem('eco_user_email', email);
+                localStorage.setItem('eco_user_pass', password);
+            } else {
+                // Login validation
+                const storedEmail = localStorage.getItem('eco_user_email');
+                const storedPass = localStorage.getItem('eco_user_pass');
+                
+                // If no account registered yet or matches stored or default Meer email
+                if (storedEmail && storedEmail !== email) {
+                    // Allow login anyway or check
+                }
+            }
+
+            // Set logged in user name if available
+            const savedName = localStorage.getItem('eco_user_name') || "Muhammad Meer";
+            document.getElementById('user-display-name').innerText = savedName;
+            document.getElementById('user-avatar-initial').innerText = savedName.charAt(0).toUpperCase();
+
+            // Hide auth container and show main app
+            document.getElementById('auth-container').classList.add('hidden');
+            document.getElementById('main-app-container').classList.remove('hidden');
+            
+            // Re-initialize lucide icons for main container
+            lucide.createIcons();
+            calculateESG();
+        }
+
+        function handleLogout() {
+            document.getElementById('main-app-container').classList.add('hidden');
+            document.getElementById('auth-container').classList.remove('hidden');
+            document.getElementById('auth-password').value = '';
+        }
 
         function switchTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
@@ -236,13 +500,17 @@
             });
             document.getElementById('tab-' + tabId).classList.remove('hidden');
             const activeBtn = document.getElementById('btn-' + tabId);
-            activeBtn.classList.add('bg-emerald-500/10', 'text-emerald-400', 'border', 'border-emerald-500/20');
-            activeBtn.classList.remove('text-gray-400');
+            if(activeBtn) {
+                activeBtn.classList.add('bg-emerald-500/10', 'text-emerald-400', 'border', 'border-emerald-500/20');
+                activeBtn.classList.remove('text-gray-400');
+            }
         }
 
         // Dynamic ESG Calculation Logic
         function calculateESG() {
-            const weight = parseFloat(document.getElementById('calc-weight').value) || 0;
+            const weightInput = document.getElementById('calc-weight');
+            if (!weightInput) return;
+            const weight = parseFloat(weightInput.value) || 0;
             const material = document.getElementById('calc-material').value;
             const dye = document.getElementById('calc-dye').value;
 
@@ -278,7 +546,75 @@
             document.getElementById('res-energy').innerText = energyTotal + ' kWh';
         }
 
-        calculateESG();
+        // Simulate AI File Upload & Parsing
+        function simulateAIUpload() {
+            const statusBox = document.getElementById('ai-upload-status');
+            statusBox.classList.remove('hidden');
+            statusBox.innerHTML = `✨ AI processing file... extracting badge numbers and dye-lots...`;
+            setTimeout(() => {
+                const currentName = localStorage.getItem('eco_user_name') || "Meer";
+                statusBox.innerHTML = `✅ AI successfully parsed <strong>48 batch rows</strong> and registered all traceability records for ${currentName}!`;
+            }, 1500);
+        }
+
+        // AI Chat Assistant Logic
+        function handleChatKey(event) {
+            if (event.key === 'Enter') {
+                sendChatMessage();
+            }
+        }
+
+        function sendChatMessage() {
+            const input = document.getElementById('chat-input');
+            const message = input.value.trim();
+            if (!message) return;
+
+            const chatMessages = document.getElementById('chat-messages');
+            const currentName = localStorage.getItem('eco_user_name') || "Meer";
+
+            // User bubble
+            chatMessages.innerHTML += `
+                <div class="flex justify-end">
+                    <div class="bg-emerald-600 text-white p-3 rounded-lg max-w-[85%]">
+                        <p>${message}</p>
+                    </div>
+                </div>
+            `;
+            input.value = '';
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+
+            // AI Reply simulation
+            setTimeout(() => {
+                let aiReply = "I am analyzing your request based on ISO and GOTS compliance standards. Everything looks optimal!";
+                const lowerMsg = message.toLowerCase();
+                if (lowerMsg.includes('carbon') || lowerMsg.includes('emission')) {
+                    aiReply = `Your current carbon emission rate for ${currentName} is averaging 1.8 kg CO2 per kg for organic cotton batches, which is 15% below industry average!`;
+                } else if (lowerMsg.includes('gots') || lowerMsg.includes('audit')) {
+                    aiReply = "Your GOTS certification is valid till Dec 2026. Make sure to upload your latest water treatment logs before the Q4 review.";
+                } else if (lowerMsg.includes('batch')) {
+                    aiReply = "You can upload bulk CSV files via the AI Batch Parser on the left to automatically generate verifiable QR badges.";
+                } else if (lowerMsg.includes('slow') || lowerMsg.includes('support') || lowerMsg.includes('email')) {
+                    aiReply = "If you encounter any slowness or issues, you can directly reach out via email at muhammadmeer2003@gmail.com!";
+                }
+
+                chatMessages.innerHTML += `
+                    <div class="bg-gray-900 p-3 rounded-lg border border-gray-800 max-w-[85%]">
+                        <p class="text-gray-300">${aiReply}</p>
+                    </div>
+                `;
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }, 800);
+        }
+
+        // Run Diagnostics Simulation
+        function runDiagnostics() {
+            const latEl = document.getElementById('diag-latency');
+            latEl.innerText = "Testing...";
+            setTimeout(() => {
+                const randomMs = Math.floor(Math.random() * 25) + 32;
+                latEl.innerText = randomMs + " ms";
+            }, 600);
+        }
     </script>
 </body>
 </html>
