@@ -252,6 +252,196 @@ nav{height:78px;display:flex;align-items:center;justify-content:space-between}
 .module b{display:block;font-size:15px}
 .module span:last-child{display:block;color:var(--muted);font-size:11px;margin-top:6px}
 
+
+/* =========================================================
+   CLICKABLE MODULE DETAILS
+========================================================= */
+.module{
+  cursor:pointer;
+  position:relative;
+  overflow:hidden;
+}
+.module::after{
+  content:"Click to explore →";
+  position:absolute;
+  right:18px;
+  bottom:17px;
+  font-size:9px;
+  font-weight:900;
+  color:#2c8666;
+  opacity:0;
+  transform:translateX(8px);
+  transition:.2s ease;
+}
+.module:hover{
+  transform:translateY(-5px);
+  border-color:#b8d9ca;
+  box-shadow:0 18px 45px rgba(11,61,46,.12);
+}
+.module:hover::after{
+  opacity:1;
+  transform:translateX(0);
+}
+.module-modal{
+  position:fixed;
+  inset:0;
+  z-index:500;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+  background:rgba(3,25,18,.78);
+  backdrop-filter:blur(10px);
+}
+.module-modal.show{display:flex}
+.module-modal-box{
+  width:min(1050px,100%);
+  max-height:92vh;
+  overflow-y:auto;
+  background:#f7f9f7;
+  border-radius:28px;
+  box-shadow:0 35px 100px rgba(0,0,0,.35);
+  position:relative;
+}
+.module-modal-close{
+  position:absolute;
+  right:20px;
+  top:20px;
+  width:42px;
+  height:42px;
+  border-radius:50%;
+  border:1px solid #dce8e2;
+  background:white;
+  color:#0b3d2e;
+  font-size:24px;
+  cursor:pointer;
+  z-index:5;
+}
+.module-detail-header{
+  padding:40px 42px;
+  background:linear-gradient(135deg,#0b3d2e,#176247);
+  color:white;
+}
+.module-detail-header .pill{
+  background:rgba(255,255,255,.13);
+  color:#d9eee5;
+}
+.module-detail-header h2{
+  color:white;
+  margin-top:15px;
+  max-width:750px;
+}
+.module-detail-header p{
+  color:#c7ddd5;
+  margin-top:12px;
+  max-width:760px;
+  font-size:14px;
+}
+.module-detail-body{padding:35px 42px 45px}
+.module-detail-intro{
+  background:white;
+  border:1px solid #dce8e2;
+  border-radius:18px;
+  padding:22px;
+  margin-bottom:25px;
+}
+.module-detail-intro strong{color:#0b3d2e}
+.module-detail-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:15px;
+}
+.module-detail-card{
+  background:white;
+  border:1px solid #dce8e2;
+  border-radius:18px;
+  padding:22px;
+}
+.module-detail-card h3{
+  color:#0b3d2e;
+  font-size:18px;
+  margin-bottom:10px;
+}
+.module-detail-card p{font-size:12px}
+.module-detail-card ul{
+  margin:10px 0 0;
+  padding-left:19px;
+  color:#65746e;
+  font-size:12px;
+}
+.module-detail-card li{margin:7px 0}
+.module-workflow{
+  margin-top:25px;
+  background:#e9f5ef;
+  border:1px solid #cfe6da;
+  border-radius:20px;
+  padding:23px;
+}
+.module-workflow h3{
+  color:#0b3d2e;
+  margin-bottom:17px;
+}
+.workflow-line{
+  display:flex;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:8px;
+}
+.workflow-step{
+  background:white;
+  border:1px solid #cfe0d8;
+  border-radius:11px;
+  padding:10px 13px;
+  font-size:11px;
+  font-weight:850;
+  color:#0b3d2e;
+}
+.workflow-arrow{
+  color:#2c8666;
+  font-weight:900;
+}
+.module-example{
+  margin-top:25px;
+  background:#0b3d2e;
+  color:white;
+  border-radius:20px;
+  padding:24px;
+}
+.module-example h3{color:white;margin-bottom:9px}
+.module-example p{color:#cce0d8;font-size:12px}
+.module-benefit{
+  margin-top:25px;
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:12px;
+}
+.benefit-box{
+  background:white;
+  border:1px solid #dce8e2;
+  border-radius:15px;
+  padding:18px;
+}
+.benefit-box strong{
+  display:block;
+  color:#0b3d2e;
+  font-size:13px;
+}
+.benefit-box span{
+  display:block;
+  margin-top:5px;
+  color:#6c7974;
+  font-size:10px;
+}
+@media(max-width:700px){
+  .module-detail-header{padding:32px 24px}
+  .module-detail-body{padding:24px}
+  .module-detail-grid{grid-template-columns:1fr}
+  .module-benefit{grid-template-columns:1fr}
+  .workflow-line{display:grid;grid-template-columns:1fr}
+  .workflow-arrow{display:none}
+  .workflow-step{text-align:center}
+}
+
 /* Visual gallery */
 .gallery{background:#fff}
 .gallery-grid{display:grid;grid-template-columns:1.4fr .8fr .8fr;gap:14px}
@@ -629,18 +819,18 @@ footer small{display:block;margin-top:4px;color:#88a69b}
     </div>
 
     <div class="module-grid">
-      <div class="module"><span class="pill">Operations</span><b>Dashboard</b><span>Central overview of important activity.</span></div>
-      <div class="module"><span class="pill">Master Data</span><b>Products & Materials</b><span>Maintain product and material information.</span></div>
-      <div class="module"><span class="pill">Production</span><b>Production</b><span>Record and review production activity.</span></div>
-      <div class="module"><span class="pill">Tracking</span><b>Batches</b><span>Organize production lots and references.</span></div>
-      <div class="module"><span class="pill">Stock</span><b>Inventory</b><span>Review available operational stock records.</span></div>
-      <div class="module"><span class="pill">Scanning</span><b>Scanner</b><span>Identify supported records using scanning workflows.</span></div>
-      <div class="module"><span class="pill">Mobile</span><b>Camera Scanner</b><span>Use a mobile camera where enabled.</span></div>
-      <div class="module"><span class="pill">Data</span><b>Excel / CSV</b><span>Bring structured data into supported workflows.</span></div>
-      <div class="module"><span class="pill">Insights</span><b>Reports</b><span>Review operational information in report form.</span></div>
-      <div class="module"><span class="pill">Output</span><b>PDF / Print</b><span>Prepare useful records and management outputs.</span></div>
-      <div class="module"><span class="pill">Security</span><b>Audit & Security</b><span>Support controlled access and activity review.</span></div>
-      <div class="module"><span class="pill">Administration</span><b>Users & Employees</b><span>Manage authorized users where enabled.</span></div>
+      <div class="module" onclick="openModule('dashboard')"><span class="pill">Operations</span><b>Dashboard</b><span>Central overview of important activity.</span></div>
+      <div class="module" onclick="openModule('products')"><span class="pill">Master Data</span><b>Products & Materials</b><span>Maintain product and material information.</span></div>
+      <div class="module" onclick="openModule('production')"><span class="pill">Production</span><b>Production</b><span>Record and review production activity.</span></div>
+      <div class="module" onclick="openModule('batches')"><span class="pill">Tracking</span><b>Batches</b><span>Organize production lots and references.</span></div>
+      <div class="module" onclick="openModule('inventory')"><span class="pill">Stock</span><b>Inventory</b><span>Review available operational stock records.</span></div>
+      <div class="module" onclick="openModule('scanner')"><span class="pill">Scanning</span><b>Scanner</b><span>Identify supported records using scanning workflows.</span></div>
+      <div class="module" onclick="openModule('camera')"><span class="pill">Mobile</span><b>Camera Scanner</b><span>Use a mobile camera where enabled.</span></div>
+      <div class="module" onclick="openModule('data')"><span class="pill">Data</span><b>Excel / CSV</b><span>Bring structured data into supported workflows.</span></div>
+      <div class="module" onclick="openModule('reports')"><span class="pill">Insights</span><b>Reports</b><span>Review operational information in report form.</span></div>
+      <div class="module" onclick="openModule('pdf')"><span class="pill">Output</span><b>PDF / Print</b><span>Prepare useful records and management outputs.</span></div>
+      <div class="module" onclick="openModule('security')"><span class="pill">Security</span><b>Audit & Security</b><span>Support controlled access and activity review.</span></div>
+      <div class="module" onclick="openModule('users')"><span class="pill">Administration</span><b>Users & Employees</b><span>Manage authorized users where enabled.</span></div>
     </div>
   </div>
 </section>
@@ -820,6 +1010,15 @@ footer small{display:block;margin-top:4px;color:#88a69b}
     </div>
   </div>
 </section>
+
+
+<!-- MODULE DETAIL MODAL -->
+<div class="module-modal" id="moduleModal" aria-hidden="true">
+  <div class="module-modal-box" role="dialog" aria-modal="true" aria-labelledby="moduleDetailTitle">
+    <button class="module-modal-close" onclick="closeModule()" aria-label="Close module details">×</button>
+    <div id="moduleDetailContent"></div>
+  </div>
+</div>
 
 </main>
 
@@ -1031,6 +1230,211 @@ function showDemo(key,button){
 }
 
 showDemo('dashboard',document.querySelector('.demo-tab'));
+
+/* =========================================================
+   INTERACTIVE MODULE DETAILS
+========================================================= */
+
+const moduleDetails = {
+  dashboard: {
+    category:"OPERATIONS",
+    title:"Dashboard",
+    description:"The Dashboard is the central starting point of EcoTextile. It gives authorized users a quick overview of important operational information without requiring them to open every individual module.",
+    purpose:["Provide a quick operational overview.","Help users understand current activity.","Give management a starting point for daily review.","Provide quick access to important software areas."],
+    required:["Authorized EcoTextile login.","Existing operational records.","Configured company data.","Relevant production, batch or inventory information."],
+    workflow:["Login","Open Dashboard","Review Overview","Identify Required Area","Open Module","Take Action"],
+    helps:[["Faster Review","Important information can be reviewed from one starting point."],["Better Visibility","Users can understand the current operational situation more easily."],["Management Support","Supervisors can use the dashboard as a daily starting point."]],
+    example:"A supervisor starts the working day by opening the Dashboard and reviewing current batches, inventory-related information and available operational records before moving into a specific module."
+  },
+  products: {
+    category:"MASTER DATA",
+    title:"Products & Materials",
+    description:"The Products & Materials area is used to organize the basic information that other operational workflows depend on. Maintaining clean master data helps employees work with consistent records.",
+    purpose:["Maintain product information.","Maintain material-related information.","Create a structured reference for operational records.","Reduce confusion caused by duplicate or inconsistent names."],
+    required:["Product or material name.","Relevant identification/reference information.","Category or type where applicable.","Additional information required by the organization's workflow."],
+    workflow:["Create / Select Record","Enter Information","Review Details","Save","Use in Operations"],
+    helps:[["Consistency","Employees work from structured product and material information."],["Traceability","Records can be connected to identifiable products or materials."],["Less Repetition","Basic information can be maintained in one place."]],
+    example:"Before starting production, an employee selects the relevant product or material record instead of repeatedly typing an unclear description into separate documents."
+  },
+  production: {
+    category:"PRODUCTION",
+    title:"Production Management",
+    description:"The Production module provides a structured place to record and review production activity. It connects operational information with the relevant product, quantity, date and reference information.",
+    purpose:["Record production activity.","Maintain production quantities and details.","Connect production activity with relevant references.","Allow supervisors to review production information."],
+    required:["Product or material.","Production quantity.","Production date.","Batch or reference where required.","Relevant production status/details."],
+    workflow:["Select Product","Enter Quantity","Add Details","Assign Reference","Save Record","Review Activity"],
+    helps:[["Digital Records","Production information becomes easier to organize and review."],["Operational Visibility","Supervisors can review recorded production activity."],["Traceability","Production can be associated with identifiable references."]],
+    example:"A production employee records a completed production activity by selecting the relevant product, entering the quantity and required details, saving the record and allowing the supervisor to review it."
+  },
+  batches: {
+    category:"TRACKING",
+    title:"Batch Management",
+    description:"The Batch module is used to organize production lots or identifiable operational groups. A batch reference can make it easier to follow related information through the workflow.",
+    purpose:["Create identifiable batch records.","Connect production activity with a batch.","Track batch-related information.","Make operational records easier to locate."],
+    required:["Batch/reference number.","Related product or material.","Relevant quantity.","Date or production information.","Status/details where required."],
+    workflow:["Create Batch","Add Product","Enter Quantity","Save Reference","Track Activity","Review Batch"],
+    helps:[["Traceability","A clear batch reference makes records easier to follow."],["Organization","Production lots can be separated into identifiable records."],["Review","Users can locate information using a batch/reference."]],
+    example:"Instead of referring to production only as 'today's cotton production', the organization can use a specific batch reference and connect related information to that batch."
+  },
+  inventory: {
+    category:"STOCK",
+    title:"Inventory Management",
+    description:"The Inventory module helps organize stock and material-related records so employees can review available information through a dedicated digital workflow.",
+    purpose:["Maintain inventory-related records.","Review available stock information.","Identify materials/items.","Support operational planning."],
+    required:["Item/material name.","Reference or item code where applicable.","Quantity.","Relevant unit.","Stock status/details."],
+    workflow:["Select Item","Enter Quantity","Add Reference","Save Record","Review Stock","Use in Operations"],
+    helps:[["Stock Visibility","Users can review inventory information more easily."],["Planning","Operational teams can refer to available stock information."],["Organization","Inventory records are kept within the software workflow."]],
+    example:"A store or production employee checks the inventory record for a required material before beginning an operational activity."
+  },
+  scanner: {
+    category:"SCANNING",
+    title:"Scanner",
+    description:"The Scanner workflow is designed to help users identify supported products, batches or records through scanning instead of manually entering a reference every time.",
+    purpose:["Identify supported records quickly.","Reduce manual reference entry.","Speed up record lookup.","Support operational scanning workflows."],
+    required:["A supported barcode/QR/reference.","A compatible scanner.","The relevant record already available in the system.","Scanner connection and permission where applicable."],
+    workflow:["Open Scanner","Connect Scanner","Scan Code","Read Reference","Find Record","Review Information"],
+    helps:[["Speed","Scanning can be faster than manually typing long references."],["Accuracy","Reduces typing mistakes during identification."],["Workflow Efficiency","Employees can quickly locate supported records."]],
+    example:"A warehouse employee scans a batch or item code and uses the resulting reference to locate the relevant operational record."
+  },
+  camera: {
+    category:"MOBILE",
+    title:"Mobile Camera Scanner",
+    description:"The mobile camera workflow allows supported devices to use their camera for scanning where the organization's deployment and browser permissions allow it.",
+    purpose:["Support mobile scanning.","Allow employees to use a phone camera.","Reduce dependence on dedicated scanning hardware where appropriate.","Make supported identification workflows more flexible."],
+    required:["A supported mobile browser/device.","Camera permission.","Readable QR/barcode.","The corresponding record in the system."],
+    workflow:["Open Scanner","Choose Camera","Allow Camera","Point at Code","Read Code","Open Record"],
+    helps:[["Mobility","Employees can use a supported mobile device."],["Flexibility","Useful where a hardware scanner is not immediately available."],["Convenience","Reduces the need to manually type supported references."]],
+    example:"A warehouse employee uses a mobile phone camera to scan a supported code while moving around the facility."
+  },
+  data: {
+    category:"DATA",
+    title:"Excel / CSV",
+    description:"Supported Excel or CSV workflows can help organizations work with structured information and reduce unnecessary manual re-entry where the deployed software provides the relevant import/export functionality.",
+    purpose:["Work with structured data.","Reduce repetitive manual entry where supported.","Transfer organized information into supported workflows.","Prepare data for review."],
+    required:["Correctly structured file.","Required columns/fields.","Valid records.","Compatible file format."],
+    workflow:["Prepare File","Check Columns","Upload / Import","Validate Data","Save","Review Records"],
+    helps:[["Efficiency","Structured information can reduce repetitive entry."],["Data Organization","Existing operational information can be prepared systematically."],["Review","Imported records can be checked inside the relevant workflow."]],
+    example:"An authorized employee prepares a structured spreadsheet and uses a supported import workflow instead of manually entering every record individually."
+  },
+  reports: {
+    category:"INSIGHTS",
+    title:"Reports",
+    description:"The Reports module converts stored operational information into a format that employees and management can review for internal monitoring and decision support.",
+    purpose:["Review operational information.","Prepare management summaries.","Monitor production-related records.","Support internal communication."],
+    required:["Existing operational data.","Correct date/filter criteria where applicable.","Authorized access.","Relevant module records."],
+    workflow:["Open Reports","Select Report","Choose Filters","Review Data","Generate","Print / Export"],
+    helps:[["Management Review","Managers can review information in a structured format."],["Communication","Reports make operational information easier to share internally."],["Monitoring","Teams can review stored records instead of relying only on manual notes."]],
+    example:"A supervisor generates a production-related report for a selected period and uses it during an internal review meeting."
+  },
+  pdf: {
+    category:"OUTPUT",
+    title:"PDF / Print",
+    description:"The output workflow is intended to turn relevant software information into printable or shareable documents where the deployed application supports the relevant output option.",
+    purpose:["Create printable records.","Prepare management outputs.","Keep formal copies of selected information.","Make reports easier to communicate."],
+    required:["Relevant saved records.","A supported report/output.","Browser print capability or enabled export functionality."],
+    workflow:["Open Record / Report","Review Information","Choose Output","Generate","Print / Save","Share Internally"],
+    helps:[["Documentation","Important information can be retained as an output."],["Communication","Useful for meetings and internal reporting."],["Accessibility","Teams can use familiar printable documents."]],
+    example:"A supervisor reviews a report and saves a PDF copy for an internal management meeting."
+  },
+  security: {
+    category:"SECURITY",
+    title:"Audit & Security",
+    description:"EcoTextile includes security-oriented application controls intended to protect authenticated use and help organizations maintain a controlled software environment.",
+    purpose:["Protect authorized access.","Reduce unauthorized login attempts.","Maintain safer application sessions.","Support security and activity review."],
+    required:["Authorized user credentials.","Correct company/work email where applicable.","Secure password.","Organization-defined access permissions."],
+    workflow:["Authenticate","Verify Access","Open Session","Perform Work","Record Activity","Logout"],
+    helps:[["Access Control","Only authorized users should access protected areas."],["Protection","Security controls help protect normal application usage."],["Accountability","Relevant activity can be reviewed through available security/audit workflows."]],
+    example:"If repeated unsuccessful login attempts occur, the application's configured protection mechanism can temporarily restrict further attempts."
+  },
+  users: {
+    category:"ADMINISTRATION",
+    title:"Users & Employees",
+    description:"The administration area is intended for managing authorized users where the deployed version provides the relevant user-management functionality.",
+    purpose:["Maintain authorized user access.","Organize employee accounts.","Support controlled access to the application.","Help administrators manage the software environment."],
+    required:["Administrator authorization.","Employee/user information.","Work email where required.","Secure credentials.","Relevant role/access configuration where available."],
+    workflow:["Administrator Login","Open User Management","Create / Review User","Assign Access","Save","Review Account"],
+    helps:[["Administration","Authorized personnel can manage user access."],["Organization","Employee accounts can be maintained systematically."],["Security","Access can be controlled rather than shared through one common account."]],
+    example:"An administrator creates an account for a new employee and provides the employee with their own authorized login credentials."
+  }
+};
+
+function openModule(moduleName){
+  const module = moduleDetails[moduleName];
+  if(!module) return;
+
+  const content = document.getElementById("moduleDetailContent");
+
+  content.innerHTML = `
+    <div class="module-detail-header">
+      <span class="pill">${module.category}</span>
+      <h2 id="moduleDetailTitle">${module.title}</h2>
+      <p>${module.description}</p>
+    </div>
+
+    <div class="module-detail-body">
+      <div class="module-detail-intro">
+        <strong>What is this module?</strong>
+        <p style="margin-top:7px;font-size:12px">${module.description}</p>
+      </div>
+
+      <div class="module-detail-grid">
+        <div class="module-detail-card">
+          <h3>🎯 What does it do?</h3>
+          <ul>${module.purpose.map(item => `<li>${item}</li>`).join("")}</ul>
+        </div>
+
+        <div class="module-detail-card">
+          <h3>📋 What is required?</h3>
+          <ul>${module.required.map(item => `<li>${item}</li>`).join("")}</ul>
+        </div>
+      </div>
+
+      <div class="module-workflow">
+        <h3>🔄 How does it work?</h3>
+        <div class="workflow-line">
+          ${module.workflow.map((step,index) => `
+            <div class="workflow-step">${index + 1}. ${step}</div>
+            ${index < module.workflow.length - 1 ? `<div class="workflow-arrow">→</div>` : ""}
+          `).join("")}
+        </div>
+      </div>
+
+      <div class="module-benefit">
+        ${module.helps.map(item => `
+          <div class="benefit-box">
+            <strong>✓ ${item[0]}</strong>
+            <span>${item[1]}</span>
+          </div>
+        `).join("")}
+      </div>
+
+      <div class="module-example">
+        <h3>💡 Real-world example</h3>
+        <p>${module.example}</p>
+      </div>
+    </div>
+  `;
+
+  document.getElementById("moduleModal").classList.add("show");
+  document.getElementById("moduleModal").setAttribute("aria-hidden","false");
+  document.body.classList.add("no-scroll");
+}
+
+function closeModule(){
+  const modal = document.getElementById("moduleModal");
+  modal.classList.remove("show");
+  modal.setAttribute("aria-hidden","true");
+  document.body.classList.remove("no-scroll");
+}
+
+document.getElementById("moduleModal").addEventListener("click",function(event){
+  if(event.target === this) closeModule();
+});
+
+document.addEventListener("keydown",function(event){
+  if(event.key === "Escape") closeModule();
+});
+
 </script>
 
 </body>
