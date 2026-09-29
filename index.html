@@ -1,2073 +1,304 @@
-<!DOCTYPE html>
+from pathlib import Path
+
+html = r'''<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>EcoTextile Enterprise | Textile Management Platform</title>
-    <meta name="description"
-          content="EcoTextile Enterprise is a practical textile management platform for production, inventory, batches, scanning, reporting and operational workflows.">
-
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
-
-    <style>
-        :root {
-            --green: #1f8a5b;
-            --green-dark: #12623f;
-            --green-light: #eaf7f0;
-            --text: #17231d;
-            --muted: #65736b;
-            --border: #e5ebe7;
-            --surface: #ffffff;
-            --surface-soft: #f6f9f7;
-            --dark: #122019;
-            --shadow: 0 18px 50px rgba(22, 55, 39, .08);
-            --radius: 18px;
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        html {
-            scroll-behavior: smooth;
-        }
-
-        body {
-            font-family: "DM Sans", sans-serif;
-            color: var(--text);
-            background: #fff;
-            line-height: 1.6;
-            overflow-x: hidden;
-        }
-
-        a {
-            color: inherit;
-            text-decoration: none;
-        }
-
-        button,
-        input,
-        textarea,
-        select {
-            font: inherit;
-        }
-
-        .container {
-            width: min(1160px, calc(100% - 40px));
-            margin: auto;
-        }
-
-        /* NAVBAR */
-
-        .navbar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 1000;
-            background: rgba(255,255,255,.94);
-            backdrop-filter: blur(14px);
-            border-bottom: 1px solid rgba(229,235,231,.8);
-        }
-
-        .nav-inner {
-            height: 76px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .brand {
-            display: flex;
-            align-items: center;
-            gap: 11px;
-        }
-
-        .brand-mark {
-            width: 40px;
-            height: 40px;
-            border-radius: 12px;
-            background: var(--green);
-            color: white;
-            display: grid;
-            place-items: center;
-            font-weight: 800;
-            font-family: Manrope, sans-serif;
-            box-shadow: 0 8px 22px rgba(31,138,91,.22);
-        }
-
-        .brand-text strong {
-            display: block;
-            font-family: Manrope, sans-serif;
-            font-size: 15px;
-            line-height: 1.1;
-        }
-
-        .brand-text span {
-            display: block;
-            color: #7a867f;
-            font-size: 10px;
-            margin-top: 3px;
-            letter-spacing: .04em;
-        }
-
-        .nav-links {
-            display: flex;
-            align-items: center;
-            gap: 28px;
-            font-size: 13px;
-            color: #526059;
-        }
-
-        .nav-links a {
-            transition: color .2s ease;
-        }
-
-        .nav-links a:hover {
-            color: var(--green);
-        }
-
-        .nav-actions {
-            display: flex;
-            align-items: center;
-            gap: 9px;
-        }
-
-        .btn {
-            border: 0;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            padding: 11px 17px;
-            border-radius: 10px;
-            font-size: 13px;
-            font-weight: 600;
-            transition: .2s ease;
-        }
-
-        .btn-primary {
-            background: var(--green);
-            color: #fff;
-        }
-
-        .btn-primary:hover {
-            background: var(--green-dark);
-            transform: translateY(-1px);
-        }
-
-        .btn-outline {
-            border: 1px solid var(--border);
-            background: #fff;
-            color: var(--text);
-        }
-
-        .btn-outline:hover {
-            border-color: #c8d7ce;
-            background: var(--surface-soft);
-        }
-
-        .menu-btn {
-            display: none;
-            width: 42px;
-            height: 42px;
-            border: 1px solid var(--border);
-            background: #fff;
-            border-radius: 10px;
-            cursor: pointer;
-        }
-
-        /* HERO */
-
-        .hero {
-            padding: 150px 0 95px;
-            background:
-                radial-gradient(circle at 85% 20%, rgba(31,138,91,.09), transparent 30%),
-                linear-gradient(180deg, #fbfdfc 0%, #fff 100%);
-        }
-
-        .hero-grid {
-            display: grid;
-            grid-template-columns: 1.05fr .95fr;
-            gap: 70px;
-            align-items: center;
-        }
-
-        .eyebrow {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            color: var(--green-dark);
-            background: var(--green-light);
-            border: 1px solid #d4ecdf;
-            border-radius: 999px;
-            padding: 7px 12px;
-            font-size: 11px;
-            font-weight: 700;
-            letter-spacing: .04em;
-            text-transform: uppercase;
-            margin-bottom: 22px;
-        }
-
-        .eyebrow-dot {
-            width: 7px;
-            height: 7px;
-            border-radius: 50%;
-            background: var(--green);
-        }
-
-        h1,
-        h2,
-        h3,
-        h4 {
-            font-family: Manrope, sans-serif;
-        }
-
-        .hero h1 {
-            font-size: clamp(42px, 5.2vw, 68px);
-            line-height: 1.03;
-            letter-spacing: -.045em;
-            max-width: 700px;
-        }
-
-        .hero h1 span {
-            color: var(--green);
-        }
-
-        .hero-copy {
-            max-width: 610px;
-            margin-top: 24px;
-            color: var(--muted);
-            font-size: 17px;
-        }
-
-        .hero-actions {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 12px;
-            margin-top: 31px;
-        }
-
-        .hero-note {
-            margin-top: 22px;
-            font-size: 11px;
-            color: #7b8881;
-        }
-
-        .hero-panel {
-            position: relative;
-        }
-
-        .dashboard-card {
-            background: var(--dark);
-            border-radius: 24px;
-            padding: 20px;
-            box-shadow: 0 30px 70px rgba(17,42,29,.18);
-            transform: rotate(1deg);
-        }
-
-        .dash-top {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding-bottom: 16px;
-            border-bottom: 1px solid rgba(255,255,255,.09);
-        }
-
-        .dash-title {
-            color: #fff;
-            font-family: Manrope;
-            font-size: 14px;
-            font-weight: 700;
-        }
-
-        .status {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            color: #8bd7af;
-            font-size: 10px;
-        }
-
-        .status i {
-            width: 7px;
-            height: 7px;
-            background: #42c77c;
-            border-radius: 50%;
-        }
-
-        .dash-body {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 11px;
-            margin-top: 17px;
-        }
-
-        .dash-box {
-            min-height: 105px;
-            background: rgba(255,255,255,.055);
-            border: 1px solid rgba(255,255,255,.07);
-            border-radius: 13px;
-            padding: 15px;
-        }
-
-        .dash-box span {
-            color: #91a19a;
-            font-size: 10px;
-        }
-
-        .dash-box strong {
-            display: block;
-            color: #fff;
-            font-family: Manrope;
-            font-size: 23px;
-            margin-top: 9px;
-        }
-
-        .dash-box small {
-            display: block;
-            color: #77c79c;
-            font-size: 10px;
-            margin-top: 3px;
-        }
-
-        .dash-wide {
-            grid-column: 1 / -1;
-        }
-
-        .mini-bars {
-            display: flex;
-            align-items: end;
-            gap: 8px;
-            height: 48px;
-            margin-top: 10px;
-        }
-
-        .mini-bars i {
-            flex: 1;
-            background: #45a875;
-            border-radius: 4px 4px 1px 1px;
-            opacity: .8;
-        }
-
-        /* SECTIONS */
-
-        section {
-            scroll-margin-top: 90px;
-        }
-
-        .section {
-            padding: 100px 0;
-        }
-
-        .section-soft {
-            background: var(--surface-soft);
-        }
-
-        .section-heading {
-            max-width: 690px;
-            margin-bottom: 46px;
-        }
-
-        .section-heading.center {
-            margin-left: auto;
-            margin-right: auto;
-            text-align: center;
-        }
-
-        .section-kicker {
-            color: var(--green);
-            font-size: 11px;
-            text-transform: uppercase;
-            font-weight: 800;
-            letter-spacing: .1em;
-            margin-bottom: 12px;
-        }
-
-        .section-heading h2 {
-            font-size: clamp(30px, 4vw, 43px);
-            line-height: 1.12;
-            letter-spacing: -.035em;
-        }
-
-        .section-heading p {
-            color: var(--muted);
-            margin-top: 15px;
-            font-size: 15px;
-        }
-
-        /* ABOUT */
-
-        .about-grid {
-            display: grid;
-            grid-template-columns: .85fr 1.15fr;
-            gap: 65px;
-            align-items: start;
-        }
-
-        .about-lead {
-            font-family: Manrope;
-            font-size: 26px;
-            line-height: 1.35;
-            font-weight: 700;
-            letter-spacing: -.025em;
-        }
-
-        .about-text {
-            color: var(--muted);
-            margin-top: 17px;
-            font-size: 14px;
-        }
-
-        .about-list {
-            display: grid;
-            gap: 17px;
-        }
-
-        .about-item {
-            display: flex;
-            gap: 16px;
-            padding: 20px;
-            background: #fff;
-            border: 1px solid var(--border);
-            border-radius: 15px;
-        }
-
-        .about-number {
-            width: 32px;
-            height: 32px;
-            flex: 0 0 32px;
-            display: grid;
-            place-items: center;
-            background: var(--green-light);
-            color: var(--green-dark);
-            border-radius: 9px;
-            font-size: 11px;
-            font-weight: 800;
-        }
-
-        .about-item h3 {
-            font-size: 14px;
-            margin-bottom: 4px;
-        }
-
-        .about-item p {
-            color: var(--muted);
-            font-size: 12px;
-        }
-
-        /* FEATURE CARDS */
-
-        .feature-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 17px;
-        }
-
-        .feature-card {
-            background: #fff;
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: 26px;
-            transition: .22s ease;
-        }
-
-        .feature-card:hover {
-            transform: translateY(-4px);
-            box-shadow: var(--shadow);
-            border-color: #d5e6dc;
-        }
-
-        .feature-icon {
-            width: 43px;
-            height: 43px;
-            border-radius: 12px;
-            background: var(--green-light);
-            color: var(--green-dark);
-            display: grid;
-            place-items: center;
-            font-weight: 800;
-            font-family: Manrope;
-            font-size: 13px;
-            margin-bottom: 20px;
-        }
-
-        .feature-card h3 {
-            font-size: 16px;
-            margin-bottom: 8px;
-        }
-
-        .feature-card p {
-            color: var(--muted);
-            font-size: 12px;
-        }
-
-        /* MODULES */
-
-        .module-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 12px;
-        }
-
-        .module {
-            padding: 17px;
-            background: #fff;
-            border: 1px solid var(--border);
-            border-radius: 13px;
-        }
-
-        .module-number {
-            color: var(--green);
-            font-size: 10px;
-            font-weight: 800;
-            margin-bottom: 8px;
-        }
-
-        .module h3 {
-            font-size: 13px;
-            line-height: 1.35;
-        }
-
-        .module p {
-            color: var(--muted);
-            font-size: 10px;
-            margin-top: 7px;
-        }
-
-        /* WORKFLOW */
-
-        .workflow {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 14px;
-            position: relative;
-        }
-
-        .workflow-step {
-            background: #fff;
-            border: 1px solid var(--border);
-            padding: 24px;
-            border-radius: 15px;
-            position: relative;
-        }
-
-        .step-number {
-            color: var(--green);
-            font-family: Manrope;
-            font-size: 12px;
-            font-weight: 800;
-            margin-bottom: 30px;
-        }
-
-        .workflow-step h3 {
-            font-size: 15px;
-        }
-
-        .workflow-step p {
-            color: var(--muted);
-            font-size: 11px;
-            margin-top: 7px;
-        }
-
-        /* DOCUMENTATION */
-
-        .docs-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 18px;
-        }
-
-        .doc-card {
-            border: 1px solid var(--border);
-            border-radius: 18px;
-            padding: 28px;
-            background: #fff;
-        }
-
-        .doc-label {
-            display: inline-block;
-            color: var(--green-dark);
-            background: var(--green-light);
-            border-radius: 999px;
-            padding: 5px 9px;
-            font-size: 9px;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: .06em;
-            margin-bottom: 17px;
-        }
-
-        .doc-card h3 {
-            font-size: 18px;
-        }
-
-        .doc-card p {
-            color: var(--muted);
-            font-size: 12px;
-            margin: 9px 0 19px;
-        }
-
-        .doc-link {
-            color: var(--green);
-            font-size: 12px;
-            font-weight: 700;
-        }
-
-        /* MOBILE */
-
-        .mobile-guide {
-            background: var(--dark);
-            color: white;
-            border-radius: 25px;
-            padding: 55px;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 70px;
-            align-items: center;
-            overflow: hidden;
-        }
-
-        .mobile-guide .section-kicker {
-            color: #78c99d;
-        }
-
-        .mobile-guide h2 {
-            font-size: 35px;
-            line-height: 1.15;
-        }
-
-        .mobile-guide p {
-            color: #a6b4ad;
-            font-size: 13px;
-            margin-top: 15px;
-        }
-
-        .phone {
-            width: 220px;
-            height: 420px;
-            margin: auto;
-            background: #f5f8f6;
-            border: 8px solid #283d32;
-            border-radius: 32px;
-            padding: 13px;
-            box-shadow: 0 30px 60px rgba(0,0,0,.3);
-        }
-
-        .phone-screen {
-            height: 100%;
-            border-radius: 21px;
-            background: white;
-            padding: 17px 12px;
-            color: var(--text);
-        }
-
-        .phone-top {
-            font-family: Manrope;
-            font-weight: 800;
-            font-size: 12px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .phone-card {
-            background: var(--green-light);
-            border-radius: 12px;
-            padding: 14px;
-            margin-top: 12px;
-        }
-
-        .phone-card strong {
-            display: block;
-            font-size: 12px;
-        }
-
-        .phone-card span {
-            color: var(--muted);
-            font-size: 9px;
-        }
-
-        /* FAQ */
-
-        .faq-list {
-            max-width: 850px;
-            margin: auto;
-        }
-
-        .faq {
-            border-bottom: 1px solid var(--border);
-        }
-
-        .faq button {
-            width: 100%;
-            padding: 21px 0;
-            background: transparent;
-            border: 0;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            text-align: left;
-            color: var(--text);
-            font-family: Manrope;
-            font-size: 14px;
-            font-weight: 700;
-        }
-
-        .faq button span:last-child {
-            color: var(--green);
-            font-size: 20px;
-        }
-
-        .faq-answer {
-            display: none;
-            color: var(--muted);
-            font-size: 12px;
-            padding: 0 35px 20px 0;
-        }
-
-        .faq.open .faq-answer {
-            display: block;
-        }
-
-        /* SUPPORT */
-
-        .support-section {
-            background: #f1f8f4;
-        }
-
-        .support-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 45px;
-            align-items: start;
-        }
-
-        .support-box {
-            background: #fff;
-            border: 1px solid #dcebe2;
-            border-radius: 20px;
-            padding: 32px;
-        }
-
-        .support-box h3 {
-            font-size: 21px;
-        }
-
-        .support-box > p {
-            color: var(--muted);
-            font-size: 13px;
-            margin-top: 9px;
-        }
-
-        .contact-card {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            padding: 15px 0;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .contact-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 10px;
-            background: var(--green-light);
-            color: var(--green-dark);
-            display: grid;
-            place-items: center;
-            font-weight: 800;
-            font-size: 11px;
-        }
-
-        .contact-card small {
-            display: block;
-            color: #89958e;
-            font-size: 10px;
-        }
-
-        .contact-card strong {
-            font-size: 13px;
-        }
-
-        .support-actions {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-top: 22px;
-        }
-
-        .support-note {
-            margin-top: 17px;
-            color: #84918a;
-            font-size: 10px;
-        }
-
-        /* CTA */
-
-        .cta {
-            padding: 90px 0;
-        }
-
-        .cta-box {
-            background: var(--dark);
-            color: white;
-            border-radius: 25px;
-            padding: 60px;
-            text-align: center;
-        }
-
-        .cta-box h2 {
-            font-size: clamp(30px, 4vw, 44px);
-            line-height: 1.1;
-        }
-
-        .cta-box p {
-            color: #a8b5ae;
-            max-width: 620px;
-            margin: 14px auto 25px;
-            font-size: 14px;
-        }
-
-        /* FOOTER */
-
-        footer {
-            background: #0d1712;
-            color: #aab7b0;
-            padding: 55px 0 25px;
-        }
-
-        .footer-grid {
-            display: grid;
-            grid-template-columns: 1.4fr 1fr 1fr 1fr;
-            gap: 35px;
-            padding-bottom: 40px;
-        }
-
-        footer h3 {
-            color: white;
-            font-size: 13px;
-            margin-bottom: 15px;
-        }
-
-        footer p,
-        footer a {
-            color: #84928b;
-            font-size: 11px;
-        }
-
-        footer a {
-            display: block;
-            margin-bottom: 8px;
-        }
-
-        footer a:hover {
-            color: #78c99d;
-        }
-
-        .footer-brand p {
-            max-width: 300px;
-            margin-top: 12px;
-            line-height: 1.7;
-        }
-
-        .footer-bottom {
-            border-top: 1px solid rgba(255,255,255,.08);
-            padding-top: 20px;
-            display: flex;
-            justify-content: space-between;
-            gap: 20px;
-            font-size: 10px;
-            color: #69766f;
-        }
-
-        /* ANIMATION */
-
-        .reveal {
-            opacity: 0;
-            transform: translateY(18px);
-            transition: opacity .65s ease, transform .65s ease;
-        }
-
-        .reveal.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        /* RESPONSIVE */
-
-        @media (max-width: 950px) {
-            .nav-links,
-            .nav-actions {
-                display: none;
-            }
-
-            .menu-btn {
-                display: block;
-            }
-
-            .hero-grid,
-            .about-grid,
-            .mobile-guide,
-            .support-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .hero-grid {
-                gap: 45px;
-            }
-
-            .feature-grid,
-            .docs-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .module-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .workflow {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .footer-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .mobile-guide {
-                gap: 40px;
-            }
-        }
-
-        @media (max-width: 620px) {
-            .container {
-                width: min(100% - 28px, 1160px);
-            }
-
-            .nav-inner {
-                height: 68px;
-            }
-
-            .hero {
-                padding: 120px 0 70px;
-            }
-
-            .hero h1 {
-                font-size: 42px;
-            }
-
-            .hero-copy {
-                font-size: 15px;
-            }
-
-            .section {
-                padding: 72px 0;
-            }
-
-            .feature-grid,
-            .docs-grid,
-            .module-grid,
-            .workflow {
-                grid-template-columns: 1fr;
-            }
-
-            .mobile-guide {
-                padding: 35px 23px;
-            }
-
-            .mobile-guide h2 {
-                font-size: 29px;
-            }
-
-            .phone {
-                width: 190px;
-                height: 360px;
-            }
-
-            .cta-box {
-                padding: 40px 22px;
-            }
-
-            .footer-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .footer-bottom {
-                flex-direction: column;
-            }
-        }
-    </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="EcoTextile — textile operations software and end-user help centre.">
+<meta name="theme-color" content="#0c3b2e">
+<title>EcoTextile | Textile Management Software</title>
+<style>
+:root{--g:#0c3b2e;--g2:#185b46;--g3:#2b7a5d;--mint:#e8f3ee;--bg:#f7f8f5;--ink:#17231f;--muted:#69766f;--line:#dfe7e2;--white:#fff;--shadow:0 18px 55px rgba(12,59,46,.11);--r:22px;--max:1180px}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;line-height:1.6}a{text-decoration:none;color:inherit}button,input,select,textarea{font:inherit}.wrap{width:min(var(--max),calc(100% - 40px));margin:auto}.section{padding:90px 0}.eyebrow{text-transform:uppercase;letter-spacing:.14em;font-size:11px;font-weight:850;color:var(--g3);margin-bottom:12px}.eyebrow:before{content:"";display:inline-block;width:20px;height:2px;background:var(--g3);vertical-align:middle;margin-right:8px}h1,h2,h3,h4{margin:0;line-height:1.15;letter-spacing:-.035em}h1{font-size:clamp(43px,6vw,75px)}h2{font-size:clamp(31px,4vw,48px)}h3{font-size:21px}p{margin:0;color:var(--muted)}.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:47px;padding:0 18px;border-radius:12px;font-weight:800;font-size:13px;border:1px solid transparent;cursor:pointer;transition:.2s}.btn:hover{transform:translateY(-2px)}.primary{background:var(--g);color:#fff;box-shadow:0 9px 25px #0c3b2e26}.secondary{background:#fff;border-color:var(--line);color:var(--g)}.dark{background:var(--g);color:#fff}.navbox{position:sticky;top:0;z-index:30;background:#f7f8f5e8;backdrop-filter:blur(15px);border-bottom:1px solid var(--line)}nav{height:76px;display:flex;align-items:center;justify-content:space-between}.brand{display:flex;align-items:center;gap:10px;font-weight:900;color:var(--g)}.mark{width:38px;height:38px;border-radius:11px;background:var(--g);display:grid;place-items:center;color:#fff}.brand small{display:block;font-size:9px;letter-spacing:.12em;color:#738078}.links{display:flex;gap:23px;font-size:13px;font-weight:750;color:#596760}.links a:hover{color:var(--g3)}.navbtn{display:flex;gap:8px}.hamb{display:none;background:none;border:0;color:var(--g);font-size:25px}.mobile{display:none;padding:8px 0 18px}.mobile a{display:block;padding:9px 0;font-weight:750}
+
+/* hero */
+.hero{padding:75px 0 65px;background:radial-gradient(circle at 88% 15%,#77ad971f,transparent 28%),linear-gradient(#f8faf8,#eef5f1)}.heroGrid{display:grid;grid-template-columns:1fr 1fr;gap:55px;align-items:center}.hero h1{color:var(--g);margin-bottom:23px}.hero h1 span{color:var(--g3)}.hero p{font-size:18px;max-width:620px}.actions{display:flex;flex-wrap:wrap;gap:11px;margin-top:28px}.notes{display:flex;flex-wrap:wrap;gap:18px;margin-top:28px;font-size:11px;font-weight:800;color:#68766f}.notes span:before{content:"";display:inline-block;width:7px;height:7px;border-radius:50%;background:#58a37e;margin-right:7px}.window{border:1px solid #cbdad3;background:#fff;border-radius:24px;overflow:hidden;box-shadow:var(--shadow);transform:rotate(1deg)}.bar{height:42px;background:#f1f5f3;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:6px;padding:0 13px}.bar i{width:8px;height:8px;border-radius:50%;background:#b8c7c0}.bar b{font-size:10px;color:#829089;margin-left:7px}.screen{padding:14px;background:#f7faf8}.dash{display:grid;grid-template-columns:110px 1fr;gap:12px}.side{background:var(--g);border-radius:12px;padding:12px 8px;color:#d8e9e2;min-height:335px}.side strong{font-size:12px}.side div{font-size:8px;padding:8px 6px;border-radius:6px;margin-top:5px;color:#bdd2c9}.side .sel{background:#235c49;color:white}.main{min-width:0}.toprow{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}.fakeUser{width:55px;height:18px;background:#e6eeea;border-radius:10px}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.stat{background:white;border:1px solid var(--line);padding:10px;border-radius:9px}.stat small{font-size:7px;color:#829089}.stat b{display:block;font-size:16px;color:var(--g);margin-top:3px}.chart{margin-top:9px;background:white;border:1px solid var(--line);border-radius:9px;padding:10px}.bars{height:120px;display:flex;align-items:end;gap:6px}.bars i{flex:1;background:#7aa990;border-radius:4px 4px 0 0}.table{margin-top:9px;background:white;border:1px solid var(--line);border-radius:9px;overflow:hidden}.tr{display:grid;grid-template-columns:1.4fr 1fr 1fr;padding:7px 9px;border-bottom:1px solid #edf1ef;font-size:7px}.tr:first-child{font-weight:800;color:#66756e;background:#f5f8f6}.tr:last-child{border:0}
+
+/* common */
+.intro{max-width:740px}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:17px}.card{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:25px;box-shadow:0 6px 25px #0c3b2e08}.card p{font-size:14px;margin-top:10px}.iconbox{width:43px;height:43px;border-radius:12px;background:var(--mint);color:var(--g);display:grid;place-items:center;margin-bottom:18px;font-size:19px;font-weight:900}.split{display:grid;grid-template-columns:1fr 1fr;gap:55px;align-items:center}.visual{background:linear-gradient(145deg,#edf5f1,#dfeee7);border-radius:28px;padding:27px;min-height:360px}.fabric{height:300px;border-radius:20px;background:repeating-linear-gradient(135deg,#fff 0 7px,#e7f0eb 7px 14px);border:1px solid #cbdad3;position:relative;overflow:hidden}.fabric:after{content:"ECOTEXTILE";position:absolute;inset:0;display:grid;place-items:center;font-size:40px;font-weight:950;letter-spacing:.12em;color:#0c3b2e16;transform:rotate(-12deg)}.mission{display:grid;grid-template-columns:1fr 1fr;gap:17px;margin-top:25px}.mission .card{min-height:190px}.process{display:grid;grid-template-columns:repeat(4,1fr);gap:13px}.step{position:relative;padding:23px;background:#fff;border:1px solid var(--line);border-radius:18px}.num{width:32px;height:32px;border-radius:50%;background:var(--g);color:#fff;display:grid;place-items:center;font-weight:900;font-size:12px;margin-bottom:16px}.step p{font-size:13px;margin-top:8px}.modules{display:grid;grid-template-columns:repeat(4,1fr);gap:13px}.module{background:#fff;border:1px solid var(--line);border-radius:17px;padding:19px;transition:.2s}.module:hover{transform:translateY(-3px);box-shadow:var(--shadow-sm)}.module b{font-size:15px}.module span{display:block;color:var(--muted);font-size:12px;margin-top:6px}.tag{display:inline-block;font-size:9px;text-transform:uppercase;letter-spacing:.08em;font-weight:850;color:var(--g3);background:var(--mint);padding:5px 7px;border-radius:6px;margin-bottom:11px}
+
+/* interactive demo */
+.demoWrap{background:#092c23;padding:30px;border-radius:28px;box-shadow:var(--shadow)}.demoHead{display:flex;justify-content:space-between;align-items:end;gap:20px;color:#fff;margin-bottom:22px}.demoHead p{color:#b9d0c7;font-size:13px;max-width:600px}.demoNav{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:13px}.demoTab{border:1px solid #ffffff22;background:#ffffff0c;color:#bcd2ca;border-radius:9px;padding:9px 11px;font-size:11px;font-weight:800;cursor:pointer}.demoTab.active{background:#fff;color:var(--g)}.demoPanel{background:#f5f8f6;border-radius:17px;padding:17px}.demoTop{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}.demoTop b{font-size:15px}.demoBadge{font-size:9px;background:#dff0e8;color:#176047;padding:6px 8px;border-radius:7px;font-weight:850}.demoCards{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}.demoCard{background:#fff;border:1px solid var(--line);border-radius:10px;padding:12px}.demoCard small{color:#7a8781;font-size:9px}.demoCard strong{display:block;color:var(--g);font-size:19px;margin-top:2px}.demoRows{margin-top:9px;background:#fff;border:1px solid var(--line);border-radius:10px;overflow:hidden}.demoRow{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;padding:10px;border-bottom:1px solid #edf1ef;font-size:10px}.demoRow:last-child{border:0}.demoRow:first-child{font-weight:850;color:#66756f;background:#f6f8f7}.demoInfo{margin-top:11px;color:#68766f;font-size:11px}
+
+/* docs/help */
+.levels{display:grid;grid-template-columns:repeat(3,1fr);gap:17px}.level{padding:27px;background:#fff;border:1px solid var(--line);border-radius:20px}.level strong{font-size:20px}.level ul{padding-left:18px;color:var(--muted);font-size:13px}.helpGrid{display:grid;grid-template-columns:1fr 1fr;gap:18px}.searchbox{display:flex;gap:8px;margin-top:18px}.searchbox input{flex:1;border:1px solid var(--line);border-radius:11px;padding:13px 14px;outline:none;background:white}.result{margin-top:10px;font-size:13px;color:var(--g);font-weight:750}.faq{border-top:1px solid var(--line)}.faqItem{border-bottom:1px solid var(--line)}.faqQ{width:100%;border:0;background:none;text-align:left;padding:20px 0;display:flex;justify-content:space-between;gap:20px;font-weight:850;color:var(--ink);cursor:pointer}.faqA{display:none;padding:0 0 20px;color:var(--muted);font-size:14px}.faqItem.open .faqA{display:block}.faqItem.open .plus{transform:rotate(45deg)}.plus{font-size:23px;transition:.2s;color:var(--g3)}
+
+/* support/footer */
+.support{background:var(--g);color:white}.support p{color:#bfd2ca}.supportGrid{display:grid;grid-template-columns:1fr 1fr;gap:45px;align-items:start}.contactCards{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:23px}.contact{padding:17px;background:#ffffff0d;border:1px solid #ffffff16;border-radius:13px}.contact small{color:#9dbbb0;display:block;font-size:10px;text-transform:uppercase;font-weight:800}.contact b{display:block;margin-top:4px;font-size:13px}.form{background:#fff;border-radius:20px;padding:22px;color:var(--ink)}.formGrid{display:grid;grid-template-columns:1fr 1fr;gap:11px}.field{display:flex;flex-direction:column;gap:5px}.field.full{grid-column:1/-1}.field label{font-size:10px;font-weight:850;color:#5d6a64}.field input,.field select,.field textarea{border:1px solid var(--line);border-radius:9px;padding:10px 11px;outline:none;background:#fbfcfb}.field textarea{min-height:100px;resize:vertical}.formNote{font-size:10px;color:#7b8781;margin:10px 0}.footer{padding:27px 0;border-top:1px solid #ffffff18;background:#082d24;color:#a8beb6;font-size:11px}.footerIn{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}.footer b{color:#fff}
+
+/* responsive */
+@media(max-width:900px){.links{display:none}.navbtn{display:none}.hamb{display:block}.mobile.show{display:block}.heroGrid,.split,.supportGrid{grid-template-columns:1fr}.hero{padding-top:55px}.window{transform:none}.grid3,.levels{grid-template-columns:1fr 1fr}.modules{grid-template-columns:repeat(2,1fr)}.process{grid-template-columns:1fr 1fr}.section{padding:70px 0}.demoHead{display:block}.demoHead p{margin-top:9px}.dash{grid-template-columns:90px 1fr}}
+@media(max-width:620px){.wrap{width:min(var(--max),calc(100% - 28px))}.section{padding:58px 0}.hero h1{font-size:43px}.hero p{font-size:16px}.grid3,.levels,.modules,.process,.mission,.helpGrid,.contactCards,.formGrid{grid-template-columns:1fr}.field.full{grid-column:auto}.demoCards{grid-template-columns:1fr}.demoRow{grid-template-columns:1.3fr 1fr 1fr}.side{min-height:290px}.dash{grid-template-columns:76px 1fr}.side div{font-size:7px}.hero-actions .btn{width:100%}.section-head{margin-bottom:30px}}
+</style>
 </head>
-
 <body>
 
-<!-- ================= NAVIGATION ================= -->
-
-<nav class="navbar">
-    <div class="container nav-inner">
-
-        <a href="#home" class="brand">
-            <div class="brand-mark">E</div>
-            <div class="brand-text">
-                <strong>EcoTextile</strong>
-                <span>ENTERPRISE PLATFORM</span>
-            </div>
-        </a>
-
-        <div class="nav-links">
-            <a href="#about">About</a>
-            <a href="#platform">Platform</a>
-            <a href="#modules">Modules</a>
-            <a href="#documentation">Documentation</a>
-            <a href="#faq">FAQ</a>
-            <a href="#support">Support</a>
-        </div>
-
-        <div class="nav-actions">
-            <a href="#support" class="btn btn-outline">Get Help</a>
-            <a href="#client-login" class="btn btn-primary">Client Login</a>
-        </div>
-
-        <button class="menu-btn" id="menuBtn" aria-label="Open menu">
-            ☰
-        </button>
+<div class="navbox">
+  <div class="wrap">
+    <nav>
+      <a class="brand" href="#top" aria-label="EcoTextile home">
+        <span class="mark">E</span>
+        <span>EcoTextile<small>Textile Management Software</small></span>
+      </a>
+      <div class="links">
+        <a href="#about">About</a><a href="#features">Features</a><a href="#demo">Software Demo</a>
+        <a href="#guides">Guides</a><a href="#faq">FAQ</a><a href="#support">Support</a>
+      </div>
+      <button class="hamb" onclick="toggleMenu()" aria-label="Open menu">☰</button>
+    </nav>
+    <div class="mobile" id="mobileMenu">
+      <a href="#about" onclick="toggleMenu()">About</a><a href="#features" onclick="toggleMenu()">Features</a>
+      <a href="#demo" onclick="toggleMenu()">Software Demo</a><a href="#guides" onclick="toggleMenu()">Guides</a>
+      <a href="#faq" onclick="toggleMenu()">FAQ</a><a href="#support" onclick="toggleMenu()">Support</a>
     </div>
+  </div>
+</div>
 
-    <div id="mobileNav" style="
-        display:none;
-        background:#fff;
-        border-top:1px solid #e5ebe7;
-        padding:15px 20px;
-    ">
-        <div style="display:grid;gap:12px;font-size:13px;">
-            <a href="#about">About</a>
-            <a href="#platform">Platform</a>
-            <a href="#modules">Modules</a>
-            <a href="#documentation">Documentation</a>
-            <a href="#faq">FAQ</a>
-            <a href="#support">Support</a>
-            <a href="#client-login" style="color:#1f8a5b;font-weight:700;">Client Login</a>
-        </div>
+<header class="hero" id="top">
+<div class="wrap heroGrid">
+  <div class="heroCopy">
+    <div class="eyebrow">EcoTextile Help & Information Centre</div>
+    <h1>Run textile operations with <span>clarity.</span></h1>
+    <p>EcoTextile brings products, materials, production, batches, inventory, scanning and reporting into one practical workspace — with simple guides for the people who use it every day.</p>
+    <div class="actions">
+      <a class="btn primary" href="#demo">See how the software works →</a>
+      <a class="btn secondary" href="#support">Need help?</a>
     </div>
-</nav>
+    <div class="notes"><span>Built for textile teams</span><span>Desktop & LAN friendly</span><span>Step-by-step support</span></div>
+  </div>
 
-
-<!-- ================= HERO ================= -->
-
-<section class="hero" id="home">
-    <div class="container hero-grid">
-
-        <div class="reveal">
-
-            <div class="eyebrow">
-                <span class="eyebrow-dot"></span>
-                Textile Management Platform
-            </div>
-
-            <h1>
-                Run textile operations with
-                <span>greater clarity.</span>
-            </h1>
-
-            <p class="hero-copy">
-                EcoTextile brings everyday textile management into one organized
-                platform — helping teams work with production records, materials,
-                batches, inventory, scanning and reports from a central workspace.
-            </p>
-
-            <div class="hero-actions">
-                <a href="#platform" class="btn btn-primary">
-                    Explore EcoTextile →
-                </a>
-
-                <a href="#documentation" class="btn btn-outline">
-                    View Documentation
-                </a>
-            </div>
-
-            <p class="hero-note">
-                Designed for practical day-to-day use by textile teams.
-            </p>
-
-        </div>
-
-
-        <div class="hero-panel reveal">
-
-            <div class="dashboard-card">
-
-                <div class="dash-top">
-                    <div class="dash-title">
-                        EcoTextile Workspace
-                    </div>
-
-                    <div class="status">
-                        <i></i>
-                        System Ready
-                    </div>
-                </div>
-
-                <div class="dash-body">
-
-                    <div class="dash-box">
-                        <span>Inventory Records</span>
-                        <strong>1,248</strong>
-                        <small>Updated records</small>
-                    </div>
-
-                    <div class="dash-box">
-                        <span>Production Batches</span>
-                        <strong>86</strong>
-                        <small>Active records</small>
-                    </div>
-
-                    <div class="dash-box dash-wide">
-                        <span>Operational Activity</span>
-
-                        <div class="mini-bars">
-                            <i style="height:30%"></i>
-                            <i style="height:50%"></i>
-                            <i style="height:42%"></i>
-                            <i style="height:72%"></i>
-                            <i style="height:62%"></i>
-                            <i style="height:90%"></i>
-                            <i style="height:76%"></i>
-                        </div>
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-
+  <div class="window" aria-label="Illustration of EcoTextile software">
+    <div class="bar"><i></i><i></i><i></i><b>EcoTextile • Operations Dashboard</b></div>
+    <div class="screen">
+      <div class="dash">
+        <aside class="side"><strong>EcoTextile</strong><div class="sel">Dashboard</div><div>Products</div><div>Production</div><div>Batches</div><div>Inventory</div><div>Scanner</div><div>Reports</div><div>Audit & Security</div></aside>
+        <main class="main">
+          <div class="toprow"><b>Operations Overview</b><span class="fakeUser"></span></div>
+          <div class="stats"><div class="stat"><small>ACTIVE BATCHES</small><b>24</b></div><div class="stat"><small>INVENTORY ITEMS</small><b>186</b></div><div class="stat"><small>REPORTS</small><b>38</b></div></div>
+          <div class="chart"><small>Production activity</small><div class="bars"><i style="height:35%"></i><i style="height:57%"></i><i style="height:44%"></i><i style="height:76%"></i><i style="height:63%"></i><i style="height:88%"></i><i style="height:70%"></i></div></div>
+          <div class="table"><div class="tr"><span>Batch</span><span>Status</span><span>Quantity</span></div><div class="tr"><span>ET-B2401</span><span>Production</span><span>2,400 kg</span></div><div class="tr"><span>ET-B2402</span><span>Ready</span><span>1,850 kg</span></div><div class="tr"><span>ET-B2403</span><span>Inventory</span><span>3,120 kg</span></div></div>
+        </main>
+      </div>
     </div>
-</section>
+  </div>
+</div>
+</header>
 
-
-<!-- ================= ABOUT ================= -->
-
+<main>
 <section class="section" id="about">
-    <div class="container">
-
-        <div class="about-grid">
-
-            <div class="reveal">
-                <div class="section-kicker">About EcoTextile</div>
-
-                <div class="about-lead">
-                    A practical software environment for organizing
-                    textile operations.
-                </div>
-
-                <p class="about-text">
-                    EcoTextile is designed around the everyday information
-                    textile teams need to record, review and manage.
-                    Instead of spreading operational information across
-                    disconnected files and processes, the platform provides
-                    a central workspace for supported business activities.
-                </p>
-            </div>
-
-
-            <div class="about-list reveal">
-
-                <div class="about-item">
-                    <div class="about-number">01</div>
-                    <div>
-                        <h3>Centralized records</h3>
-                        <p>
-                            Keep supported operational information organized
-                            within a structured software environment.
-                        </p>
-                    </div>
-                </div>
-
-                <div class="about-item">
-                    <div class="about-number">02</div>
-                    <div>
-                        <h3>Simple daily workflows</h3>
-                        <p>
-                            Follow clear workflows for entering, reviewing
-                            and managing information.
-                        </p>
-                    </div>
-                </div>
-
-                <div class="about-item">
-                    <div class="about-number">03</div>
-                    <div>
-                        <h3>Accessible across devices</h3>
-                        <p>
-                            Use supported EcoTextile workflows from computers
-                            and mobile devices where configured.
-                        </p>
-                    </div>
-                </div>
-
-            </div>
-
-        </div>
-
+<div class="wrap">
+  <div class="section-head">
+    <div class="eyebrow">What is EcoTextile?</div>
+    <h2>A practical digital workspace for textile operations.</h2>
+    <p style="margin-top:15px">EcoTextile is designed to keep operational information organized and easier to follow. Instead of moving between scattered spreadsheets, notes and manual records, teams can work through one structured system.</p>
+  </div>
+  <div class="split">
+    <div class="visual"><div class="fabric"></div></div>
+    <div>
+      <h3>From raw information to a clear operational record.</h3>
+      <p style="margin-top:12px">A typical workflow can start with a product or material, continue through production and batches, move into inventory, and finish with scanning, reports or print-ready records. The exact screens available can vary by company deployment.</p>
+      <div class="mission">
+        <div class="card"><div class="iconbox">◎</div><h3>Our Vision</h3><p>To make textile operations more organized, traceable and understandable through practical digital tools that teams can use confidently.</p></div>
+        <div class="card"><div class="iconbox">→</div><h3>Our Mission</h3><p>To provide a clear software environment that reduces avoidable manual work and helps textile teams manage everyday records with greater consistency.</p></div>
+      </div>
     </div>
+  </div>
+</div>
 </section>
 
-
-<!-- ================= PLATFORM ================= -->
-
-<section class="section section-soft" id="platform">
-    <div class="container">
-
-        <div class="section-heading center reveal">
-            <div class="section-kicker">The Platform</div>
-
-            <h2>
-                Everything starts with a clearer workflow.
-            </h2>
-
-            <p>
-                EcoTextile is organized around the information and tasks
-                that teams interact with during everyday operations.
-            </p>
-        </div>
-
-
-        <div class="feature-grid">
-
-            <div class="feature-card reveal">
-                <div class="feature-icon">01</div>
-                <h3>Production Management</h3>
-                <p>
-                    Record and review production-related information
-                    through structured operational workflows.
-                </p>
-            </div>
-
-            <div class="feature-card reveal">
-                <div class="feature-icon">02</div>
-                <h3>Inventory & Materials</h3>
-                <p>
-                    Maintain material and inventory records and review
-                    quantities through the workspace.
-                </p>
-            </div>
-
-            <div class="feature-card reveal">
-                <div class="feature-icon">03</div>
-                <h3>Batch Management</h3>
-                <p>
-                    Organize production batches and keep related records
-                    easier to identify and review.
-                </p>
-            </div>
-
-            <div class="feature-card reveal">
-                <div class="feature-icon">04</div>
-                <h3>Scanning</h3>
-                <p>
-                    Use supported scanner and mobile camera workflows
-                    to identify and work with product information.
-                </p>
-            </div>
-
-            <div class="feature-card reveal">
-                <div class="feature-icon">05</div>
-                <h3>Reports & Export</h3>
-                <p>
-                    Review operational information and use available
-                    reporting, print and export functions.
-                </p>
-            </div>
-
-            <div class="feature-card reveal">
-                <div class="feature-icon">06</div>
-                <h3>Access & Security</h3>
-                <p>
-                    User authentication and controlled access help keep
-                    the software environment organized.
-                </p>
-            </div>
-
-        </div>
-
-    </div>
+<section class="section" id="features" style="background:#fff">
+<div class="wrap">
+  <div class="section-head"><div class="eyebrow">What you can do</div><h2>Everything starts with a simple workflow.</h2><p style="margin-top:14px">EcoTextile is organized around tasks rather than technical jargon. Each area has a clear purpose.</p></div>
+  <div class="grid3">
+    <article class="card"><div class="iconbox">01</div><h3>Manage products & materials</h3><p>Create and maintain the records your team needs before production or inventory activity begins.</p></article>
+    <article class="card"><div class="iconbox">02</div><h3>Track production & batches</h3><p>Keep production information grouped into identifiable batches so operational records are easier to follow.</p></article>
+    <article class="card"><div class="iconbox">03</div><h3>Control inventory</h3><p>Review stock-related records and keep material information available in one place.</p></article>
+    <article class="card"><div class="iconbox">04</div><h3>Scan supported items</h3><p>Use supported scanner workflows and mobile camera scanning where enabled in your deployment.</p></article>
+    <article class="card"><div class="iconbox">05</div><h3>Import & report</h3><p>Use spreadsheet import and reporting tools to move information into useful operational outputs.</p></article>
+    <article class="card"><div class="iconbox">06</div><h3>Protect the workspace</h3><p>Authentication, access controls, audit information and operational safeguards help keep the system organized.</p></article>
+  </div>
+</div>
 </section>
 
-
-<!-- ================= MODULES ================= -->
-
-<section class="section" id="modules">
-    <div class="container">
-
-        <div class="section-heading reveal">
-            <div class="section-kicker">Software Modules</div>
-
-            <h2>
-                Built around the work your team actually performs.
-            </h2>
-
-            <p>
-                The platform brings related operational functions together
-                so users can move from one task to the next without losing context.
-            </p>
-        </div>
-
-
-        <div class="module-grid">
-
-            <div class="module">
-                <div class="module-number">01</div>
-                <h3>Dashboard</h3>
-                <p>Overview of important workspace information.</p>
-            </div>
-
-            <div class="module">
-                <div class="module-number">02</div>
-                <h3>Products & Materials</h3>
-                <p>Manage product and material records.</p>
-            </div>
-
-            <div class="module">
-                <div class="module-number">03</div>
-                <h3>Production</h3>
-                <p>Record production activities.</p>
-            </div>
-
-            <div class="module">
-                <div class="module-number">04</div>
-                <h3>Batches</h3>
-                <p>Manage batch-related information.</p>
-            </div>
-
-            <div class="module">
-                <div class="module-number">05</div>
-                <h3>Inventory</h3>
-                <p>Review and manage stock records.</p>
-            </div>
-
-            <div class="module">
-                <div class="module-number">06</div>
-                <h3>Scanner</h3>
-                <p>Work with supported scanning workflows.</p>
-            </div>
-
-            <div class="module">
-                <div class="module-number">07</div>
-                <h3>Mobile Camera Scanner</h3>
-                <p>Scan supported items using a mobile camera.</p>
-            </div>
-
-            <div class="module">
-                <div class="module-number">08</div>
-                <h3>Excel / CSV Import</h3>
-                <p>Import supported structured data.</p>
-            </div>
-
-            <div class="module">
-                <div class="module-number">09</div>
-                <h3>Reports</h3>
-                <p>Review operational reports.</p>
-            </div>
-
-            <div class="module">
-                <div class="module-number">10</div>
-                <h3>PDF & Print</h3>
-                <p>Prepare supported information for printing.</p>
-            </div>
-
-            <div class="module">
-                <div class="module-number">11</div>
-                <h3>Telemetry</h3>
-                <p>Review available telemetry information.</p>
-            </div>
-
-            <div class="module">
-                <div class="module-number">12</div>
-                <h3>Audit & Security</h3>
-                <p>Review available security and audit functions.</p>
-            </div>
-
-        </div>
-
+<section class="section" id="demo">
+<div class="wrap">
+  <div class="demoWrap">
+    <div class="demoHead"><div><div class="eyebrow" style="color:#87bca5">Interactive software preview</div><h2 style="color:white">See the workflow before you use it.</h2></div><p>This is a visual demonstration of the type of screens and workflow EcoTextile is designed around. It is a website preview, not a live company database.</p></div>
+    <div class="demoNav">
+      <button class="demoTab active" onclick="showDemo('dashboard',this)">Dashboard</button>
+      <button class="demoTab" onclick="showDemo('production',this)">Production</button>
+      <button class="demoTab" onclick="showDemo('inventory',this)">Inventory</button>
+      <button class="demoTab" onclick="showDemo('scanner',this)">Scanner</button>
+      <button class="demoTab" onclick="showDemo('reports',this)">Reports</button>
     </div>
+    <div class="demoPanel" id="demoPanel"></div>
+  </div>
+</div>
 </section>
 
-
-<!-- ================= HOW IT WORKS ================= -->
-
-<section class="section section-soft" id="workflow">
-    <div class="container">
-
-        <div class="section-heading center reveal">
-            <div class="section-kicker">How It Works</div>
-
-            <h2>
-                A straightforward path from record to report.
-            </h2>
-
-            <p>
-                EcoTextile is designed so users can follow a logical
-                operational workflow.
-            </p>
-        </div>
-
-
-        <div class="workflow">
-
-            <div class="workflow-step reveal">
-                <div class="step-number">01 — START</div>
-                <h3>Sign in</h3>
-                <p>
-                    Access your authorized EcoTextile workspace.
-                </p>
-            </div>
-
-            <div class="workflow-step reveal">
-                <div class="step-number">02 — RECORD</div>
-                <h3>Enter information</h3>
-                <p>
-                    Add products, materials, batches and other supported records.
-                </p>
-            </div>
-
-            <div class="workflow-step reveal">
-                <div class="step-number">03 — MANAGE</div>
-                <h3>Work with records</h3>
-                <p>
-                    Review inventory, production information and supported scans.
-                </p>
-            </div>
-
-            <div class="workflow-step reveal">
-                <div class="step-number">04 — REVIEW</div>
-                <h3>Generate reports</h3>
-                <p>
-                    Use available reports, exports and print functions.
-                </p>
-            </div>
-
-        </div>
-
-    </div>
+<section class="section">
+<div class="wrap">
+  <div class="section-head"><div class="eyebrow">Core modules</div><h2>Know what each module is for.</h2><p style="margin-top:14px">Select the module your team needs. Availability can vary according to your installed version and company setup.</p></div>
+  <div class="modules">
+    <div class="module"><span class="tag">Operations</span><b>Dashboard</b><span>Your central overview.</span></div>
+    <div class="module"><span class="tag">Master data</span><b>Products & Materials</b><span>Maintain product information.</span></div>
+    <div class="module"><span class="tag">Production</span><b>Production</b><span>Record production activity.</span></div>
+    <div class="module"><span class="tag">Tracking</span><b>Batches</b><span>Organize production lots.</span></div>
+    <div class="module"><span class="tag">Stock</span><b>Inventory</b><span>Review stock records.</span></div>
+    <div class="module"><span class="tag">Scanning</span><b>Scanner</b><span>Scan supported items.</span></div>
+    <div class="module"><span class="tag">Mobile</span><b>Camera Scanner</b><span>Use a mobile camera where enabled.</span></div>
+    <div class="module"><span class="tag">Data</span><b>Excel / CSV Import</b><span>Bring structured data into the system.</span></div>
+    <div class="module"><span class="tag">Insights</span><b>Reports</b><span>Review operational information.</span></div>
+    <div class="module"><span class="tag">Output</span><b>PDF / Print</b><span>Create usable records and outputs.</span></div>
+    <div class="module"><span class="tag">Security</span><b>Audit & Security</b><span>Review access and system activity.</span></div>
+    <div class="module"><span class="tag">Administration</span><b>Users & Employees</b><span>Manage authorized users where enabled.</span></div>
+  </div>
+</div>
 </section>
 
-
-<!-- ================= DOCUMENTATION ================= -->
-
-<section class="section" id="documentation">
-    <div class="container">
-
-        <div class="section-heading center reveal">
-            <div class="section-kicker">Documentation</div>
-
-            <h2>
-                Learn EcoTextile at your own level.
-            </h2>
-
-            <p>
-                Clear instructions for new users, regular operators
-                and administrators.
-            </p>
-        </div>
-
-
-        <div class="docs-grid">
-
-            <div class="doc-card reveal">
-                <span class="doc-label">Beginner</span>
-
-                <h3>Start Here</h3>
-
-                <p>
-                    Learn how to sign in, understand the dashboard,
-                    navigate modules and perform your first basic tasks.
-                </p>
-
-                <a href="#support" class="doc-link">
-                    Beginner Guide →
-                </a>
-            </div>
-
-
-            <div class="doc-card reveal">
-                <span class="doc-label">Intermediate</span>
-
-                <h3>Daily Operations</h3>
-
-                <p>
-                    Learn production, inventory, batches, scanning,
-                    imports, reports and the complete daily workflow.
-                </p>
-
-                <a href="#support" class="doc-link">
-                    Operator Guide →
-                </a>
-            </div>
-
-
-            <div class="doc-card reveal">
-                <span class="doc-label">Advanced</span>
-
-                <h3>Administration</h3>
-
-                <p>
-                    Understand user management, access, security,
-                    maintenance and operational troubleshooting.
-                </p>
-
-                <a href="#support" class="doc-link">
-                    Administrator Guide →
-                </a>
-            </div>
-
-        </div>
-
-    </div>
+<section class="section" id="guides" style="background:#fff">
+<div class="wrap">
+  <div class="section-head"><div class="eyebrow">Learning centre</div><h2>Learn EcoTextile at your own level.</h2><p style="margin-top:14px">Start with the basics. Move to operational workflows. Then use the advanced guide for administration and troubleshooting.</p></div>
+  <div class="levels">
+    <article class="level"><span class="tag">Start here</span><strong>Beginner</strong><p style="margin-top:9px">For employees using EcoTextile for the first time.</p><ul><li>Sign in and understand the dashboard</li><li>Learn the main menu</li><li>Create or review basic records</li><li>Understand batches and inventory</li><li>Use scanner basics</li></ul></article>
+    <article class="level"><span class="tag">Daily work</span><strong>Intermediate</strong><p style="margin-top:9px">For users who already know the interface.</p><ul><li>Follow a complete production workflow</li><li>Import spreadsheet data</li><li>Review inventory and batch records</li><li>Create reports and print outputs</li><li>Use mobile/LAN access</li></ul></article>
+    <article class="level"><span class="tag">Administration</span><strong>Advanced / Expert</strong><p style="margin-top:9px">For supervisors and technical administrators.</p><ul><li>User and access management</li><li>Audit and security checks</li><li>Scanner troubleshooting</li><li>Service and LAN maintenance</li><li>Backup and operational checks</li></ul></article>
+  </div>
+</div>
 </section>
 
-
-<!-- ================= MOBILE GUIDE ================= -->
-
-<section class="section" id="mobile">
-    <div class="container">
-
-        <div class="mobile-guide reveal">
-
-            <div>
-                <div class="section-kicker">
-                    Mobile Access
-                </div>
-
-                <h2>
-                    Work with EcoTextile wherever your setup allows.
-                </h2>
-
-                <p>
-                    When mobile access is configured for your environment,
-                    users can open supported EcoTextile workflows from a
-                    phone or tablet on the appropriate network.
-                </p>
-
-                <div style="margin-top:25px;">
-                    <a href="#support" class="btn btn-primary">
-                        View Mobile Guide
-                    </a>
-                </div>
-            </div>
-
-
-            <div>
-                <div class="phone">
-
-                    <div class="phone-screen">
-
-                        <div class="phone-top">
-                            EcoTextile
-                        </div>
-
-                        <div class="phone-card">
-                            <strong>Inventory</strong>
-                            <span>Review material records</span>
-                        </div>
-
-                        <div class="phone-card">
-                            <strong>Scanner</strong>
-                            <span>Scan supported products</span>
-                        </div>
-
-                        <div class="phone-card">
-                            <strong>Reports</strong>
-                            <span>Review available reports</span>
-                        </div>
-
-                    </div>
-
-                </div>
-            </div>
-
-        </div>
-
-    </div>
+<section class="section">
+<div class="wrap">
+  <div class="section-head"><div class="eyebrow">Typical workflow</div><h2>A simple path from entry to report.</h2></div>
+  <div class="process">
+    <div class="step"><div class="num">1</div><h3>Set up</h3><p>Add or review products, materials and basic records.</p></div>
+    <div class="step"><div class="num">2</div><h3>Record</h3><p>Create production activity and identify the relevant batch.</p></div>
+    <div class="step"><div class="num">3</div><h3>Track</h3><p>Review inventory, scan supported items and keep records updated.</p></div>
+    <div class="step"><div class="num">4</div><h3>Review</h3><p>Use reports, PDF or print outputs to communicate results.</p></div>
+  </div>
+</div>
 </section>
 
-
-<!-- ================= FAQ ================= -->
-
-<section class="section section-soft" id="faq">
-    <div class="container">
-
-        <div class="section-heading center reveal">
-            <div class="section-kicker">FAQ</div>
-
-            <h2>
-                Common questions, answered simply.
-            </h2>
-        </div>
-
-
-        <div class="faq-list">
-
-            <div class="faq">
-                <button>
-                    <span>What is EcoTextile?</span>
-                    <span>+</span>
-                </button>
-
-                <div class="faq-answer">
-                    EcoTextile is a textile management platform designed
-                    to organize supported operational activities such as
-                    production records, materials, batches, inventory,
-                    scanning and reporting.
-                </div>
-            </div>
-
-
-            <div class="faq">
-                <button>
-                    <span>Who can use EcoTextile?</span>
-                    <span>+</span>
-                </button>
-
-                <div class="faq-answer">
-                    EcoTextile can be configured for textile businesses
-                    and teams that need a structured environment for their
-                    operational records and workflows.
-                </div>
-            </div>
-
-
-            <div class="faq">
-                <button>
-                    <span>Can I access EcoTextile from a mobile phone?</span>
-                    <span>+</span>
-                </button>
-
-                <div class="faq-answer">
-                    Mobile access depends on the deployment and network
-                    configuration of the EcoTextile installation. When
-                    enabled, supported workflows can be accessed from
-                    compatible mobile devices.
-                </div>
-            </div>
-
-
-            <div class="faq">
-                <button>
-                    <span>How does mobile camera scanning work?</span>
-                    <span>+</span>
-                </button>
-
-                <div class="faq-answer">
-                    The mobile scanner guide explains how to open the
-                    supported scanner workflow, allow camera access,
-                    scan the relevant code and review the resulting record.
-                </div>
-            </div>
-
-
-            <div class="faq">
-                <button>
-                    <span>What if I cannot log in?</span>
-                    <span>+</span>
-                </button>
-
-                <div class="faq-answer">
-                    First verify your login details and confirm that you
-                    are using the correct EcoTextile access address.
-                    If the issue continues, contact EcoTextile Support
-                    and provide the error message or a screenshot.
-                </div>
-            </div>
-
-
-            <div class="faq">
-                <button>
-                    <span>What if something is not working?</span>
-                    <span>+</span>
-                </button>
-
-                <div class="faq-answer">
-                    Open the relevant troubleshooting guide first. If the
-                    problem remains unresolved, contact support and include
-                    the module name, what you were trying to do and what
-                    happened.
-                </div>
-            </div>
-
-        </div>
-
+<section class="section" style="background:#fff">
+<div class="wrap">
+  <div class="split">
+    <div>
+      <div class="eyebrow">Mobile & LAN</div>
+      <h2>Use the system where your team works.</h2>
+      <p style="margin-top:15px">For deployments configured on a company network, authorized employees can access the software from supported devices connected to the same LAN. Mobile camera scanning can also be used where that workflow is enabled.</p>
+      <div class="actions"><a class="btn primary" href="#support">Get setup help</a><a class="btn secondary" href="#faq">Read troubleshooting</a></div>
     </div>
+    <div class="card">
+      <div class="iconbox">⌁</div><h3>Before using mobile access</h3>
+      <p>Make sure the device is connected to the correct company Wi-Fi/network and that the software service is running. If a page does not open, note the device, network and exact error message before contacting support.</p>
+      <p style="margin-top:12px"><b style="color:var(--g)">Security note:</b> Only access the software using the address and credentials provided by your organization.</p>
+    </div>
+  </div>
+</div>
 </section>
 
-
-<!-- ================= SUPPORT ================= -->
-
-<section class="section support-section" id="support">
-    <div class="container">
-
-        <div class="support-grid">
-
-            <div class="reveal">
-
-                <div class="section-kicker">
-                    EcoTextile Support
-                </div>
-
-                <h2 style="
-                    font-family:Manrope;
-                    font-size:42px;
-                    line-height:1.1;
-                    letter-spacing:-.035em;
-                ">
-                    Need help?
-                    <br>
-                    Talk to a real person.
-                </h2>
-
-                <p style="
-                    color:#65736b;
-                    margin-top:17px;
-                    max-width:480px;
-                    font-size:14px;
-                ">
-                    If you do not understand a feature, encounter an error,
-                    or are unsure what to do next, contact EcoTextile Support.
-                    Please tell us which module you are using and describe
-                    the problem as clearly as possible.
-                </p>
-
-            </div>
-
-
-            <div class="support-box reveal">
-
-                <h3>Contact EcoTextile Support</h3>
-
-                <p>
-                    Support contact for software questions and technical issues.
-                </p>
-
-
-                <div class="contact-card">
-
-                    <div class="contact-icon">
-                        MM
-                    </div>
-
-                    <div>
-                        <small>Support Contact</small>
-                        <strong>Muhammad Meer</strong>
-                    </div>
-
-                </div>
-
-
-                <div class="contact-card">
-
-                    <div class="contact-icon">
-                        @
-                    </div>
-
-                    <div>
-                        <small>Email</small>
-                        <strong>muhammadmeer2003@gmail.com</strong>
-                    </div>
-
-                </div>
-
-
-                <div class="contact-card">
-
-                    <div class="contact-icon">
-                        WA
-                    </div>
-
-                    <div>
-                        <small>WhatsApp</small>
-                        <strong>0320 9249409</strong>
-                    </div>
-
-                </div>
-
-
-                <div class="support-actions">
-
-                    <a
-                        href="https://wa.me/923209249409"
-                        target="_blank"
-                        rel="noopener"
-                        class="btn btn-primary"
-                    >
-                        WhatsApp Support
-                    </a>
-
-                    <a
-                        href="mailto:muhammadmeer2003@gmail.com?subject=EcoTextile%20Support"
-                        class="btn btn-outline"
-                    >
-                        Email Support
-                    </a>
-
-                </div>
-
-
-                <p class="support-note">
-                    When reporting an issue, include the module name,
-                    error message and screenshot if available.
-                </p>
-
-            </div>
-
-        </div>
-
+<section class="section" id="faq">
+<div class="wrap">
+  <div class="section-head"><div class="eyebrow">FAQ & troubleshooting</div><h2>Stuck? Start here.</h2><p style="margin-top:14px">Quick answers for common situations. If your issue is not listed, contact support with the module name and a screenshot if possible.</p></div>
+  <div class="helpGrid">
+    <div>
+      <h3>Search the help topics</h3>
+      <div class="searchbox"><input id="helpSearch" placeholder="Try: scanner, inventory, login, report..." oninput="searchHelp()"><button class="btn primary" onclick="searchHelp()">Search</button></div>
+      <div class="result" id="helpResult">Try a keyword to find a quick guide.</div>
     </div>
+    <div class="card"><h3>When reporting a problem</h3><p style="margin-top:8px">Tell support <b>what you were trying to do</b>, <b>which module you used</b>, <b>what happened</b>, and <b>what you expected</b>. A screenshot or exact error message can save time.</p></div>
+  </div>
+  <div class="faq" style="margin-top:45px">
+    <div class="faqItem"><button class="faqQ">I cannot log in. What should I check?<span class="plus">+</span></button><div class="faqA">Check that you are using the correct company email and credentials. If the account is locked or the error continues, contact your administrator or EcoTextile Support. Do not send your password in a support message.</div></div>
+    <div class="faqItem"><button class="faqQ">The scanner is not reading an item. What should I do?<span class="plus">+</span></button><div class="faqA">Confirm that the supported code is visible and readable, check the scanner connection or camera permission, and try again. If mobile scanning is enabled, make sure the phone is connected to the required network and has camera access.</div></div>
+    <div class="faqItem"><button class="faqQ">My report is empty or missing data. Why?<span class="plus">+</span></button><div class="faqA">First check that the relevant records were saved and that the selected filters/date range are correct. If the source data is present but the report still looks wrong, contact support and mention the report name and filters used.</div></div>
+    <div class="faqItem"><button class="faqQ">Can I use EcoTextile from a phone?<span class="plus">+</span></button><div class="faqA">The interface can be accessed from supported mobile browsers when the deployment is configured for network access. Camera scanning can also be available as part of the scanner workflow.</div></div>
+    <div class="faqItem"><button class="faqQ">Where do I get the user manual?<span class="plus">+</span></button><div class="faqA">Use the Beginner, Intermediate and Advanced sections on this help centre. Your company can also maintain an internal copy of the full EcoTextile user manual for its own procedures.</div></div>
+  </div>
+</div>
 </section>
 
-
-<!-- ================= CLIENT LOGIN ================= -->
-
-<section class="cta" id="client-login">
-    <div class="container">
-
-        <div class="cta-box reveal">
-
-            <div class="section-kicker" style="color:#78c99d;">
-                EcoTextile Client Area
-            </div>
-
-            <h2>
-                Ready to use EcoTextile?
-            </h2>
-
-            <p>
-                Authorized users can access their EcoTextile workspace
-                through the client application provided for their organization.
-            </p>
-
-            <!--
-                IMPORTANT:
-                Replace the # below with your actual software login URL
-                when the production software URL is available.
-            -->
-
-            <a href="#" class="btn btn-primary" id="loginButton">
-                Open Client Login →
-            </a>
-
-        </div>
-
+<section class="section support" id="support">
+<div class="wrap supportGrid">
+  <div>
+    <div class="eyebrow" style="color:#8bbfa8">Human support</div>
+    <h2>Need help with EcoTextile?</h2>
+    <p style="margin-top:14px">If you have a question, encounter an error, or need help understanding a feature, contact Muhammad Meer. Please include the module name and a short explanation of the issue.</p>
+    <div class="contactCards">
+      <a class="contact" href="https://wa.me/923209249409" target="_blank" rel="noopener"><small>WhatsApp</small><b>+92 320 9249409</b></a>
+      <a class="contact" href="mailto:muhammadmeer2003@gmail.com"><small>Email</small><b>muhammadmeer2003@gmail.com</b></a>
     </div>
+    <p style="margin-top:18px;font-size:11px">For faster assistance, send the module, steps you took, error message, and screenshot if available. Never send passwords or private credentials.</p>
+  </div>
+
+  <form class="form" id="supportForm">
+    <h3>Quick Support Request</h3>
+    <p style="font-size:12px;margin:6px 0 17px">This form prepares a support message. You can send it through WhatsApp.</p>
+    <div class="formGrid">
+      <div class="field"><label>Name</label><input id="sName" required placeholder="Your name"></div>
+      <div class="field"><label>Company</label><input id="sCompany" placeholder="Company name"></div>
+      <div class="field"><label>Module</label><select id="sModule"><option>Dashboard</option><option>Products & Materials</option><option>Production</option><option>Batches</option><option>Inventory</option><option>Scanner</option><option>Mobile Camera Scanner</option><option>Excel / CSV Import</option><option>Reports</option><option>PDF / Print</option><option>Audit & Security</option><option>Other</option></select></div>
+      <div class="field"><label>Issue type</label><select id="sType"><option>How-to question</option><option>Something is not working</option><option>Login / access issue</option><option>Data / report issue</option><option>Other</option></select></div>
+      <div class="field full"><label>What happened?</label><textarea id="sIssue" required placeholder="Explain what you were trying to do and what happened..."></textarea></div>
+    </div>
+    <div class="formNote">A screenshot can be attached manually after WhatsApp opens.</div>
+    <button class="btn primary" type="submit" style="width:100%">Prepare WhatsApp Support Message →</button>
+  </form>
+</div>
 </section>
+</main>
 
-
-<!-- ================= FOOTER ================= -->
-
-<footer>
-
-    <div class="container">
-
-        <div class="footer-grid">
-
-            <div class="footer-brand">
-
-                <div class="brand">
-                    <div class="brand-mark">E</div>
-
-                    <div class="brand-text">
-                        <strong style="color:white;">
-                            EcoTextile
-                        </strong>
-
-                        <span style="color:#728078;">
-                            ENTERPRISE PLATFORM
-                        </span>
-                    </div>
-                </div>
-
-                <p>
-                    A practical software environment for organizing
-                    textile operations, records and supported workflows.
-                </p>
-
-            </div>
-
-
-            <div>
-                <h3>Platform</h3>
-
-                <a href="#platform">Overview</a>
-                <a href="#modules">Modules</a>
-                <a href="#workflow">How It Works</a>
-                <a href="#mobile">Mobile Access</a>
-            </div>
-
-
-            <div>
-                <h3>Resources</h3>
-
-                <a href="#documentation">Documentation</a>
-                <a href="#faq">FAQ</a>
-                <a href="#support">Support</a>
-            </div>
-
-
-            <div>
-                <h3>Contact</h3>
-
-                <a href="mailto:muhammadmeer2003@gmail.com">
-                    Email Support
-                </a>
-
-                <a
-                    href="https://wa.me/923209249409"
-                    target="_blank"
-                    rel="noopener"
-                >
-                    WhatsApp
-                </a>
-
-                <a href="#client-login">
-                    Client Login
-                </a>
-            </div>
-
-        </div>
-
-
-        <div class="footer-bottom">
-
-            <span>
-                © 2026 EcoTextile Enterprise. All rights reserved.
-            </span>
-
-            <span>
-                Designed & developed by Muhammad Meer.
-            </span>
-
-        </div>
-
-    </div>
-
+<footer class="footer">
+<div class="wrap footerIn"><div><b>EcoTextile</b> — Textile Management Software</div><div>Support: Muhammad Meer • 2026</div></div>
 </footer>
 
-
-<!-- ================= JAVASCRIPT ================= -->
-
 <script>
-
-    /* Mobile Navigation */
-
-    const menuBtn = document.getElementById("menuBtn");
-    const mobileNav = document.getElementById("mobileNav");
-
-    menuBtn.addEventListener("click", () => {
-
-        const isOpen = mobileNav.style.display === "block";
-
-        mobileNav.style.display = isOpen ? "none" : "block";
-
-        menuBtn.innerText = isOpen ? "☰" : "✕";
-    });
-
-
-    document.querySelectorAll("#mobileNav a").forEach(link => {
-
-        link.addEventListener("click", () => {
-
-            mobileNav.style.display = "none";
-            menuBtn.innerText = "☰";
-
-        });
-
-    });
-
-
-    /* FAQ */
-
-    document.querySelectorAll(".faq button").forEach(button => {
-
-        button.addEventListener("click", () => {
-
-            const faq = button.parentElement;
-            const isOpen = faq.classList.contains("open");
-
-            document.querySelectorAll(".faq").forEach(item => {
-                item.classList.remove("open");
-
-                const symbol = item.querySelector("button span:last-child");
-
-                if (symbol) {
-                    symbol.innerText = "+";
-                }
-            });
-
-            if (!isOpen) {
-
-                faq.classList.add("open");
-
-                const symbol = button.querySelector("span:last-child");
-
-                if (symbol) {
-                    symbol.innerText = "−";
-                }
-
-            }
-
-        });
-
-    });
-
-
-    /* Scroll Reveal */
-
-    const revealElements = document.querySelectorAll(".reveal");
-
-    const observer = new IntersectionObserver(
-        entries => {
-
-            entries.forEach(entry => {
-
-                if (entry.isIntersecting) {
-
-                    entry.target.classList.add("visible");
-
-                    observer.unobserve(entry.target);
-
-                }
-
-            });
-
-        },
-        {
-            threshold: 0.12
-        }
-    );
-
-
-    revealElements.forEach(element => {
-        observer.observe(element);
-    });
-
-
-    /* Client Login Placeholder */
-
-    document.getElementById("loginButton").addEventListener("click", function(event) {
-
-        event.preventDefault();
-
-        alert(
-            "Client Login will be connected to the EcoTextile application when the production access URL is configured."
-        );
-
-    });
-
+function toggleMenu(){document.getElementById('mobileMenu').classList.toggle('show')}
+const demos={
+dashboard:{title:'Operations Dashboard',badge:'Overview',cards:[['Active Batches','24'],['Inventory Items','186'],['Open Reports','12']],rows:[['ET-B2401','Production','2,400 kg'],['ET-B2402','Ready','1,850 kg'],['ET-B2403','Inventory','3,120 kg']],info:'The dashboard gives users a quick view of the information that matters most to their daily work.'},
+production:{title:'Production',badge:'Daily activity',cards:[['Today','8 jobs'],['Completed','6'],['In process','2']],rows:[['JOB-018','Cotton Fabric','Completed'],['JOB-019','Blended Yarn','In process'],['JOB-020','Finished Fabric','Completed']],info:'Production records can be organized so supervisors can review what has been completed and what is still in process.'},
+inventory:{title:'Inventory',badge:'Stock records',cards:[['Items','186'],['Available','142'],['Low stock','9']],rows:[['MAT-001','Cotton 30s','Available'],['MAT-014','Dye Material','Low stock'],['MAT-027','Poly Yarn','Available']],info:'Inventory screens help users locate and review material records without searching through multiple paper files.'},
+scanner:{title:'Scanner',badge:'Scan workflow',cards:[['Scanner','Ready'],['Camera','Available'],['Last scan','10:42']],rows:[['ET-B2401','Batch code','Matched'],['PRD-0198','Product code','Matched'],['MAT-0041','Material code','Matched']],info:'The scanner workflow is intended to make supported item identification faster. Mobile camera scanning can be used where enabled.'},
+reports:{title:'Reports',badge:'Review & output',cards:[['Reports','38'],['This month','14'],['PDF ready','9']],rows:[['Production Summary','September','Ready'],['Inventory Report','September','Ready'],['Batch Activity','September','Ready']],info:'Reports turn stored operational records into information that teams can review, print or share internally.'}
+};
+function showDemo(key,btn){
+ document.querySelectorAll('.demoTab').forEach(x=>x.classList.remove('active'));btn.classList.add('active');
+ const d=demos[key];
+ document.getElementById('demoPanel').innerHTML='<div class="demoTop"><b>'+d.title+'</b><span class="demoBadge">'+d.badge+'</span></div><div class="demoCards">'+d.cards.map(x=>'<div class="demoCard"><small>'+x[0]+'</small><strong>'+x[1]+'</strong></div>').join('')+'</div><div class="demoRows"><div class="demoRow"><span>Record</span><span>Reference</span><span>Status</span><span></span></div>'+d.rows.map(x=>'<div class="demoRow"><span>'+x[0]+'</span><span>'+x[1]+'</span><span>'+x[2]+'</span><span>›</span></div>').join('')+'</div><div class="demoInfo">'+d.info+'</div>';
+}
+showDemo('dashboard',document.querySelector('.demoTab'));
+document.querySelectorAll('.faqQ').forEach(q=>q.addEventListener('click',()=>q.parentElement.classList.toggle('open')));
+const help={
+scanner:'Scanner: check the code, scanner connection or camera permission. For mobile scanning, confirm network access and camera permission.',
+inventory:'Inventory: check the item record, quantity, filters and whether the latest transaction was saved.',
+login:'Login: verify the company email and credentials. Never send your password to support.',
+report:'Reports: check saved source records and selected filters/date range before reporting a missing result.',
+production:'Production: review the production record and related batch. Confirm that the record was saved before moving on.',
+batch:'Batches: use the batch reference to trace production and related inventory information.',
+mobile:'Mobile: connect the phone to the approved company network and use the provided software address.',
+excel:'Excel/CSV: confirm the file structure and required columns before importing.'
+};
+function searchHelp(){
+ const q=document.getElementById('helpSearch').value.toLowerCase().trim();
+ const el=document.getElementById('helpResult');
+ if(!q){el.textContent='Try a keyword to find a quick guide.';return}
+ const key=Object.keys(help).find(k=>q.includes(k)||help[k].toLowerCase().includes(q));
+ el.textContent=key?help[key]:'No quick match found. Contact EcoTextile Support and include the module name and exact error message.';
+}
+document.getElementById('supportForm').addEventListener('submit',e=>{
+ e.preventDefault();
+ const name=document.getElementById('sName').value.trim(), company=document.getElementById('sCompany').value.trim();
+ const module=document.getElementById('sModule').value, type=document.getElementById('sType').value, issue=document.getElementById('sIssue').value.trim();
+ const msg='EcoTextile Support Request%0A%0AName: '+encodeURIComponent(name)+'%0ACompany: '+encodeURIComponent(company||'Not provided')+'%0AModule: '+encodeURIComponent(module)+'%0AIssue type: '+encodeURIComponent(type)+'%0A%0AWhat happened:%0A'+encodeURIComponent(issue)+'%0A%0APlease assist me with this issue.';
+ window.open('https://wa.me/923209249409?text='+msg,'_blank');
+});
 </script>
-
 </body>
 </html>
+'''
+
+path = Path("/mnt/data/index.html")
+path.write_text(html, encoding="utf-8")
+print(f"Created: {path}")
+print(f"Size: {path.stat().st_size:,} bytes")
